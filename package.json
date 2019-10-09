@@ -1,0 +1,39 @@
+{
+  "name": "soajs.installer.remote",
+  "description": "soajs remote installer allows you to deploy soajs on a remote cloud provider",
+  "version": "3.0.0",
+  "author": {
+    "name": "soajs team",
+    "email": "team@soajs.org"
+  },
+  "keywords": [
+    "soajs",
+    "api",
+    "visualizations",
+    "dashboards",
+    "dashboarding"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:soajs/soajs.installer.remote.git"
+  },
+  "license": "Apache-2.0",
+  "engines": {
+    "node": "*"
+  },
+  "dependencies": {
+    "path":"0.12.7",
+    "express":"4.17.1",
+    "soajs":"2.5.19",
+    "request":"2.88.0",
+    "randomstring":"1.1.5",
+    "whereis":"1.0.0",
+    "ncp":"2.0.0",
+    "rimraf":"3.0.0",
+    "async":"3.1.0",
+    "dockerode":"soajs/dockerode.git",
+    "kubernetes-client": "soajs/kubernetes-client.git",
+    "util":"0.12.1",
+    "clone":"2.1.2"
+  }
+}
