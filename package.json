@@ -22,18 +22,18 @@
     "node": "*"
   },
   "dependencies": {
-    "path": "0.12.7",
-    "express": "4.17.1",
-    "soajs": "2.5.19",
-    "request": "2.88.0",
-    "randomstring": "1.1.5",
-    "whereis": "1.0.0",
-    "ncp": "2.0.0",
-    "rimraf": "3.0.0",
     "async": "3.1.0",
+    "clone": "2.1.2",
     "dockerode": "soajs/dockerode.git",
+    "express": "4.17.1",
     "kubernetes-client": "soajs/kubernetes-client.git",
+    "ncp": "2.0.0",
+    "path": "0.12.7",
+    "randomstring": "1.1.5",
+    "request": "2.88.0",
+    "rimraf": "3.0.0",
+    "soajs": "2.5.19",
     "util": "0.12.1",
-    "clone": "2.1.2"
+    "whereis": "1.0.0"
   }
 }
