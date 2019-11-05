@@ -79,7 +79,10 @@ var dsbrdProduct = {
                                 },
                                 "/admin/group/edit": {
                                     "access": true
-                                }
+                                },
+	                            "/admin/group/addEnvironment" : {
+		                            "access" : true
+	                            }
                             }
                         }, {
                             "group": "Guest Password Settings",

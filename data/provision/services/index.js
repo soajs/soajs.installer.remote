@@ -298,6 +298,196 @@ var services = [
 				"branches": [
 					"master"
 				]
+			},
+			"3": {
+				"extKeyRequired": true,
+				"urac": false,
+				"urac_Profile": false,
+				"urac_ACL": false,
+				"provision_ACL": false,
+				"oauth": true,
+				"apis": [
+					{
+						l: "Forgot password by username as (username or email) - an email will be sent with a link to reset the password",
+						v: "/password/forgot",
+						m: "get",
+						group: "My account guest"
+					},
+					{
+						l: "To validate user account after joining",
+						v: "/validate/join",
+						m: "get",
+						group: "Guest join"
+					},
+					{
+						l: "Check if a username as (username or email) is available or taken",
+						v: "/checkUsername",
+						m: "get",
+						group: "Guest join"
+					},
+					{
+						l: "To validate change email",
+						v: "/validate/changeEmail",
+						m: "get",
+						group: "My account guest"
+					},
+					{
+						l: "Get user account information by username as (username or email)",
+						v: "/user",
+						m: "get",
+						group: "My account",
+						groupMain: true
+					},
+					{
+						l: "Get user by id",
+						v: "/admin/user",
+						m: "get",
+						group: "User administration"
+					},
+					{
+						l: "List users matching certain keywords",
+						v: "/admin/users",
+						m: "get",
+						group: "User Administration",
+						groupMain: true
+					},
+					{
+						l: "Get users count matching certain keywords",
+						v: "/admin/users/count",
+						m: "get",
+						group: "User administration"
+					},
+					{
+						l: "List all groups",
+						v: "/admin/groups",
+						m: "get",
+						group: "Group administration"
+					},
+					{
+						l: "Get group by id or code",
+						v: "/admin/group",
+						m: "get",
+						group: "Group administration"
+					},
+					{
+						l: "Get all users and groups of a main tenant",
+						v: "/admin/all",
+						m: "get",
+						group: "Administration"
+					},
+					{
+						l: "List users by Id",
+						v: "/admin/users/ids",
+						m: "get",
+						group: "User administration",
+						groupMain: true
+					},
+					{
+						l: "Join and create an account",
+						v: "/join",
+						m: "post",
+						group: "Guest Join"
+					},
+					{
+						l: "Add user",
+						v: "/admin/user",
+						m: "post",
+						group: "User administration"
+					},
+					{
+						l: "Add group",
+						v: "/admin/group",
+						m: "post",
+						group: "Group administration"
+					},
+					{
+						l: "Delete group",
+						v: "/admin/group",
+						m: "delete",
+						group: "Group administration"
+					},
+					{
+						l: "Reset password",
+						v: "/password/reset",
+						m: "put",
+						group: "My account guest"
+					},
+					{
+						l: "Change account's password by id",
+						v: "/account/password",
+						m: "put",
+						group: "My account"
+					},
+					{
+						l: "Change account's email by id",
+						v: "/account/email",
+						m: "put",
+						group: "My account"
+					},
+					{
+						l: "Edit account's information by id",
+						v: "/account",
+						m: "put",
+						group: "My account"
+					},
+					{
+						l: "Edit user by id",
+						v: "/admin/user",
+						m: "put",
+						group: "User administration"
+					},
+					{
+						l: "Edit user's groups by id, username, or email",
+						v: "/admin/user/groups",
+						m: "put",
+						group: "User administration"
+					},
+					{
+						l: "Edit, reset, or delete user's pin information by id, username, or email",
+						v: "/admin/user/pin",
+						m: "put",
+						group: "User administration"
+					},
+					{
+						l: "Change the status of a user by id",
+						v: "/admin/user/status",
+						m: "put",
+						group: "User administration"
+					},
+					{
+						l: "Edit group by id",
+						v: "/admin/group",
+						m: "put",
+						group: "Group administration"
+					},
+					{
+						l: "Update environment(s) of group(s) by code",
+						v: "/admin/groups/environments",
+						m: "put",
+						group: "Group administration"
+					},
+					{
+						l: "Update package(s) of group(s) by code",
+						v: "/admin/groups/packages",
+						m: "put",
+						group: "Group administration"
+					},
+					{
+						l: "Invite users by id, username or email",
+						v: "/admin/users/invite",
+						m: "put",
+						group: "User administration"
+					},
+					{
+						l: "un-Invite users by id, username or email",
+						v: "/admin/users/uninvite",
+						m: "put",
+						group: "User administration"
+					}
+				],
+				"branches": [
+					"release/v3.x"
+				]
 			}
 		}
 	},
