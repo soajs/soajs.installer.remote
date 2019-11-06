@@ -104,7 +104,7 @@ var dsbrdProduct = {
                 },
                 "dashboard": {
                     "1": {
-                        "access": false,
+                        "access": true,
                         "post": [{
                             "group": "Continuous Delivery Deployment",
                             "apis": {
