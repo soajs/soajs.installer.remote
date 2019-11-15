@@ -55,15 +55,6 @@ var dashboard = {
         "config": {
             "prefix": "%clusterPrefix%"
         },
-	    "session": {
-		    "cluster": "dash_cluster",
-		    "tenantSpecific": false,
-		    "name": "core_session",
-		    'store': {},
-		    "collection": "sessions",
-		    'stringify': false,
-		    'expireAfter': 1000 * 60 * 60 * 24 * 14 // 2 weeks
-	    },
         "databases": {
             "urac": {
                 "cluster": "dash_cluster",
