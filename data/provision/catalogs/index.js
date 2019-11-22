@@ -219,7 +219,7 @@ var catalogs = [
 			},
 			"buildOptions": {
 				"settings": {
-					"accelerateDeployment": true
+					"accelerateDeployment": false
 				},
 				"env": {
 					"SOAJS_DEPLOY_ACC" : {
@@ -334,7 +334,7 @@ var catalogs = [
 			},
 			"buildOptions": {
 				"settings": {
-					"accelerateDeployment": true
+					"accelerateDeployment": false
 				},
 				"env": {
 					"SOAJS_DEPLOY_ACC" : {
@@ -464,7 +464,7 @@ var catalogs = [
 			},
 			"buildOptions": {
 				"settings": {
-					"accelerateDeployment": true
+					"accelerateDeployment": false
 				},
 				"env": {
 					"SOAJS_DEPLOY_ACC" : {
