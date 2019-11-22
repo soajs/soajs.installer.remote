@@ -74,7 +74,7 @@ var dsbrdProduct = {
 							}],
 						"put": [
 							{
-								"group": "User administration",
+								"group": "User Administration",
 								"apis": {
 									"/admin/user/status": {
 										"access": true
@@ -85,7 +85,7 @@ var dsbrdProduct = {
 								}
 							},
 							{
-								"group": "Group administration",
+								"group": "Group Administration",
 								"apis": {
 									"/admin/group": {
 										"access": true
