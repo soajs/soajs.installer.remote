@@ -108,13 +108,9 @@ var catalogs = [
 			},
 			"buildOptions": {
 				"settings": {
-					"accelerateDeployment": true
+					"accelerateDeployment": false
 				},
 				"env": {
-					"SOAJS_DEPLOY_ACC" : {
-						"type" : "static",
-						"value" : "true"
-					},
 					"NODE_TLS_REJECT_UNAUTHORIZED": {
 						"type": "static",
 						"value": "0"
@@ -222,10 +218,6 @@ var catalogs = [
 					"accelerateDeployment": false
 				},
 				"env": {
-					"SOAJS_DEPLOY_ACC" : {
-						"type" : "static",
-						"value" : "true"
-					},
 					"NODE_TLS_REJECT_UNAUTHORIZED": {
 						"type": "static",
 						"value": "0"
@@ -337,10 +329,6 @@ var catalogs = [
 					"accelerateDeployment": false
 				},
 				"env": {
-					"SOAJS_DEPLOY_ACC" : {
-						"type" : "static",
-						"value" : "true"
-					},
 					"NODE_TLS_REJECT_UNAUTHORIZED": {
 						"type": "static",
 						"value": "0"
@@ -467,10 +455,6 @@ var catalogs = [
 					"accelerateDeployment": false
 				},
 				"env": {
-					"SOAJS_DEPLOY_ACC" : {
-						"type" : "static",
-						"value" : "true"
-					},
 					"NODE_TLS_REJECT_UNAUTHORIZED": {
 						"type": "static",
 						"value": "0"
