@@ -196,7 +196,7 @@ var dsbrdProduct = {
 					}
 				}
 			}
-		},
+		}
 	},
 	"packages": [
 		{

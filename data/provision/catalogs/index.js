@@ -147,17 +147,13 @@ var catalogs = [
 						"type": "computed",
 						"value": "$SOAJS_HA_NAME"
 					},
-					"SOAJS_NX_CONTROLLER_NB" : {
+					"SOAJS_REGISTRY_API" : {
 						"type" : "computed",
-						"value" : "$SOAJS_NX_CONTROLLER_NB"
+						"value" : "$SOAJS_REGISTRY_API"
 					},
-					"SOAJS_NX_CONTROLLER_IP" : {
-						"type" : "computed",
-						"value" : "$SOAJS_NX_CONTROLLER_IP_N"
-					},
-					"SOAJS_NX_CONTROLLER_PORT" : {
-						"type" : "computed",
-						"value" : "$SOAJS_NX_CONTROLLER_PORT"
+					"SOAJS_BCRYPT" : {
+						"type" : "static",
+						"value" : "true"
 					}
 				},
 				"cmd": {
@@ -254,17 +250,13 @@ var catalogs = [
 						"type": "computed",
 						"value": "$SOAJS_HA_NAME"
 					},
-					"SOAJS_NX_CONTROLLER_NB" : {
+					"SOAJS_REGISTRY_API" : {
 						"type" : "computed",
-						"value" : "$SOAJS_NX_CONTROLLER_NB"
+						"value" : "$SOAJS_REGISTRY_API"
 					},
-					"SOAJS_NX_CONTROLLER_IP" : {
-						"type" : "computed",
-						"value" : "$SOAJS_NX_CONTROLLER_IP_N"
-					},
-					"SOAJS_NX_CONTROLLER_PORT" : {
-						"type" : "computed",
-						"value" : "$SOAJS_NX_CONTROLLER_PORT"
+					"SOAJS_BCRYPT" : {
+						"type" : "static",
+						"value" : "true"
 					},
 					"SOAJS_ENDPOINT_NAME" : {
 						"type" : "computed",
@@ -400,6 +392,10 @@ var catalogs = [
 					"SOAJS_MONGO_PASSWORD": {
 						"type": "computed",
 						"value": "$SOAJS_MONGO_PASSWORD"
+					},
+					"SOAJS_BCRYPT" : {
+						"type" : "static",
+						"value" : "true"
 					}
 				},
 				"cmd": {
@@ -495,41 +491,13 @@ var catalogs = [
 						"type": "computed",
 						"value": "$SOAJS_HA_NAME"
 					},
-					"SOAJS_MONGO_USERNAME": {
-						"type": "computed",
-						"value": "$SOAJS_MONGO_USERNAME"
+					"SOAJS_REGISTRY_API" : {
+						"type" : "computed",
+						"value" : "$SOAJS_REGISTRY_API"
 					},
-					"SOAJS_MONGO_PASSWORD": {
-						"type": "computed",
-						"value": "$SOAJS_MONGO_PASSWORD"
-					},
-					"SOAJS_MONGO_NB": {
-						"type": "computed",
-						"value": "$SOAJS_MONGO_NB"
-					},
-					"SOAJS_MONGO_PREFIX": {
-						"type": "computed",
-						"value": "$SOAJS_MONGO_PREFIX"
-					},
-					"SOAJS_MONGO_RSNAME": {
-						"type": "computed",
-						"value": "$SOAJS_MONGO_RSNAME"
-					},
-					"SOAJS_MONGO_AUTH_DB": {
-						"type": "computed",
-						"value": "$SOAJS_MONGO_AUTH_DB"
-					},
-					"SOAJS_MONGO_SSL": {
-						"type": "computed",
-						"value": "$SOAJS_MONGO_SSL"
-					},
-					"SOAJS_MONGO_IP": {
-						"type": "computed",
-						"value": "$SOAJS_MONGO_IP_N"
-					},
-					"SOAJS_MONGO_PORT": {
-						"type": "computed",
-						"value": "$SOAJS_MONGO_PORT_N"
+					"SOAJS_BCRYPT" : {
+						"type" : "static",
+						"value" : "true"
 					}
 				},
 				"cmd": {
