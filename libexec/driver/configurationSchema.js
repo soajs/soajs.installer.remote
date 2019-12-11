@@ -13,6 +13,10 @@ let addUserSchema = {
 	"required": true,
 	"additionalProperties": false,
 	"properties": {
+		"versions": {
+			"type": "object",
+			"required": true
+		},
 		"driverName": {
 			"type": "string",
 			"enum": ['kubernetes'],
