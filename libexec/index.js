@@ -143,10 +143,10 @@ function validateOptions(options, cb) {
 		if (check && check.errors && Array.isArray(check.errors) && check.errors.length > 0) {
 			utilLog.log("Configuration schema errors: ");
 			for (let i = 0; i < check.errors.length; i++) {
-				utilLog.log("\t" + check.errors[i].property + ": " +check.errors[i].message);
+				utilLog.log("\t" + check.errors[i].property + ": " + check.errors[i].message);
 			}
 		}
-		if (check.valid){
+		if (check.valid) {
 			return cb(null);
 		}
 		return cb(new Error("The provided configuration is not healthy"));
@@ -437,6 +437,34 @@ let lib = {
 			} else {
 				return cb(new Error("Unable to find driver [" + options.driverName + "] in configuration"));
 			}
+		});
+	},
+	
+	"migrate": (options, strategy, cb) => {
+		validateOptions(options, (error) => {
+			if (error) {
+				utilLog.log(error.message);
+				return cb(new Error("Unable continue, please provide valid configuration!"));
+			}
+			let profileImport = null;
+			if (options.mongo.external) {
+				profileImport = {
+					"name": "core_provision",
+					"prefix": "",
+					"servers": options.mongo.profile.servers,
+					"credentials": options.mongo.profile.credentials,
+					"streaming": {},
+					"extraParam": {},
+					"URLParam": options.mongo.profile.URLParam,
+				};
+			} else {
+				profileImport = require("../data/soajs_profile.js");
+				profileImport.servers[0].host = options.kubernetes.ip;
+			}
+			
+			let strategyFunction = require("./migrate/" + strategy + ".js");
+			
+			return strategyFunction(profileImport, options.dataPath, cb);
 		});
 	}
 };

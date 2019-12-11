@@ -33,6 +33,7 @@ let addUserSchema = {
 		"mongo": {
 			"type": "object",
 			"required": true,
+			"additionalProperties": false,
 			"properties": {
 				"port": {
 					"type": "integer",
