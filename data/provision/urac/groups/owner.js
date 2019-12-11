@@ -1,6 +1,6 @@
 'use strict';
 
-var owner = {
+let doc = {
 	"locked": true,
 	"code": "owner",
 	"name": "Owner Group",
@@ -18,4 +18,4 @@ var owner = {
 	}
 };
 
-module.exports = owner;
+module.exports = doc;

@@ -1,6 +1,6 @@
 'use strict';
 
-var devop = {
+let doc = {
 	"locked": true,
 	"code": "devop",
 	"name": "Devops Group",
@@ -18,4 +18,4 @@ var devop = {
 	}
 };
 
-module.exports = devop;
+module.exports = doc;

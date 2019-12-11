@@ -1,10 +1,10 @@
 'use strict';
 
-var dsbrdProduct = {
+let doc = {
 	"_id": "5512867be603d7e01ab1688d",
 	"locked": true,
 	"code": "DSBRD",
-	"console": "true",
+	"console": true,
 	"name": "Console UI Product",
 	"description": "This is the main Console UI Product.",
 	"scope": {
@@ -194,9 +194,141 @@ var dsbrdProduct = {
 							}
 						}]
 					}
+				},
+				"multitenant": {
+					"1": {
+						"access": false,
+						"apisPermission": "restricted",
+						"get": [
+							{
+								"group": "Product",
+								"apis": {
+									"/products": {},
+									"/product": {},
+									"/product/packages": {},
+									"/product/package": {}
+								}
+							},
+							{
+								"group": "Console product",
+								"apis": {
+									"/products/console": {}
+								}
+							},
+							{
+								"group": "Tenant",
+								"apis": {
+									"/tenants": {},
+									"/tenant": {},
+									"/tenant/application": {},
+									"/tenant/applications": {},
+									"/tenant/application/key/ext": {}
+								}
+							},
+							{
+								"group": "Admin Tenant",
+								"apis": {
+									"/admin/tenant": {},
+									"/admin/tenant/application": {},
+									"/admin/tenant/applications": {},
+									"/admin/tenant/application/key/ext": {}
+								}
+							}
+						],
+						"post": [
+							{
+								"group": "Product",
+								"apis": {
+									"/product": {},
+									"/product/package": {}
+								}
+							},
+							{
+								"group": "Tenant",
+								"apis": {
+									"/tenant": {},
+									"/tenant/application": {},
+									"/tenant/application/key": {}
+								}
+							},
+							{
+								"group": "Admin Tenant",
+								"apis": {
+									"/admin/tenant/application": {},
+									"/admin/tenant/application/key": {},
+									"/admin/tenant/application/key/ext": {}
+								}
+							},
+							{
+								"group": "Tenant Access",
+								"apis": {
+									"/tenant/application/key/ext": {}
+								}
+							}
+						],
+						"delete": [
+							{
+								"group": "Product",
+								"apis": {
+									"/product": {},
+									"/product/package": {}
+								}
+							},
+							{
+								"group": "Tenant",
+								"apis": {
+									"/tenant": {},
+									"/tenant/application": {},
+									"/tenant/application/key": {}
+								}
+							},
+							{
+								"group": "Tenant Access",
+								"apis": {
+									"/tenant/application/key/ext": {}
+								}
+							}
+						],
+						"put": [
+							{
+								"group": "Product",
+								"apis": {
+									"/product/purge": {},
+									"/product": {},
+									"/product/scope": {},
+									"/product/package": {}
+								}
+							},
+							{
+								"group": "Tenant",
+								"apis": {
+									"/tenant": {},
+									"/tenant/profile": {},
+									"/tenant/application": {},
+									"/tenant/application/key": {}
+								}
+							},
+							{
+								"group": "Admin Tenant",
+								"apis": {
+									"/admin/tenant": {},
+									"/admin/tenant/application/key/ext": {},
+									"/admin/tenant/application/key": {},
+									"/admin/tenant/application": {},
+									"/admin/tenant/profile": {}
+								}
+							},
+							{
+								"group": "Tenant Access",
+								"apis": {
+									"/tenant/application/key/ext": {}
+								}
+							}
+						]
+					}
 				}
 			}
-		}
+		},
 	},
 	"packages": [
 		{
@@ -310,12 +442,67 @@ var dsbrdProduct = {
 						"post": ["Continuous Delivery", "Environment", "Templates", "Environment Databases", "Resources", "Custom Registry", "Environment Platforms", "Services", "Daemons", "Hosts", "HA Cloud", "Continuous Integration", "Git Accounts", "API Builder", "Secrets", "Private Tenant ACL", "Continuous Delivery Deployment", "Simulate", "swagger"],
 						"put": ["Continuous Delivery", "Environment", "Environment Databases", "Resources", "Custom Registry", "Environment Platforms", "Services", "Daemons", "HA Cloud", "Continuous Integration", "Git Accounts", "API Builder"],
 						"delete": ["Environment", "Templates", "Environment Databases", "Resources", "Custom Registry", "Environment Platforms", "Daemons", "HA Cloud", "Continuous Integration", "Git Accounts", "API Builder", "Secrets"]
-					}]
+					}],
 				}
 			},
 			"_TTL": 21600000
+		},
+		{
+			"code": "DSBRD_INTG",
+			"name": "Integration Package",
+			"locked": true,
+			"description": "Integration Package is ideal to help you change SOAJS Configuration Programmatically via API.",
+			"acl": {
+				"dashboard": {
+					"oauth": [
+						{
+							"version": "1",
+							"post": [
+								"Guest",
+								"Tokenization"
+							],
+							"get": [
+								"Guest"
+							],
+							"delete": [
+								"Tokenization",
+								"Cient Tokenization",
+								"User Tokenization"
+							]
+						}
+					],
+					"multitenant": [
+						{
+							"version": "1",
+							"get": [
+								"Product",
+								"Tenant",
+								"Admin Tenant"
+							],
+							"post": [
+								"Product",
+								"Tenant",
+								"Admin Tenant",
+								"Tenant Access"
+							],
+							"delete": [
+								"Product",
+								"Tenant",
+								"Tenant Access"
+							],
+							"put": [
+								"Product",
+								"Tenant",
+								"Admin Tenant",
+								"Tenant Access"
+							]
+						}
+					]
+				}
+			},
+			_TTL: 21600000
 		}
 	]
 };
 
-module.exports = dsbrdProduct;
+module.exports = doc;

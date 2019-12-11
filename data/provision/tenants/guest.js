@@ -1,5 +1,5 @@
 'use strict';
-var techop = {
+let doc = {
 	"_id": "5c0e74ba9acc3c5a84a51259",
 	"type": "product",
 	"code": "DBTN",
@@ -35,49 +35,9 @@ var techop = {
 					],
 					"config": {
 						"dashboard": {
-							"commonFields": {
-								"mail": {
-									"from": "%email%",
-									"transport": {
-										"type": "sendmail",
-										"options": {}
-									}
-								}
-							},
 							"urac": {
-								"hashIterations": 1024,
-								"seedLength": 32,
-								"link": {
-									"addUser": "%protocol%://%site%.%domain%:%port%/#/setNewPassword",
-									"changeEmail": "%protocol%://%site%.%domain%:%port%/#/changeEmail/validate",
-									"forgotPassword": "%protocol%://%site%.%domain%:%port%/#/resetPassword",
-									"join": "%protocol%://%site%.%domain%:%port%/#/join/validate"
-								},
 								"tokenExpiryTTL": 2 * 24 * 3600 * 1000,
-								"validateJoin": true,
-								"mail": {
-									"join": {
-										"subject": 'Welcome to SOAJS',
-										"path": "%wrkDir%/soajs/node_modules/soajs.urac/mail/urac/join.tmpl"
-									},
-									"forgotPassword": {
-										"subject": 'Reset Your Password at SOAJS',
-										"path": "%wrkDir%/soajs/node_modules/soajs.urac/mail/urac/forgotPassword.tmpl"
-									},
-									"addUser": {
-										"subject": 'Account Created at SOAJS',
-										"path": "%wrkDir%/soajs/node_modules/soajs.urac/mail/urac/addUser.tmpl"
-									},
-									"changeUserStatus": {
-										"subject": "Account Status changed at SOAJS",
-										//use custom HTML
-										"path": "%wrkDir%/soajs/node_modules/soajs.urac/mail/urac/changeUserStatus.tmpl"
-									},
-									"changeEmail": {
-										"subject": "Change Account Email at SOAJS",
-										"path": "%wrkDir%/soajs/node_modules/soajs.urac/mail/urac/changeEmail.tmpl"
-									}
-								}
+								"validateJoin": true
 							}
 						}
 					}
@@ -88,4 +48,4 @@ var techop = {
 	"tag": "Console"
 };
 
-module.exports = techop;
+module.exports = doc;

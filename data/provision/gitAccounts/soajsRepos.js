@@ -1,6 +1,7 @@
 'use strict';
 //need to update configSHA, set to correct values when config files on master branch get updated
-var soajs_account = {
+
+let doc = {
 	"_id": '56f1189430f153a571b9c8be',
 	"label": "SOAJS Open Source",
 	"owner": "soajs",
@@ -29,11 +30,11 @@ var soajs_account = {
 			"serviceName": "oauth",
 			"type": "service"
 		},
-        {
-            "name": "soajs/soajs.multitenant",
-            "serviceName": "multitenant",
-            "type": "service"
-        },
+		{
+			"name": "soajs/soajs.multitenant",
+			"serviceName": "multitenant",
+			"type": "service"
+		},
 		{
 			"name": "soajs/soajs.epg",
 			"serviceName": "epg",
@@ -42,4 +43,4 @@ var soajs_account = {
 	]
 };
 
-module.exports = soajs_account;
+module.exports = doc;

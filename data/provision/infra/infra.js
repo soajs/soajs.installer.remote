@@ -1,25 +1,25 @@
 'use strict';
 
-var dsbrdInfra = {
+let doc = {
 	"api": {
 		"ipaddress": "%ipaddress%",
 		"token": "%token%",
-		"network": "%network%",
+		"network": "soajs",
 		"port": "%port%",
-		"protocol": "%protocol%"
+		"protocol": "https"
 	},
 	"name": "local",
 	"technologies": [
-		"%technology%"
+		"kubernetes"
 	],
 	"templates": null,
 	"drivers": [
 		"Native"
 	],
-	"label": "%label%",
+	"label" : "Kubernetes Remote",
 	"deployments": [
 		{
-			"technology": "%technology%",
+			"technology" : "kubernetes",
 			"options": {
 				"zone": "local"
 			},
@@ -33,4 +33,4 @@ var dsbrdInfra = {
 	]
 };
 
-module.exports = dsbrdInfra;
+module.exports = doc;

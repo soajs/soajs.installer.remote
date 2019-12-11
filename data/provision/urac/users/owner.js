@@ -1,5 +1,5 @@
 'use strict';
-var owner = {
+let doc = {
 	"locked": true,
 	"username": "%username%",
 	"password": '%password%',
@@ -14,10 +14,10 @@ var owner = {
 		"packages": {},
 		"keys": {}
 	},
-	"tenant":{
+	"tenant": {
 		"id": '5c0e74ba9acc3c5a84a51259',
 		"code": 'DBTN'
 	}
 };
 
-module.exports = owner;
+module.exports = doc;
