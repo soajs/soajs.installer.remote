@@ -5,7 +5,7 @@ let options = {
 	"dataPath": "/opt/soajs/node_modules/soajs.installer.remote/data/provision/",
 	"importer": require('./../soajs.installer.local/libexec/custom/index.js'),
 	"mongo": {
-		"port": null
+		"external": false
 	},
 	"kubernetes": {
 		"ip": '192.168.64.3',
@@ -29,5 +29,6 @@ let options = {
 };
 
 remote.install(options, (error) => {
-	console.log(error);
+	if (error)
+		console.log(error.message);
 });

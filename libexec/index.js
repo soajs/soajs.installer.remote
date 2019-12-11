@@ -16,6 +16,7 @@ const drivers = {
 };
 const uuidv4 = require('uuid/v4');
 const async = require('async');
+const configurationSchema = require("./driver/configurationSchema");
 
 
 function generateKey(opts, cb) {
@@ -133,6 +134,26 @@ function importData(options, data, profileImport, cb) {
 	});
 }
 
+function validateOptions(options, cb) {
+	if (options) {
+		let core = soajs.core;
+		let validator = new core.validator.Validator();
+		
+		let check = validator.validate(options, configurationSchema);
+		if (check && check.errors && Array.isArray(check.errors) && check.errors.length > 0) {
+			utilLog.log("Configuration schema errors: ");
+			for (let i = 0; i < check.errors.length; i++) {
+				utilLog.log("\t" + check.errors[i].property + ": " +check.errors[i].message);
+			}
+		}
+		if (check.valid){
+			return cb(null);
+		}
+		return cb(new Error("The provided configuration is not healthy"));
+	}
+	return cb(new Error("Empty configuration"));
+}
+
 let lib = {
 	/**
 	 * @param options Object
@@ -143,8 +164,17 @@ let lib = {
 	 *         port: "",
 	 *         external: false,
 	 *         profile: {
-	 *              servers: [],
-	 *              credentials: {},
+	 *              servers: [
+	 *                  {
+	 *                      host: ""
+	 *                      port: ""
+	 *                  }
+	 *                  ...
+	 *              ],
+	 *              credentials: {
+	 *                  username: "",
+	 *                  password: ""
+	 *              },
 	 *              URLParam: {}
 	 *         }
 	 *     },
@@ -171,235 +201,243 @@ let lib = {
 	 *
 	 */
 	"install": (options, cb) => {
-		if (drivers[options.driverName]) {
-			let driver = drivers[options.driverName];
-			let config = {
-				"ip": options.kubernetes.ip,
-				"port": options.kubernetes.port,
-				"token": options.kubernetes.token
-			};
-			driver.init(config, (error, deployer) => {
-				if (error) {
-					return cb(error);
-				}
-				//clean up
-				driver.cleanUp(deployer, (error) => {
+		validateOptions(options, (error) => {
+			if (error) {
+				utilLog.log(error.message);
+				return cb(new Error("Unable continue, please provide valid configuration!"));
+			}
+			if (drivers[options.driverName]) {
+				let driver = drivers[options.driverName];
+				let config = {
+					"ip": options.kubernetes.ip,
+					"port": options.kubernetes.port,
+					"token": options.kubernetes.token
+				};
+				driver.init(config, (error, deployer) => {
 					if (error) {
 						return cb(error);
 					}
-					async.waterfall([
-						(cb) => {
-							return cb(null, {});
-						},
-						//Install mongo
-						(obj, cb) => {
-							if (options.mongo.external) {
-								utilLog.log('External Mongo deployment detected, data containers will not be deployed ...');
-								return cb(null, obj);
-							} else {
-								let config = {
-									"port": options.mongo.port
-								};
-								driver.deploy.mongo(config, deployer, (error, response) => {
-									if (error) {
-										return cb(error, obj);
-									}
-									obj.mongoIP = null;
-									if (response) {
-										obj.mongoIP = response;
-									}
+					//clean up
+					driver.cleanUp(deployer, (error) => {
+						if (error) {
+							return cb(error);
+						}
+						async.waterfall([
+							(cb) => {
+								return cb(null, {});
+							},
+							//Install mongo
+							(obj, cb) => {
+								if (options.mongo.external) {
+									utilLog.log('External Mongo deployment detected, data containers will not be deployed ...');
 									return cb(null, obj);
-								})
-							}
-						},
-						//Patch data
-						(obj, cb) => {
-							let profileImport = null;
-							let profileSecret = null;
-							if (obj.mongoIP) {
-								profileImport = require("../data/soajs_profile.js");
-								profileSecret = JSON.parse(JSON.stringify(profileImport));
-								profileImport.servers[0].host = options.kubernetes.ip;
-								profileSecret.servers[0].host = obj.mongoIP;
-								profileSecret.servers[0].port = 27017;
-							} else {
-								profileImport = {
-									"name": "core_provision",
-									"prefix": "",
-									"servers": options.mongo.profile.servers,
-									"credentials": options.mongo.profile.credentials,
-									"streaming": {},
-									"extraParam": {},
-									"URLParam": options.mongo.profile.URLParam,
-								};
-								profileSecret = JSON.parse(JSON.stringify(profileImport));
-							}
-							if (profileImport && profileImport.servers && Array.isArray(profileImport.servers) && profileImport.servers[0] && profileImport.servers[0].host) {
-								utilLog.log("Importing data this might take some time ... ");
-								setTimeout(() => {
-									let guestTenant = require(options.dataPath + "tenants/guest.js");
-									let opts = {
-										"key": guestTenant.applications[0].keys[0].key,
-										"tenantId": guestTenant._id,
-										"package": guestTenant.applications[0].package,
-										"secret": uuidv4()
+								} else {
+									let config = {
+										"port": options.mongo.port
 									};
-									generateKey(opts, (error, extKey) => {
+									driver.deploy.mongo(config, deployer, (error, response) => {
 										if (error) {
 											return cb(error, obj);
 										}
-										obj.extKey = extKey;
-										importData(options, {
-											"extKey": extKey,
-											"keyPassword": opts.secret,
-											"profileSecret": profileSecret
-										}, profileImport, (error, msg) => {
-											utilLog.log(msg);
-											obj.profileSecret = profileSecret;
-											return cb(null, obj);
+										obj.mongoIP = null;
+										if (response) {
+											obj.mongoIP = response;
+										}
+										return cb(null, obj);
+									})
+								}
+							},
+							//Patch data
+							(obj, cb) => {
+								let profileImport = null;
+								let profileSecret = null;
+								if (obj.mongoIP) {
+									profileImport = require("../data/soajs_profile.js");
+									profileSecret = JSON.parse(JSON.stringify(profileImport));
+									profileImport.servers[0].host = options.kubernetes.ip;
+									profileSecret.servers[0].host = obj.mongoIP;
+									profileSecret.servers[0].port = 27017;
+								} else {
+									profileImport = {
+										"name": "core_provision",
+										"prefix": "",
+										"servers": options.mongo.profile.servers,
+										"credentials": options.mongo.profile.credentials,
+										"streaming": {},
+										"extraParam": {},
+										"URLParam": options.mongo.profile.URLParam,
+									};
+									profileSecret = JSON.parse(JSON.stringify(profileImport));
+								}
+								if (profileImport && profileImport.servers && Array.isArray(profileImport.servers) && profileImport.servers[0] && profileImport.servers[0].host) {
+									utilLog.log("Importing data this might take some time ... ");
+									setTimeout(() => {
+										let guestTenant = require(options.dataPath + "tenants/guest.js");
+										let opts = {
+											"key": guestTenant.applications[0].keys[0].key,
+											"tenantId": guestTenant._id,
+											"package": guestTenant.applications[0].package,
+											"secret": uuidv4()
+										};
+										generateKey(opts, (error, extKey) => {
+											if (error) {
+												return cb(error, obj);
+											}
+											obj.extKey = extKey;
+											importData(options, {
+												"extKey": extKey,
+												"keyPassword": opts.secret,
+												"profileSecret": profileSecret
+											}, profileImport, (error, msg) => {
+												utilLog.log(msg);
+												obj.profileSecret = profileSecret;
+												return cb(null, obj);
+											});
 										});
-									});
-								}, 30000);
-							} else {
-								return cb(new Error("Mongo profile is not healthy, unable to continue"), obj);
+									}, 30000);
+								} else {
+									return cb(new Error("Mongo profile is not healthy, unable to continue"), obj);
+								}
+							},
+							//Install gateway
+							(obj, cb) => {
+								let config = {
+									"profileSecret": obj.profileSecret,
+									"type": "bin"
+								};
+								driver.deploy.gateway(config, deployer, (error, response) => {
+									if (error) {
+										return cb(error, obj);
+									}
+									obj.gatewayIP = null;
+									if (response) {
+										obj.gatewayIP = response;
+									}
+									return cb(null, obj);
+								});
+							},
+							//Install nginx
+							(obj, cb) => {
+								let config = {
+									"type": "bin",
+									
+									"httpPort": options.nginx.httpPort,
+									"httpsPort": options.nginx.httpsPort,
+									
+									"domain": options.nginx.domain,
+									"sitePrefix": options.nginx.sitePrefix,
+									"apiPrefix": options.nginx.apiPrefix,
+									"deployType": options.nginx.deployType,
+									"sslSecret": options.nginx.sslSecret,
+									
+									"email": options.owner.email,
+									"extKey": obj.extKey,
+									
+									"gatewayIP": obj.gatewayIP
+								};
+								driver.deploy.nginx(config, deployer, (error, response) => {
+									if (error) {
+										return cb(error, obj);
+									}
+									obj.nginxIP = null;
+									if (response) {
+										obj.nginxIP = response;
+									}
+									return cb(null, obj);
+								});
+							},
+							//Install dashboard service
+							(obj, cb) => {
+								let config = {
+									"type": "bin",
+									"serviceName": "dashboard",
+									"gatewayIP": obj.gatewayIP
+								};
+								driver.deploy.service(config, deployer, (error, response) => {
+									if (error) {
+										return cb(error, obj);
+									}
+									obj.dashboardIP = null;
+									if (response) {
+										obj.dashboardIP = response;
+									}
+									return cb(null, obj);
+								});
+							},
+							//Install urac service
+							(obj, cb) => {
+								let config = {
+									"type": "bin",
+									"serviceName": "urac",
+									"gatewayIP": obj.gatewayIP
+								};
+								driver.deploy.service(config, deployer, (error, response) => {
+									if (error) {
+										return cb(error, obj);
+									}
+									obj.uracIP = null;
+									if (response) {
+										obj.uracIP = response;
+									}
+									return cb(null, obj);
+								});
+							},
+							//Install oauth service
+							(obj, cb) => {
+								let config = {
+									"type": "bin",
+									"serviceName": "oauth",
+									"gatewayIP": obj.gatewayIP
+								};
+								driver.deploy.service(config, deployer, (error, response) => {
+									if (error) {
+										return cb(error, obj);
+									}
+									obj.oauthIP = null;
+									if (response) {
+										obj.oauthIP = response;
+									}
+									return cb(null, obj);
+								});
+							},
+							//Install multitenant service
+							(obj, cb) => {
+								let config = {
+									"type": "bin",
+									"serviceName": "multitenant",
+									"gatewayIP": obj.gatewayIP
+								};
+								driver.deploy.service(config, deployer, (error, response) => {
+									if (error) {
+										return cb(error, obj);
+									}
+									obj.multitenantIP = null;
+									if (response) {
+										obj.multitenantIP = response;
+									}
+									return cb(null, obj);
+								});
 							}
-						},
-						//Install gateway
-						(obj, cb) => {
-							let config = {
-								"profileSecret": obj.profileSecret,
-								"type": "bin"
-							};
-							driver.deploy.gateway(config, deployer, (error, response) => {
-								if (error) {
-									return cb(error, obj);
-								}
-								obj.gatewayIP = null;
-								if (response) {
-									obj.gatewayIP = response;
-								}
-								return cb(null, obj);
-							});
-						},
-						//Install nginx
-						(obj, cb) => {
-							let config = {
-								"type": "bin",
-								
-								"httpPort": options.nginx.httpPort,
-								"httpsPort": options.nginx.httpsPort,
-								
-								"domain": options.nginx.domain,
-								"sitePrefix": options.nginx.sitePrefix,
-								"apiPrefix": options.nginx.apiPrefix,
-								"deployType": options.nginx.deployType,
-								"sslSecret": options.nginx.sslSecret,
-								
-								"email": options.owner.email,
-								"extKey": obj.extKey,
-								
-								"gatewayIP": obj.gatewayIP
-							};
-							driver.deploy.nginx(config, deployer, (error, response) => {
-								if (error) {
-									return cb(error, obj);
-								}
-								obj.nginxIP = null;
-								if (response) {
-									obj.nginxIP = response;
-								}
-								return cb(null, obj);
-							});
-						},
-						//Install dashboard service
-						(obj, cb) => {
-							let config = {
-								"type": "bin",
-								"serviceName": "dashboard",
-								"gatewayIP": obj.gatewayIP
-							};
-							driver.deploy.service(config, deployer, (error, response) => {
-								if (error) {
-									return cb(error, obj);
-								}
-								obj.dashboardIP = null;
-								if (response) {
-									obj.dashboardIP = response;
-								}
-								return cb(null, obj);
-							});
-						},
-						//Install urac service
-						(obj, cb) => {
-							let config = {
-								"type": "bin",
-								"serviceName": "urac",
-								"gatewayIP": obj.gatewayIP
-							};
-							driver.deploy.service(config, deployer, (error, response) => {
-								if (error) {
-									return cb(error, obj);
-								}
-								obj.uracIP = null;
-								if (response) {
-									obj.uracIP = response;
-								}
-								return cb(null, obj);
-							});
-						},
-						//Install oauth service
-						(obj, cb) => {
-							let config = {
-								"type": "bin",
-								"serviceName": "oauth",
-								"gatewayIP": obj.gatewayIP
-							};
-							driver.deploy.service(config, deployer, (error, response) => {
-								if (error) {
-									return cb(error, obj);
-								}
-								obj.oauthIP = null;
-								if (response) {
-									obj.oauthIP = response;
-								}
-								return cb(null, obj);
-							});
-						},
-						//Install multitenant service
-						(obj, cb) => {
-							let config = {
-								"type": "bin",
-								"serviceName": "multitenant",
-								"gatewayIP": obj.gatewayIP
-							};
-							driver.deploy.service(config, deployer, (error, response) => {
-								if (error) {
-									return cb(error, obj);
-								}
-								obj.multitenantIP = null;
-								if (response) {
-									obj.multitenantIP = response;
-								}
-								return cb(null, obj);
-							});
-						}
-					], (error, obj) => {
-						console.log(error);
-						console.log(obj.mongoIP);
-						console.log(obj.gatewayIP);
-						console.log(obj.nginxIP);
-						console.log(obj.dashboardIP);
-						console.log(obj.uracIP);
-						console.log(obj.oauthIP);
-						console.log(obj.multitenantIP);
-						console.log(obj.extKey);
-						process.exit(0);
+						], (error, obj) => {
+							if (error) {
+								console.log(error.message);
+							}
+							console.log(obj.mongoIP);
+							console.log(obj.gatewayIP);
+							console.log(obj.nginxIP);
+							console.log(obj.dashboardIP);
+							console.log(obj.uracIP);
+							console.log(obj.oauthIP);
+							console.log(obj.multitenantIP);
+							console.log(obj.extKey);
+							process.exit(0);
+						});
 					});
 				});
-			});
-		} else {
-			return cb(new Error("Unable to find driver [" + options.driverName + "] in configuration"));
-		}
+			} else {
+				return cb(new Error("Unable to find driver [" + options.driverName + "] in configuration"));
+			}
+		});
 	}
 };
 
