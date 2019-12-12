@@ -310,6 +310,7 @@ let lib = {
 								let config = {
 									"profileSecret": obj.profileSecret,
 									"type": options.type,
+									"serviceVer": "1",
 									"repoVer": options.versions.services.gateway.ver
 								};
 								driver.deploy.gateway(config, deployer, (error, response) => {
@@ -358,6 +359,7 @@ let lib = {
 							(obj, cb) => {
 								let config = {
 									"type": options.type,
+									"serviceVer": "1",
 									"repoVer": options.versions.services.dashboard.ver,
 									"serviceName": "dashboard",
 									"gatewayIP": obj.gatewayIP
@@ -377,6 +379,7 @@ let lib = {
 							(obj, cb) => {
 								let config = {
 									"type": options.type,
+									"serviceVer": "3",
 									"repoVer": options.versions.services.urac.ver,
 									"serviceName": "urac",
 									"gatewayIP": obj.gatewayIP
@@ -396,6 +399,7 @@ let lib = {
 							(obj, cb) => {
 								let config = {
 									"type": options.type,
+									"serviceVer": "1",
 									"repoVer": options.versions.services.oauth.ver,
 									"serviceName": "oauth",
 									"gatewayIP": obj.gatewayIP
@@ -415,6 +419,7 @@ let lib = {
 							(obj, cb) => {
 								let config = {
 									"type": options.type,
+									"serviceVer": "1",
 									"repoVer": options.versions.services.multitenant.ver,
 									"serviceName": "multitenant",
 									"gatewayIP": obj.gatewayIP

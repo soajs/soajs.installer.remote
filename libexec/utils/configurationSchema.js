@@ -85,15 +85,12 @@ let schema = {
 				}
 			}
 		},
+		
 		"cleanDataBefore": {
 			"type": "boolean",
 			"required": true
 		},
-		"type": {
-			"type": "string",
-			"enum": ['bin'],
-			"required": false
-		},
+		
 		"driverName": {
 			"type": "string",
 			"enum": ['kubernetes'],
@@ -107,6 +104,7 @@ let schema = {
 			"type": "object",
 			"required": true
 		},
+		
 		"mongo": {
 			"type": "object",
 			"required": true,
@@ -245,6 +243,12 @@ let schema = {
 					"format": "email"
 				}
 			}
+		},
+		
+		"type": {
+			"type": "string",
+			"enum": ['bin', 'src'],
+			"required": false
 		}
 	}
 };

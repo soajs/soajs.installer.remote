@@ -157,7 +157,7 @@ let driver = {
 				let type = options.type;
 				let ver = options.repoVer;
 				let config = {
-					"label": gConfig.label.gateway,
+					"label": gConfig.label.gateway + options.serviceVer,
 					"catId": gConfig.catalog.gateway[type],
 					"image": gConfig.images.gateway[type] + ver
 				};
@@ -197,7 +197,7 @@ let driver = {
 			let service = options.serviceName;
 			let ver = options.repoVer;
 			let config = {
-				"label": gConfig.label[service],
+				"label": gConfig.label[service] + options.serviceVer,
 				"catId": gConfig.catalog[service][type],
 				"image": gConfig.images[service][type] + ver,
 				"registryAPI": options.gatewayIP + ":5000"

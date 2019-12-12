@@ -16,11 +16,13 @@ const lib = {
 	
 	"label": {
 		"mongo": "dashboard-soajsdata",
-		"gateway": "dashboard-controller-v1",
-		"dashboard": "dashboard-dashboard-v1",
-		"oauth": "dashboard-oauth-v1",
-		"urac": "dashboard-urac-v3",
-		"multitenant": "dashboard-multitenant-v1",
+		
+		"gateway": "dashboard-controller-v",
+		"dashboard": "dashboard-dashboard-v",
+		"oauth": "dashboard-oauth-v",
+		"urac": "dashboard-urac-v",
+		"multitenant": "dashboard-multitenant-v",
+		
 		"ui": "dashboard-nginx"
 	},
 	
