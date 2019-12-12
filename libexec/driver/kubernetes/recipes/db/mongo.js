@@ -103,6 +103,9 @@ module.exports = function (_config) {
 		"_label": _config.label,
 		"_mongoPort": _config.mongoPort,
 		"_labels": {
+			"service.image.ts": new Date().getTime().toString(),
+			"soajs.service.replicas": "1",
+			
 			"soajs.catalog.id": _config.catId,
 			"soajs.catalog.v": "1",
 			
@@ -112,6 +115,8 @@ module.exports = function (_config) {
 			"soajs.service.name": "soajsdata",
 			"soajs.service.group": "soajs-db",
 			"soajs.service.type": "cluster",
+			
+			"soajs.service.version": "1",
 			"soajs.service.subtype": "mongo",
 			"soajs.service.label": _config.label,
 			"soajs.service.mode": "deployment"

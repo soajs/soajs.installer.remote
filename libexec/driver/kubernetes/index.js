@@ -80,8 +80,7 @@ let driver = {
 						if (error) {
 							return cb(error);
 						}
-						let serviceName = gConfig.label.mongo;
-						lib.getServiceIPs(deployer, serviceName, 1, gConfig.namespace, (error, response) => {
+						lib.getServiceIPs(deployer, config.label, 1, gConfig.namespace, (error, response) => {
 							return cb(error, response);
 						});
 					});
@@ -133,8 +132,7 @@ let driver = {
 					if (error) {
 						return cb(error);
 					}
-					let serviceName = gConfig.label.gateway;
-					lib.getServiceIPs(deployer, serviceName, 1, gConfig.namespace, (error, response) => {
+					lib.getServiceIPs(deployer, config.label, 1, gConfig.namespace, (error, response) => {
 						return cb(error, response);
 					});
 				});
@@ -166,7 +164,6 @@ let driver = {
 					config.branch = "release/v" + ver;
 				}
 				let recipe = require("./recipes/" + type + "/gateway/controller.js")(config);
-				
 				lib.createService(deployer, recipe.service, gConfig.namespace, (error) => {
 					if (error) {
 						return cb(error);
@@ -175,8 +172,7 @@ let driver = {
 						if (error) {
 							return cb(error);
 						}
-						let serviceName = gConfig.label.gateway + options.serviceVer;
-						lib.getServiceIPs(deployer, serviceName, 1, gConfig.namespace, (error, response) => {
+						lib.getServiceIPs(deployer, config.label, 1, gConfig.namespace, (error, response) => {
 							return cb(error, response);
 						});
 					});
@@ -216,8 +212,7 @@ let driver = {
 					if (error) {
 						return cb(error);
 					}
-					let serviceName = gConfig.label[service] + options.serviceVer;
-					lib.getServiceIPs(deployer, serviceName, 1, gConfig.namespace, (error, response) => {
+					lib.getServiceIPs(deployer, config.label, 1, gConfig.namespace, (error, response) => {
 						return cb(error, response);
 					});
 				});

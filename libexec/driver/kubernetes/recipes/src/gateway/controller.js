@@ -155,16 +155,11 @@ module.exports = function (_config) {
 		"_image": _config.image,
 		"_branch": _config.branch,
 		"_labels": {
-			"service.image.name": "node",
-			"service.image.prefix": "soajsorg",
-			"service.image.tag": "3.x",
-			
 			"service.image.ts": new Date().getTime().toString(),
+			"soajs.service.replicas": "1",
 			
 			"soajs.catalog.id": _config.catId,
 			"soajs.catalog.v": "1",
-			
-			"soajs.service.replicas": "1",
 			
 			"soajs.content": "true",
 			"soajs.env.code": "dashboard",
@@ -176,7 +171,6 @@ module.exports = function (_config) {
 			"soajs.service.version": "1",
 			"soajs.service.label": _config.label,
 			"soajs.service.mode": "deployment",
-			"soajs.service.repo.name": "soajs_controller",
 			
 			"service.branch": _config.branch,
 			"service.owner": "soajs",

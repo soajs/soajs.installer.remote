@@ -175,6 +175,8 @@ module.exports = function (_config) {
 		"sslSecret": _config.sslSecret,
 		"gatewayIP": _config.gatewayIP,
 		"_labels": {
+			"service.image.ts": new Date().getTime().toString(),
+			
 			"soajs.catalog.id": _config.catId,
 			"soajs.catalog.v": "1",
 			
@@ -184,6 +186,8 @@ module.exports = function (_config) {
 			"soajs.service.name": "nginx",
 			"soajs.service.group": "soajs-nginx",
 			"soajs.service.type": "server",
+			
+			"soajs.service.version": "1",
 			"soajs.service.subtype": "nginx",
 			"soajs.service.label": _config.label,
 			"soajs.service.mode": "daemonset"

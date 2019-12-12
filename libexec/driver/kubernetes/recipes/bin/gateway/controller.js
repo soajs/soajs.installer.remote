@@ -132,15 +132,11 @@ module.exports = function (_config) {
 		"_label": _config.label,
 		"_image": _config.image,
 		"_labels": {
-			"service.image.name": "gateway",
-			"service.image.prefix": "soajsorg",
-			
 			"service.image.ts": new Date().getTime().toString(),
+			"soajs.service.replicas": "1",
 			
 			"soajs.catalog.id": _config.catId,
 			"soajs.catalog.v": "1",
-			
-			"soajs.service.replicas": "1",
 			
 			"soajs.content": "true",
 			"soajs.env.code": "dashboard",
@@ -151,8 +147,7 @@ module.exports = function (_config) {
 			
 			"soajs.service.version": "1",
 			"soajs.service.label": _config.label,
-			"soajs.service.mode": "deployment",
-			"soajs.service.repo.name": "soajs_controller"
+			"soajs.service.mode": "deployment"
 		}
 	};
 	return getrecipe(localConfig);

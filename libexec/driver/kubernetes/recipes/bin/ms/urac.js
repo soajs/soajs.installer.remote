@@ -122,15 +122,11 @@ module.exports = function (_config) {
 		"_image": _config.image,
 		"registryAPI": _config.registryAPI,
 		"_labels": {
-			"service.image.name": "urac",
-			"service.image.prefix": "soajsorg",
-			
 			"service.image.ts": new Date().getTime().toString(),
+			"soajs.service.replicas": "1",
 			
 			"soajs.catalog.id": _config.catId,
 			"soajs.catalog.v": "1",
-			
-			"soajs.service.replicas": "1",
 			
 			"soajs.content": "true",
 			"soajs.env.code": "dashboard",
@@ -141,8 +137,7 @@ module.exports = function (_config) {
 			
 			"soajs.service.version": "3",
 			"soajs.service.label": _config.label,
-			"soajs.service.mode": "deployment",
-			"soajs.service.repo.name": "soajs_urac"
+			"soajs.service.mode": "deployment"
 		}
 	};
 	return getrecipe(localConfig);
