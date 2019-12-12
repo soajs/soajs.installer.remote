@@ -15,7 +15,84 @@ let addUserSchema = {
 	"properties": {
 		"versions": {
 			"type": "object",
+			"required": true,
+			"properties": {
+				"services": {
+					"type": "object",
+					"required": true,
+					"properties": {
+						"gateway": {
+							"type": "object",
+							"required": true,
+							"properties": {
+								"ver": {
+									"type": "string",
+									"required": true
+								}
+							}
+						},
+						"urac": {
+							"type": "object",
+							"required": true,
+							"properties": {
+								"ver": {
+									"type": "string",
+									"required": true
+								}
+							}
+						},
+						"oauth": {
+							"type": "object",
+							"required": true,
+							"properties": {
+								"ver": {
+									"type": "string",
+									"required": true
+								}
+							}
+						},
+						"multitenant": {
+							"type": "object",
+							"required": true,
+							"properties": {
+								"ver": {
+									"type": "string",
+									"required": true
+								}
+							}
+						},
+						"dashboard": {
+							"type": "object",
+							"required": true,
+							"properties": {
+								"ver": {
+									"type": "string",
+									"required": true
+								}
+							}
+						},
+						"ui": {
+							"type": "object",
+							"required": true,
+							"properties": {
+								"ver": {
+									"type": "string",
+									"required": true
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"cleanDataBefore": {
+			"type": "boolean",
 			"required": true
+		},
+		"type": {
+			"type": "string",
+			"enum": ['bin'],
+			"required": false
 		},
 		"driverName": {
 			"type": "string",

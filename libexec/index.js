@@ -10,13 +10,16 @@
 
 const soajs = require('soajs');
 const randomString = require("randomstring");
-const utilLog = require('util');
+
+//set the logger
+const logger = require("./utils/utils.js").getLogger();
+
 const drivers = {
 	"kubernetes": require("./driver/kubernetes/index.js")
 };
 const uuidv4 = require('uuid/v4');
 const async = require('async');
-const configurationSchema = require("./driver/configurationSchema");
+const configurationSchema = require("./utils/configurationSchema");
 
 
 function generateKey(opts, cb) {
@@ -129,7 +132,7 @@ function importData(options, data, profileImport, cb) {
 		"tenants": tenants,
 		"users": users
 	};
-	options.importer.runProfile(profileImport, options.dataPath, true, templates, (error, msg) => {
+	options.importer.runProfile(profileImport, options.dataPath, options.cleanDataBefore, templates, (error, msg) => {
 		return cb(error, msg);
 	});
 }
@@ -141,12 +144,15 @@ function validateOptions(options, cb) {
 		
 		let check = validator.validate(options, configurationSchema);
 		if (check && check.errors && Array.isArray(check.errors) && check.errors.length > 0) {
-			utilLog.log("Configuration schema errors: ");
+			logger.error("Configuration schema errors: ");
 			for (let i = 0; i < check.errors.length; i++) {
-				utilLog.log("\t" + check.errors[i].property + ": " + check.errors[i].message);
+				logger.error("\t" + check.errors[i].property + ": " + check.errors[i].message);
 			}
 		}
 		if (check.valid) {
+			if (!options.tyoe) {
+				options.type = "bin";
+			}
 			return cb(null);
 		}
 		return cb(new Error("The provided configuration is not healthy"));
@@ -203,7 +209,7 @@ let lib = {
 	"install": (options, cb) => {
 		validateOptions(options, (error) => {
 			if (error) {
-				utilLog.log(error.message);
+				logger.error(error.message);
 				return cb(new Error("Unable continue, please provide valid configuration!"));
 			}
 			if (drivers[options.driverName]) {
@@ -229,7 +235,7 @@ let lib = {
 							//Install mongo
 							(obj, cb) => {
 								if (options.mongo.external) {
-									utilLog.log('External Mongo deployment detected, data containers will not be deployed ...');
+									logger.info('External Mongo deployment detected, data containers will not be deployed ...');
 									return cb(null, obj);
 								} else {
 									let config = {
@@ -270,7 +276,7 @@ let lib = {
 									profileSecret = JSON.parse(JSON.stringify(profileImport));
 								}
 								if (profileImport && profileImport.servers && Array.isArray(profileImport.servers) && profileImport.servers[0] && profileImport.servers[0].host) {
-									utilLog.log("Importing data this might take some time ... ");
+									logger.info("Importing data this might take some time ... ");
 									setTimeout(() => {
 										let guestTenant = require(options.dataPath + "tenants/guest.js");
 										let opts = {
@@ -289,7 +295,7 @@ let lib = {
 												"keyPassword": opts.secret,
 												"profileSecret": profileSecret
 											}, profileImport, (error, msg) => {
-												utilLog.log(msg);
+												logger.debug(msg);
 												obj.profileSecret = profileSecret;
 												return cb(null, obj);
 											});
@@ -303,7 +309,8 @@ let lib = {
 							(obj, cb) => {
 								let config = {
 									"profileSecret": obj.profileSecret,
-									"type": "bin"
+									"type": options.type,
+									"imageVer": options.versions.services.gateway.ver
 								};
 								driver.deploy.gateway(config, deployer, (error, response) => {
 									if (error) {
@@ -319,7 +326,8 @@ let lib = {
 							//Install nginx
 							(obj, cb) => {
 								let config = {
-									"type": "bin",
+									"type": options.type,
+									"imageVer": options.versions.services.ui.ver,
 									
 									"httpPort": options.nginx.httpPort,
 									"httpsPort": options.nginx.httpsPort,
@@ -349,7 +357,8 @@ let lib = {
 							//Install dashboard service
 							(obj, cb) => {
 								let config = {
-									"type": "bin",
+									"type": options.type,
+									"imageVer": options.versions.services.dashboard.ver,
 									"serviceName": "dashboard",
 									"gatewayIP": obj.gatewayIP
 								};
@@ -367,7 +376,8 @@ let lib = {
 							//Install urac service
 							(obj, cb) => {
 								let config = {
-									"type": "bin",
+									"type": options.type,
+									"imageVer": options.versions.services.urac.ver,
 									"serviceName": "urac",
 									"gatewayIP": obj.gatewayIP
 								};
@@ -385,7 +395,8 @@ let lib = {
 							//Install oauth service
 							(obj, cb) => {
 								let config = {
-									"type": "bin",
+									"type": options.type,
+									"imageVer": options.versions.services.oauth.ver,
 									"serviceName": "oauth",
 									"gatewayIP": obj.gatewayIP
 								};
@@ -403,7 +414,8 @@ let lib = {
 							//Install multitenant service
 							(obj, cb) => {
 								let config = {
-									"type": "bin",
+									"type": options.type,
+									"imageVer": options.versions.services.multitenant.ver,
 									"serviceName": "multitenant",
 									"gatewayIP": obj.gatewayIP
 								};
@@ -419,18 +431,19 @@ let lib = {
 								});
 							}
 						], (error, obj) => {
-							if (error) {
-								console.log(error.message);
+							logger.debug("The extKey: " + obj.extKey);
+							logger.debug("The Services IPS:");
+							if (!options.mongo.external) {
+								logger.debug("\tMongo: " + obj.mongoIP);
 							}
-							console.log(obj.mongoIP);
-							console.log(obj.gatewayIP);
-							console.log(obj.nginxIP);
-							console.log(obj.dashboardIP);
-							console.log(obj.uracIP);
-							console.log(obj.oauthIP);
-							console.log(obj.multitenantIP);
-							console.log(obj.extKey);
-							process.exit(0);
+							logger.debug("\tGateway: " + obj.gatewayIP);
+							logger.debug("\tNginx: " + obj.nginxIP);
+							logger.debug("\tDashboard: " + obj.dashboardIP);
+							logger.debug("\tURAC: " + obj.uracIP);
+							logger.debug("\toAuth: " + obj.oauthIP);
+							logger.debug("\tMultitenant: " + obj.multitenantIP);
+							
+							return cb(error);
 						});
 					});
 				});
@@ -443,7 +456,7 @@ let lib = {
 	"migrate": (options, strategy, cb) => {
 		validateOptions(options, (error) => {
 			if (error) {
-				utilLog.log(error.message);
+				logger.error(error.message);
 				return cb(new Error("Unable continue, please provide valid configuration!"));
 			}
 			let profileImport = null;

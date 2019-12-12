@@ -10,8 +10,9 @@
 
 const async = require('async');
 const wrapper = require('./wrapper.js');
-const utilLog = require('util');
 
+//set the logger
+const logger = require("../../utils/utils.js").getLogger();
 
 let lib = {
 	"printProgress": (message, counter) => {
@@ -47,10 +48,10 @@ let lib = {
 				return callback(null, oneNamespace.metadata.name === namespace);
 			}, (error, foundNamespace) => {
 				if (foundNamespace) {
-					utilLog.log('Reusing existing namespace: ' + foundNamespace.metadata.name + ' ...');
+					logger.info('Reusing existing namespace: ' + foundNamespace.metadata.name + ' ...');
 					return cb(null, true);
 				}
-				utilLog.log('Creating a new namespace: ' + namespace + ' ...');
+				logger.info('Creating a new namespace: ' + namespace + ' ...');
 				let recipe = {
 					kind: 'Namespace',
 					apiVersion: 'v1',
@@ -116,7 +117,6 @@ let lib = {
 					return lib.getServiceIPs(deployer, serviceName, replicaCount, namespace, counter, cb);
 				}, 1000);
 			} else {
-				utilLog.log(""); //intentional, to force writting a new line.
 				wrapper.service.get(deployer, {
 					namespace: namespace,
 					name: serviceName + "-service"

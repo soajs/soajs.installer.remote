@@ -91,16 +91,18 @@ let driver = {
 		 * @param options Object
 		 * {
 		 *     type: "bin",
+		 *     imageVer: "2.x"
 		 *     ...
 		 * }
 		 *
 		 */
 		"nginx": (options, deployer, cb) => {
 			let type = options.type;
+			let ver = options.imageVer;
 			let config = {
 				"label": gConfig.label.ui,
 				"catId": gConfig.catalog.ui,
-				"image": gConfig.images.ui[type],
+				"image": gConfig.images.ui[type] + ver,
 				
 				"httpPort": options.httpPort,
 				"httpsPort": options.httpsPort,
@@ -137,6 +139,7 @@ let driver = {
 		 * {
 		 *     secretProfile : {},
 		 *     type: "bin"
+		 *     imageVer: "2.x"
 		 * }
 		 *
 		 */
@@ -146,10 +149,11 @@ let driver = {
 					return cb(error);
 				}
 				let type = options.type;
+				let ver = options.imageVer;
 				let config = {
 					"label": gConfig.label.gateway,
 					"catId": gConfig.catalog.gateway[type],
-					"image": gConfig.images.gateway[type]
+					"image": gConfig.images.gateway[type] + ver
 				};
 				let recipe = require("./recipes/" + type + "/gateway/controller.js")(config);
 				
@@ -173,6 +177,7 @@ let driver = {
 		 * @param options Object
 		 * {
 		 *      type: "bin"
+		 *      imageVer: "2.x"
 		 *      gatewayIP:
 		 * }
 		 *
@@ -180,10 +185,11 @@ let driver = {
 		"service": (options, deployer, cb) => {
 			let type = options.type;
 			let service = options.serviceName;
+			let ver = options.imageVer;
 			let config = {
 				"label": gConfig.label[service],
 				"catId": gConfig.catalog[service][type],
-				"image": gConfig.images[service][type],
+				"image": gConfig.images[service][type] + ver,
 				"registryAPI": options.gatewayIP + ":5000"
 			};
 			let recipe = require("./recipes/" + type + "/ms/" + service + ".js")(config);

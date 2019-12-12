@@ -50,12 +50,12 @@ const lib = {
 	},
 	
 	"images": {
-		"gateway": {"src": "soajsorg/node:3.x", "bin": "soajsorg/gateway:3.x"},
-		"urac": {"src": "soajsorg/node:3.x", "bin": "soajsorg/urac:3.x"},
-		"oauth": {"src": "soajsorg/node:3.x", "bin": "soajsorg/oauth:2.x"},
-		"dashboard": {"src": "soajsorg/node:3.x", "bin": "soajsorg/dashboard:2.x"},
-		"multitenant": {"src": "soajsorg/node:3.x", "bin": "soajsorg/multitenant:1.x"},
-		"ui": {"src": "soajsorg/fe:3.x", "bin": "soajsorg/consoleui:2.x"}
+		"gateway": {"src": "soajsorg/node:3.x", "bin": "soajsorg/gateway:"},
+		"urac": {"src": "soajsorg/node:3.x", "bin": "soajsorg/urac:"},
+		"oauth": {"src": "soajsorg/node:3.x", "bin": "soajsorg/oauth:"},
+		"dashboard": {"src": "soajsorg/node:3.x", "bin": "soajsorg/dashboard:"},
+		"multitenant": {"src": "soajsorg/node:3.x", "bin": "soajsorg/multitenant:"},
+		"ui": {"src": "soajsorg/fe:3.x", "bin": "soajsorg/consoleui:"}
 	},
 };
 
