@@ -91,14 +91,14 @@ let driver = {
 		 * @param options Object
 		 * {
 		 *     type: "bin",
-		 *     imageVer: "2.x"
+		 *     serviceVer: "2.x"
 		 *     ...
 		 * }
 		 *
 		 */
 		"nginx": (options, deployer, cb) => {
 			let type = options.type;
-			let ver = options.imageVer;
+			let ver = options.serviceVer;
 			let config = {
 				"label": gConfig.label.ui,
 				"catId": gConfig.catalog.ui,
@@ -118,6 +118,10 @@ let driver = {
 				"sslSecret": options.sslSecret,
 				"gatewayIP": options.gatewayIP
 			};
+			if (type === "src") {
+				config.image = gConfig.images.ui[type];
+				config.branch = "release/v" + ver;
+			}
 			let recipe = require("./recipes/" + type + "/nginx/nginx.js")(config);
 			lib.createService(deployer, recipe.service, gConfig.namespace, (error) => {
 				if (error) {
@@ -139,7 +143,7 @@ let driver = {
 		 * {
 		 *     secretProfile : {},
 		 *     type: "bin"
-		 *     imageVer: "2.x"
+		 *     serviceVer: "2.x"
 		 * }
 		 *
 		 */
@@ -149,12 +153,16 @@ let driver = {
 					return cb(error);
 				}
 				let type = options.type;
-				let ver = options.imageVer;
+				let ver = options.serviceVer;
 				let config = {
 					"label": gConfig.label.gateway,
 					"catId": gConfig.catalog.gateway[type],
 					"image": gConfig.images.gateway[type] + ver
 				};
+				if (type === "src") {
+					config.image = gConfig.images.gateway[type];
+					config.branch = "release/v" + ver;
+				}
 				let recipe = require("./recipes/" + type + "/gateway/controller.js")(config);
 				
 				lib.createService(deployer, recipe.service, gConfig.namespace, (error) => {
@@ -177,7 +185,7 @@ let driver = {
 		 * @param options Object
 		 * {
 		 *      type: "bin"
-		 *      imageVer: "2.x"
+		 *      serviceVer: "2.x"
 		 *      gatewayIP:
 		 * }
 		 *
@@ -185,7 +193,7 @@ let driver = {
 		"service": (options, deployer, cb) => {
 			let type = options.type;
 			let service = options.serviceName;
-			let ver = options.imageVer;
+			let ver = options.serviceVer;
 			let config = {
 				"label": gConfig.label[service],
 				"catId": gConfig.catalog[service][type],

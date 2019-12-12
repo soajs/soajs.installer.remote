@@ -150,7 +150,7 @@ function validateOptions(options, cb) {
 			}
 		}
 		if (check.valid) {
-			if (!options.tyoe) {
+			if (!options.type) {
 				options.type = "bin";
 			}
 			return cb(null);
@@ -310,7 +310,7 @@ let lib = {
 								let config = {
 									"profileSecret": obj.profileSecret,
 									"type": options.type,
-									"imageVer": options.versions.services.gateway.ver
+									"serviceVer": options.versions.services.gateway.ver
 								};
 								driver.deploy.gateway(config, deployer, (error, response) => {
 									if (error) {
@@ -327,7 +327,7 @@ let lib = {
 							(obj, cb) => {
 								let config = {
 									"type": options.type,
-									"imageVer": options.versions.services.ui.ver,
+									"serviceVer": options.versions.services.ui.ver,
 									
 									"httpPort": options.nginx.httpPort,
 									"httpsPort": options.nginx.httpsPort,
@@ -358,7 +358,7 @@ let lib = {
 							(obj, cb) => {
 								let config = {
 									"type": options.type,
-									"imageVer": options.versions.services.dashboard.ver,
+									"serviceVer": options.versions.services.dashboard.ver,
 									"serviceName": "dashboard",
 									"gatewayIP": obj.gatewayIP
 								};
@@ -377,7 +377,7 @@ let lib = {
 							(obj, cb) => {
 								let config = {
 									"type": options.type,
-									"imageVer": options.versions.services.urac.ver,
+									"serviceVer": options.versions.services.urac.ver,
 									"serviceName": "urac",
 									"gatewayIP": obj.gatewayIP
 								};
@@ -396,7 +396,7 @@ let lib = {
 							(obj, cb) => {
 								let config = {
 									"type": options.type,
-									"imageVer": options.versions.services.oauth.ver,
+									"serviceVer": options.versions.services.oauth.ver,
 									"serviceName": "oauth",
 									"gatewayIP": obj.gatewayIP
 								};
@@ -415,7 +415,7 @@ let lib = {
 							(obj, cb) => {
 								let config = {
 									"type": options.type,
-									"imageVer": options.versions.services.multitenant.ver,
+									"serviceVer": options.versions.services.multitenant.ver,
 									"serviceName": "multitenant",
 									"gatewayIP": obj.gatewayIP
 								};

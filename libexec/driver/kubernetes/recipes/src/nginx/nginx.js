@@ -9,6 +9,8 @@
  */
 function getrecipe(localConfig) {
 	let components = {
+		
+		
 		service: {
 			"apiVersion": "v1",
 			"kind": "Service",
@@ -123,6 +125,28 @@ function getrecipe(localConfig) {
 										"name": "SOAJS_NX_CONTROLLER_PORT",
 										"value": "4000"
 									},
+									
+									{
+										"name": "SOAJS_GIT_OWNER",
+										"value": "soajs"
+									},
+									{
+										"name": "SOAJS_GIT_BRANCH",
+										"value": localConfig._branch
+									},
+									{
+										"name": "SOAJS_GIT_REPO",
+										"value": "soajs.dashboard.ui"
+									},
+									{
+										"name": "SOAJS_GIT_PROVIDER",
+										"value": "github"
+									},
+									{
+										"name": "SOAJS_GIT_DOMAIN",
+										"value": "github.com"
+									},
+									
 									{
 										"name": "SOAJS_SSL_SECRET",
 										"value": 'true'
@@ -185,7 +209,11 @@ module.exports = function (_config) {
 			"soajs.service.type": "server",
 			"soajs.service.subtype": "nginx",
 			"soajs.service.label": _config.label,
-			"soajs.service.mode": "daemonset"
+			"soajs.service.mode": "daemonset",
+			"soajs.service.repo.name": "dashboard.ui",
+			"service.branch": _config.branch,
+			"service.owner": "soajs",
+			"service.repo": "soajs.dashboard.ui"
 		}
 	};
 	return getrecipe(localConfig);

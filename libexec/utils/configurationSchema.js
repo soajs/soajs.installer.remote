@@ -8,7 +8,7 @@
 
 "use strict";
 
-let addUserSchema = {
+let schema = {
 	"type": "object",
 	"required": true,
 	"additionalProperties": false,
@@ -249,4 +249,4 @@ let addUserSchema = {
 	}
 };
 
-module.exports = addUserSchema;
+module.exports = schema;
