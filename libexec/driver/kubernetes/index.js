@@ -175,7 +175,7 @@ let driver = {
 						if (error) {
 							return cb(error);
 						}
-						let serviceName = gConfig.label.gateway;
+						let serviceName = gConfig.label.gateway + options.serviceVer;
 						lib.getServiceIPs(deployer, serviceName, 1, gConfig.namespace, (error, response) => {
 							return cb(error, response);
 						});
@@ -216,7 +216,7 @@ let driver = {
 					if (error) {
 						return cb(error);
 					}
-					let serviceName = gConfig.label[service];
+					let serviceName = gConfig.label[service] + options.serviceVer;
 					lib.getServiceIPs(deployer, serviceName, 1, gConfig.namespace, (error, response) => {
 						return cb(error, response);
 					});
