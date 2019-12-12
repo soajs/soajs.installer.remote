@@ -76,7 +76,7 @@ function getrecipe(localConfig) {
 								"imagePullPolicy": "Always",
 								"workingDir": "/opt/soajs/soajs.deployer/deployer/",
 								"command": ["bash"],
-								"args": ["-c", "node index.js -T nginx -S install && /opt/soajs/soajs.deployer/deployer/bin/nginx.sh"],
+								"args": ["-c", "node index.js -T nginx -S deploy &&  node index.js -T nginx -S install && /opt/soajs/soajs.deployer/deployer/bin/nginx.sh"],
 								"ports": [
 									{
 										"name": "http",
@@ -191,6 +191,7 @@ module.exports = function (_config) {
 	let localConfig = {
 		"_label": _config.label,
 		"_image": _config.image,
+		"_branch": _config.branch,
 		"_httpPort": _config.httpPort,
 		"_httpsPort": _config.httpsPort,
 		"domain": _config.domain,
