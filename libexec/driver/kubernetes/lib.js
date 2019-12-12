@@ -102,10 +102,18 @@ let lib = {
 			if (podList && podList.items && Array.isArray(podList.items)) {
 				podList.items.forEach((onePod) => {
 					if (onePod.status.phase === 'Running' && onePod.metadata.namespace === namespace) {
-						ips.push({
-							name: onePod.metadata.name,
-							ip: onePod.status.podIP
-						});
+						//check if pod is ready
+						if (onePod.status.conditions && Array.isArray(onePod.status.conditions)) {
+							for (let i = 0; i < onePod.status.conditions.length; i++) {
+								let oneCond = onePod.status.conditions[i];
+								if (oneCond.type === 'Ready' && oneCond.status === 'True') {
+									ips.push({
+										name: onePod.metadata.name,
+										ip: onePod.status.podIP
+									});
+								}
+							}
+						}
 					}
 				});
 			}

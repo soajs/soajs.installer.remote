@@ -14,7 +14,7 @@ let lib = {
 		if (!label) {
 			return '';
 		}
-		return label.replace(/\//g, "__");
+		return label.replace(/\//g, "__slash__");
 	}
 };
 module.exports = lib;
