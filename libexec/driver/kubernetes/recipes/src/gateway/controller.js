@@ -7,6 +7,9 @@
  * Use of this source code is governed by an Apache license that can be
  * found in the LICENSE file at the root of this repository
  */
+
+const lib = require('../../lib');
+
 function getrecipe(localConfig) {
 	return {
 		
@@ -172,7 +175,7 @@ module.exports = function (_config) {
 			"soajs.service.label": _config.label,
 			"soajs.service.mode": "deployment",
 			
-			"service.branch": _config.branch,
+			"service.branch": lib.cleanLabel(_config.branch),
 			"service.owner": "soajs",
 			"service.repo": "soajs.controller"
 		}
