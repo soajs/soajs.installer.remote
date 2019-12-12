@@ -128,9 +128,12 @@ module.exports = function (_config) {
 		"_labels": {
 			"service.image.name": "multitenant",
 			"service.image.prefix": "soajsorg",
+			
 			"service.image.ts": new Date().getTime().toString(),
+			
 			"soajs.catalog.id": _config.catId,
 			"soajs.catalog.v": "1",
+			
 			"soajs.service.replicas": "1",
 			
 			"soajs.content": "true",

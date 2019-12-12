@@ -67,6 +67,7 @@ let driver = {
 				"mongoPort": options.port || gConfig.mongo.port
 			};
 			let recipe = require("./recipes/db/mongo.js")(config);
+			
 			lib.checkNamespace(deployer, gConfig.namespace, (error) => {
 				if (error) {
 					return cb(error);
@@ -91,14 +92,14 @@ let driver = {
 		 * @param options Object
 		 * {
 		 *     type: "bin",
-		 *     serviceVer: "2.x"
+		 *     repoVer: "2.x"
 		 *     ...
 		 * }
 		 *
 		 */
 		"nginx": (options, deployer, cb) => {
 			let type = options.type;
-			let ver = options.serviceVer;
+			let ver = options.repoVer;
 			let config = {
 				"label": gConfig.label.ui,
 				"catId": gConfig.catalog.ui,
@@ -123,6 +124,7 @@ let driver = {
 				config.branch = "release/v" + ver;
 			}
 			let recipe = require("./recipes/" + type + "/nginx/nginx.js")(config);
+			
 			lib.createService(deployer, recipe.service, gConfig.namespace, (error) => {
 				if (error) {
 					return cb(error);
@@ -143,7 +145,7 @@ let driver = {
 		 * {
 		 *     secretProfile : {},
 		 *     type: "bin"
-		 *     serviceVer: "2.x"
+		 *     repoVer: "2.x"
 		 * }
 		 *
 		 */
@@ -153,7 +155,7 @@ let driver = {
 					return cb(error);
 				}
 				let type = options.type;
-				let ver = options.serviceVer;
+				let ver = options.repoVer;
 				let config = {
 					"label": gConfig.label.gateway,
 					"catId": gConfig.catalog.gateway[type],
@@ -185,7 +187,7 @@ let driver = {
 		 * @param options Object
 		 * {
 		 *      type: "bin"
-		 *      serviceVer: "2.x"
+		 *      repoVer: "2.x"
 		 *      gatewayIP:
 		 * }
 		 *
@@ -193,14 +195,19 @@ let driver = {
 		"service": (options, deployer, cb) => {
 			let type = options.type;
 			let service = options.serviceName;
-			let ver = options.serviceVer;
+			let ver = options.repoVer;
 			let config = {
 				"label": gConfig.label[service],
 				"catId": gConfig.catalog[service][type],
 				"image": gConfig.images[service][type] + ver,
 				"registryAPI": options.gatewayIP + ":5000"
 			};
+			if (type === "src") {
+				config.image = gConfig.images[service][type];
+				config.branch = "release/v" + ver;
+			}
 			let recipe = require("./recipes/" + type + "/ms/" + service + ".js")(config);
+			
 			lib.createService(deployer, recipe.service, gConfig.namespace, (error) => {
 				if (error) {
 					return cb(error);

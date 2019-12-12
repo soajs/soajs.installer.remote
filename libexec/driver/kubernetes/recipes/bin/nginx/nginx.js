@@ -177,6 +177,7 @@ module.exports = function (_config) {
 		"_labels": {
 			"soajs.catalog.id": _config.catId,
 			"soajs.catalog.v": "1",
+			
 			"soajs.content": "true",
 			"soajs.resource.id": "5dea66c595ce3e00cc61eed3",
 			"soajs.env.code": "dashboard",

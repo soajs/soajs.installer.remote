@@ -25,14 +25,14 @@ function getrecipe(localConfig) {
 					{
 						"name": "service-port",
 						"protocol": "TCP",
-						"port": 4003,
-						"targetPort": 4003
+						"port": 4001,
+						"targetPort": 4001
 					},
 					{
 						"name": "maintenance-port",
 						"protocol": "TCP",
-						"port": 5003,
-						"targetPort": 5003
+						"port": 5001,
+						"targetPort": 5001
 					}
 				]
 			}
@@ -63,17 +63,17 @@ function getrecipe(localConfig) {
 								"name": localConfig._label,
 								"image": localConfig._image,
 								"imagePullPolicy": "Always",
-								"workingDir": "/opt/soajs/soajs.dashboard/",
+								"workingDir": "/opt/soajs/soajs.deployer/deployer/",
 								"command": ["bash"],
-								"args": ["-c", "node ."],
+								"args": ["-c", "node . -T nodejs -S deploy && node . -T nodejs -S install && node . -T nodejs -S run"],
 								"ports": [
 									{
 										"name": "service",
-										"containerPort": 4003
+										"containerPort": 4001
 									},
 									{
 										"name": "maintenance",
-										"containerPort": 5003
+										"containerPort": 5001
 									}
 								],
 								"readinessProbe": {
@@ -93,6 +93,10 @@ function getrecipe(localConfig) {
 										"value": "dashboard"
 									},
 									{
+										"name": "SOAJS_PROFILE",
+										"value": "/opt/soajs/profile/soajsprofile"
+									},
+									{
 										"name": "SOAJS_DEPLOY_HA",
 										"value": "kubernetes"
 									},
@@ -103,6 +107,27 @@ function getrecipe(localConfig) {
 									{
 										"name": "SOAJS_REGISTRY_API",
 										"value": localConfig.registryAPI
+									},
+									
+									{
+										"name": "SOAJS_GIT_OWNER",
+										"value": "soajs"
+									},
+									{
+										"name": "SOAJS_GIT_BRANCH",
+										"value": localConfig._branch
+									},
+									{
+										"name": "SOAJS_GIT_REPO",
+										"value": "soajs.urac"
+									},
+									{
+										"name": "SOAJS_GIT_PROVIDER",
+										"value": "github"
+									},
+									{
+										"name": "SOAJS_GIT_DOMAIN",
+										"value": "github.com"
 									}
 								],
 								"volumeMounts": []
@@ -120,12 +145,15 @@ module.exports = function (_config) {
 	let localConfig = {
 		"_label": _config.label,
 		"_image": _config.image,
+		"_branch": _config.branch,
 		"registryAPI": _config.registryAPI,
 		"_labels": {
-			"service.image.name": "dashboard",
+			"service.image.name": "node",
 			"service.image.prefix": "soajsorg",
+			"service.image.tag": "3.x",
 			
 			"service.image.ts": new Date().getTime().toString(),
+			
 			"soajs.catalog.id": _config.catId,
 			"soajs.catalog.v": "1",
 			
@@ -133,15 +161,19 @@ module.exports = function (_config) {
 			
 			"soajs.content": "true",
 			"soajs.env.code": "dashboard",
-			"soajs.service.name": "dashboard",
+			"soajs.service.name": "urac",
 			"soajs.service.group": "soajs-core-services",
 			"soajs.service.type": "service",
 			"soajs.service.subtype": "soajs",
 			
-			"soajs.service.version": "1",
+			"soajs.service.version": "3",
 			"soajs.service.label": _config.label,
 			"soajs.service.mode": "deployment",
-			"soajs.service.repo.name": "soajs_dashboard"
+			"soajs.service.repo.name": "soajs_urac",
+			
+			"service.branch": _config.branch,
+			"service.owner": "soajs",
+			"service.repo": "soajs.urac"
 		}
 	};
 	return getrecipe(localConfig);
