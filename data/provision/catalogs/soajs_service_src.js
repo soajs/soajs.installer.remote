@@ -1,7 +1,7 @@
 'use strict';
 
 let doc = {
-	"_id": "5bed929029f0041bf64bf991",
+	"_id": "5df3ec10fa3912534948f007",
 	"name": "SOAJS service from src",
 	"type": "service",
 	"subtype": "soajs",

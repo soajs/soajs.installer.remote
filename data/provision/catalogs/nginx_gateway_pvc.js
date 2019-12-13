@@ -1,7 +1,7 @@
 'use strict';
 
 let doc = {
-	"_id": "5bed929029f0041bf64bf995",
+	"_id": "5df3ec10fa3912534948f009",
 	"name": "Nginx and gateway with automated ssl as pvc",
 	"type": "server",
 	"subtype": "nginx",

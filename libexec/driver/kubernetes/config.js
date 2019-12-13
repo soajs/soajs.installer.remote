@@ -28,30 +28,30 @@ const lib = {
 	
 	"catalog": {
 		"gateway": {
-			"bin": "5db9f7ccc6b8c459cdb3c34b",
-			"src": "5df0554dbe70f13a183a9c74"
+			"bin": "5df3ec10fa3912534948f000",
+			"src": "5df3ec10fa3912534948f001"
 		},
 		"urac": {
-			"bin": "5dc1f66fc6b8c459cdb3c3ac",
-			"src": "5bed929029f0041bf64bf991"
+			"bin": "5df3ec10fa3912534948f008",
+			"src": "5df3ec10fa3912534948f007"
 		},
 		"oauth": {
-			"bin": "5dc1f6dac6b8c459cdb3c3ad",
-			"src": "5bed929029f0041bf64bf991"
+			"bin": "5df3ec10fa3912534948f006",
+			"src": "5df3ec10fa3912534948f007"
 		},
 		"dashboard": {
-			"bin": "5dc5a8869253d2193d55552b",
-			"src": "5bed929029f0041bf64bf991"
+			"bin": "5df3ec10fa3912534948efff",
+			"src": "5df3ec10fa3912534948f007"
 		},
 		"multitenant": {
-			"bin": "5dc96a639253d2193d55553d",
-			"src": "5bed929029f0041bf64bf991"
+			"bin": "5df3ec10fa3912534948f004",
+			"src": "5df3ec10fa3912534948f007"
 		},
 		"ui": {
 			"bin": "5dea9e59be70f13a183a9c70",
-			"src": "5bfd792ab72d8f49eaefe229"
+			"src": "5df3ec10fa3912534948f00f"
 		},
-		"mongo": "5dead79e52e7046c7c0a4d53"
+		"mongo": "5df3ec10fa3912534948f003"
 	},
 	
 	"images": {

@@ -1,7 +1,7 @@
 'use strict';
 
 let doc = {
-	"_id": "5dead79e52e7046c7c0a4d53",
+	"_id": "5df3ec10fa3912534948f003",
 	"name": "Mongo DB",
 	"type": "cluster",
 	"subtype": "mongo",

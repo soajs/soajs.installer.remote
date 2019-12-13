@@ -1,7 +1,7 @@
 'use strict';
 
 let doc = {
-	"_id": "5bfd792ab72d8f49eaefe229",
+	"_id": "5df3ec10fa3912534948f00f",
 	"name": "SOAJS Console from src with manual ssl as secret",
 	"type": "server",
 	"subtype": "nginx",

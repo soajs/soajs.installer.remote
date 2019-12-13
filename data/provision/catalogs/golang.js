@@ -1,7 +1,7 @@
 'use strict';
 
 let doc = {
-	"_id": "5d94f89d56b473415dc1fcf9",
+	"_id": "5df3ec10fa3912534948f002",
 	"name": "GoLang",
 	"type": "service",
 	"subtype": "golang",
