@@ -1,12 +1,13 @@
 'use strict';
 
 let doc = {
-	"_id": "5dc96a639253d2193d55553d",
-	"name": "Multitenant",
+	"_id": "5db9f7ccc6b8c459cdb3c34b",
+	"name": "SOAJS Gateway from bin",
 	"type": "service",
 	"subtype": "soajs",
 	"soajs": true,
-	"description": "This recipe allows you to deploy a SOAJS Multitenant",
+	"locked" : true,
+	"description": "Deploy SOAJS Gateway from binary with soajsprofile as secret",
 	"restriction": {
 		"deployment": [
 			"container"
@@ -16,11 +17,11 @@ let doc = {
 		"deployOptions": {
 			"image": {
 				"prefix": "soajsorg",
-				"name": "multitenant",
-				"tag": "1.x",
+				"name": "gateway",
+				"tag": "3.x",
 				"pullPolicy": "Always",
 				"repositoryType": "public",
-				"override": true
+				"override": false
 			},
 			"sourceCode": {},
 			"certificates": "none",
@@ -36,14 +37,30 @@ let doc = {
 				"failureThreshold": 3
 			},
 			"ports": [],
-			"voluming": [],
+			"voluming": [
+				{
+					"docker": {},
+					"kubernetes": {
+						"volume": {
+							"name": "soajsprofile",
+							"secret": {
+								"secretName": "soajsprofile"
+							}
+						},
+						"volumeMount": {
+							"mountPath": "/opt/soajs/profile/",
+							"name": "soajsprofile"
+						}
+					}
+				}
+			],
 			"restartPolicy": {
 				"condition": "any",
 				"maxAttempts": 5
 			},
 			"container": {
 				"network": "soajsnet",
-				"workingDir": "/opt/soajs/soajs.multitenant/"
+				"workingDir": "/opt/soajs/soajs.controller/"
 			},
 			"allowExposeServicePort": false
 		},
@@ -53,13 +70,13 @@ let doc = {
 					"type": "computed",
 					"value": "$SOAJS_ENV"
 				},
+				"SOAJS_PROFILE": {
+					"type": "static",
+					"value": "/opt/soajs/profile/soajsprofile"
+				},
 				"SOAJS_DEPLOY_HA": {
 					"type": "computed",
 					"value": "$SOAJS_DEPLOY_HA"
-				},
-				"SOAJS_REGISTRY_API": {
-					"type": "computed",
-					"value": "$SOAJS_REGISTRY_API"
 				},
 				"SOAJS_BCRYPT" : {
 					"type" : "static",
@@ -85,4 +102,5 @@ let doc = {
 	"v": 1,
 	"ts": new Date().getTime()
 };
+
 module.exports = doc;

@@ -5,7 +5,8 @@ let doc = {
 	"name": "Nodejs",
 	"type": "service",
 	"subtype": "nodejs",
-	"description": "This recipe allows you to deploy a Nodejs service",
+	"locked" : true,
+	"description": "Deploy Node.js service",
 	"restriction": {
 		"deployment": [
 			"container"

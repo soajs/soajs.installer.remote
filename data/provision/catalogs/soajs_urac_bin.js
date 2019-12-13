@@ -1,12 +1,13 @@
 'use strict';
 
 let doc = {
-	"_id": "5dc1f6dac6b8c459cdb3c3ad",
-	"name": "OAUTH",
+	"_id": "5dc1f66fc6b8c459cdb3c3ac",
+	"name": "SOAJS URAC from bin",
 	"type": "service",
 	"subtype": "soajs",
 	"soajs": true,
-	"description": "This recipe allows you to deploy a SOAJS oAuth",
+	"locked" : true,
+	"description": "Deploy SOAJS URAC from binary",
 	"restriction": {
 		"deployment": [
 			"container"
@@ -16,8 +17,8 @@ let doc = {
 		"deployOptions": {
 			"image": {
 				"prefix": "soajsorg",
-				"name": "oauth",
-				"tag": "2.x",
+				"name": "urac",
+				"tag": "3.x",
 				"pullPolicy": "Always",
 				"repositoryType": "public",
 				"override": true
@@ -43,7 +44,7 @@ let doc = {
 			},
 			"container": {
 				"network": "soajsnet",
-				"workingDir": "/opt/soajs/soajs.oauth/"
+				"workingDir": "/opt/soajs/soajs.urac/"
 			},
 			"allowExposeServicePort": false
 		},
@@ -57,13 +58,13 @@ let doc = {
 					"type": "computed",
 					"value": "$SOAJS_DEPLOY_HA"
 				},
-				"SOAJS_REGISTRY_API": {
-					"type": "computed",
-					"value": "$SOAJS_REGISTRY_API"
-				},
 				"SOAJS_BCRYPT" : {
 					"type" : "static",
 					"value" : "true"
+				},
+				"SOAJS_REGISTRY_API": {
+					"type": "computed",
+					"value": "$SOAJS_REGISTRY_API"
 				}
 			},
 			"settings": {

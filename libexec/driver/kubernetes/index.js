@@ -101,7 +101,7 @@ let driver = {
 			let ver = options.repoVer;
 			let config = {
 				"label": gConfig.label.ui,
-				"catId": gConfig.catalog.ui,
+				"catId": gConfig.catalog.ui[type],
 				"image": gConfig.images.ui[type] + ver,
 				
 				"httpPort": options.httpPort,

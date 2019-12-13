@@ -1,12 +1,13 @@
 'use strict';
 
 let doc = {
-	"_id": "5dea9e59be70f13a183a9c70",
-	"name": "Console UI SSL",
+	"_id": "5bfd792ab72d8f49eaefe229",
+	"name": "SOAJS Console from src with manual ssl as secret",
 	"type": "server",
 	"subtype": "nginx",
 	"soajs": true,
-	"description": "This recipe allows you to deploy a SOAJS Console UI with SSL. This requires a ReadWriteMany pvc with claim name as nfs-pvc",
+	"locked": true,
+	"description": "Deploy SOAJS console UI from source with manual https certificate as secret",
 	"restriction": {
 		"deployment": [
 			"container"
@@ -16,13 +17,21 @@ let doc = {
 		"deployOptions": {
 			"image": {
 				"prefix": "soajsorg",
-				"name": "consoleui",
-				"tag": "2.x",
+				"name": "fe",
+				"tag": "3.x",
 				"pullPolicy": "Always",
 				"repositoryType": "public",
 				"override": true
 			},
-			"sourceCode": {},
+			"sourceCode": {
+				"custom": {
+					"label": "Attach Custom UI",
+					"type": "static",
+					"repo": "",
+					"branch": "",
+					"required": false
+				}
+			},
 			"certificates": "none",
 			"readinessProbe": {
 				"httpGet": {
@@ -80,6 +89,10 @@ let doc = {
 					"type": "computed",
 					"value": "$SOAJS_NX_API_DOMAIN"
 				},
+				"SOAJS_NX_SITE_DOMAIN": {
+					"type": "computed",
+					"value": "$SOAJS_NX_SITE_DOMAIN"
+				},
 				"SOAJS_NX_CONTROLLER_NB": {
 					"type": "computed",
 					"value": "$SOAJS_NX_CONTROLLER_NB"
@@ -92,13 +105,16 @@ let doc = {
 					"type": "computed",
 					"value": "$SOAJS_NX_CONTROLLER_PORT"
 				},
-				"SOAJS_NX_SITE_DOMAIN": {
-					"type": "computed",
-					"value": "$SOAJS_NX_SITE_DOMAIN"
-				},
+				
 				"SOAJS_SSL_SECRET": {
 					"type": "static",
-					"value": true,
+					"value": "true"
+				},
+				"SOAJS_SSL_CONFIG": {
+					"type": "userInput",
+					"label": "SSL information",
+					"default": '{"email":"me@email.com" ,"redirect":false}',
+					"fieldMsg": "Add the SSL certificate email owner and set if you want to redirect http to https"
 				}
 			},
 			"settings": {
@@ -111,6 +127,7 @@ let doc = {
 					],
 					"args": [
 						"-c",
+						"node index.js -T nginx -S deploy",
 						"node index.js -T nginx -S install",
 						"/opt/soajs/soajs.deployer/deployer/bin/nginx.sh"
 					]

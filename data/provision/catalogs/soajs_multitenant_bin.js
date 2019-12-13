@@ -1,12 +1,13 @@
 'use strict';
 
 let doc = {
-	"_id": "5db9f7ccc6b8c459cdb3c34b",
-	"name": "Gateway",
+	"_id": "5dc96a639253d2193d55553d",
+	"name": "SOAJS Multitenant from bin",
 	"type": "service",
 	"subtype": "soajs",
 	"soajs": true,
-	"description": "This recipe allows you to deploy a SOAJS Gateway",
+	"locked" : true,
+	"description": "Deploy SOAJS Multitenant from binary",
 	"restriction": {
 		"deployment": [
 			"container"
@@ -16,11 +17,11 @@ let doc = {
 		"deployOptions": {
 			"image": {
 				"prefix": "soajsorg",
-				"name": "gateway",
-				"tag": "3.x",
+				"name": "multitenant",
+				"tag": "1.x",
 				"pullPolicy": "Always",
 				"repositoryType": "public",
-				"override": false
+				"override": true
 			},
 			"sourceCode": {},
 			"certificates": "none",
@@ -36,30 +37,14 @@ let doc = {
 				"failureThreshold": 3
 			},
 			"ports": [],
-			"voluming": [
-				{
-					"docker": {},
-					"kubernetes": {
-						"volume": {
-							"name": "soajsprofile",
-							"secret": {
-								"secretName": "soajsprofile"
-							}
-						},
-						"volumeMount": {
-							"mountPath": "/opt/soajs/profile/",
-							"name": "soajsprofile"
-						}
-					}
-				}
-			],
+			"voluming": [],
 			"restartPolicy": {
 				"condition": "any",
 				"maxAttempts": 5
 			},
 			"container": {
 				"network": "soajsnet",
-				"workingDir": "/opt/soajs/soajs.controller/"
+				"workingDir": "/opt/soajs/soajs.multitenant/"
 			},
 			"allowExposeServicePort": false
 		},
@@ -69,10 +54,6 @@ let doc = {
 					"type": "computed",
 					"value": "$SOAJS_ENV"
 				},
-				"SOAJS_PROFILE": {
-					"type": "static",
-					"value": "/opt/soajs/profile/soajsprofile"
-				},
 				"SOAJS_DEPLOY_HA": {
 					"type": "computed",
 					"value": "$SOAJS_DEPLOY_HA"
@@ -80,6 +61,10 @@ let doc = {
 				"SOAJS_BCRYPT" : {
 					"type" : "static",
 					"value" : "true"
+				},
+				"SOAJS_REGISTRY_API": {
+					"type": "computed",
+					"value": "$SOAJS_REGISTRY_API"
 				}
 			},
 			"settings": {
@@ -101,5 +86,4 @@ let doc = {
 	"v": 1,
 	"ts": new Date().getTime()
 };
-
 module.exports = doc;

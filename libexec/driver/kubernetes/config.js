@@ -47,7 +47,10 @@ const lib = {
 			"bin": "5dc96a639253d2193d55553d",
 			"src": "5bed929029f0041bf64bf991"
 		},
-		"ui": "5dea9e59be70f13a183a9c70",
+		"ui": {
+			"bin": "5dea9e59be70f13a183a9c70",
+			"src": "5bfd792ab72d8f49eaefe229"
+		},
 		"mongo": "5dead79e52e7046c7c0a4d53"
 	},
 	

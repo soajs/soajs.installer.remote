@@ -2,11 +2,12 @@
 
 let doc = {
 	"_id": "5bed929029f0041bf64bf991",
-	"name": "SOAJS",
+	"name": "SOAJS service from src",
 	"type": "service",
 	"subtype": "soajs",
 	"soajs": true,
-	"description": "This recipe allows you to deploy a soajs service",
+	"locked" : true,
+	"description": "Deploy SOAJS service from source",
 	"restriction": {
 		"deployment": [
 			"container"
@@ -57,13 +58,13 @@ let doc = {
 					"type": "computed",
 					"value": "$SOAJS_DEPLOY_HA"
 				},
-				"SOAJS_REGISTRY_API": {
-					"type": "computed",
-					"value": "$SOAJS_REGISTRY_API"
-				},
 				"SOAJS_BCRYPT" : {
 					"type" : "static",
 					"value" : "true"
+				},
+				"SOAJS_REGISTRY_API": {
+					"type": "computed",
+					"value": "$SOAJS_REGISTRY_API"
 				}
 			},
 			"settings": {

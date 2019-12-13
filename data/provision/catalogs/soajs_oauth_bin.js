@@ -1,12 +1,13 @@
 'use strict';
 
 let doc = {
-	"_id": "5df0554dbe70f13a183a9c74",
-	"name": "Gateway Source",
+	"_id": "5dc1f6dac6b8c459cdb3c3ad",
+	"name": "SOAJS oAuth from bin",
 	"type": "service",
 	"subtype": "soajs",
 	"soajs": true,
-	"description": "This recipe allows you to deploy a soajs Gateway from source",
+	"locked" : true,
+	"description": "Deploy SOAJS oAuth from binary",
 	"restriction": {
 		"deployment": [
 			"container"
@@ -16,8 +17,8 @@ let doc = {
 		"deployOptions": {
 			"image": {
 				"prefix": "soajsorg",
-				"name": "node",
-				"tag": "3.x",
+				"name": "oauth",
+				"tag": "2.x",
 				"pullPolicy": "Always",
 				"repositoryType": "public",
 				"override": true
@@ -36,30 +37,14 @@ let doc = {
 				"failureThreshold": 3
 			},
 			"ports": [],
-			"voluming": [
-				{
-					"docker": {},
-					"kubernetes": {
-						"volume": {
-							"name": "soajsprofile",
-							"secret": {
-								"secretName": "soajsprofile"
-							}
-						},
-						"volumeMount": {
-							"mountPath": "/opt/soajs/profile/",
-							"name": "soajsprofile"
-						}
-					}
-				}
-			],
+			"voluming": [],
 			"restartPolicy": {
 				"condition": "any",
 				"maxAttempts": 5
 			},
 			"container": {
 				"network": "soajsnet",
-				"workingDir": "/opt/soajs/soajs.deployer/deployer/"
+				"workingDir": "/opt/soajs/soajs.oauth/"
 			},
 			"allowExposeServicePort": false
 		},
@@ -69,17 +54,17 @@ let doc = {
 					"type": "computed",
 					"value": "$SOAJS_ENV"
 				},
-				"SOAJS_PROFILE": {
-					"type": "static",
-					"value": "/opt/soajs/profile/soajsprofile"
-				},
 				"SOAJS_DEPLOY_HA": {
 					"type": "computed",
 					"value": "$SOAJS_DEPLOY_HA"
 				},
-				"SOAJS_BCRYPT": {
-					"type": "static",
-					"value": "true"
+				"SOAJS_BCRYPT" : {
+					"type" : "static",
+					"value" : "true"
+				},
+				"SOAJS_REGISTRY_API": {
+					"type": "computed",
+					"value": "$SOAJS_REGISTRY_API"
 				}
 			},
 			"settings": {
@@ -92,9 +77,7 @@ let doc = {
 					],
 					"args": [
 						"-c",
-						"node . -T golang -S deploy",
-						"node . -T golang -S install",
-						"node . -T nodejs -S run"
+						"node ."
 					]
 				}
 			}

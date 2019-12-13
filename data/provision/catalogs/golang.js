@@ -5,7 +5,8 @@ let doc = {
 	"name": "GoLang",
 	"type": "service",
 	"subtype": "golang",
-	"description": "This recipe allows you to deploy a GoLang service",
+	"locked" : true,
+	"description": "Deploy GoLang service",
 	"restriction": {
 		"deployment": [
 			"container"

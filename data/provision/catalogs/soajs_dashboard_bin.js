@@ -2,11 +2,12 @@
 
 let doc = {
 	"_id": "5dc5a8869253d2193d55552b",
-	"name": "Dashboard",
+	"name": "SOAJS Dashboard from bin",
 	"type": "service",
 	"subtype": "soajs",
 	"soajs": true,
-	"description": "This recipe allows you to deploy a SOAJS Dashboard",
+	"locked" : true,
+	"description": "Deploy SOAJS Dashboard from binary",
 	"restriction": {
 		"deployment": [
 			"container"
@@ -57,13 +58,13 @@ let doc = {
 					"type": "computed",
 					"value": "$SOAJS_DEPLOY_HA"
 				},
-				"SOAJS_REGISTRY_API": {
-					"type": "computed",
-					"value": "$SOAJS_REGISTRY_API"
-				},
 				"SOAJS_BCRYPT" : {
 					"type" : "static",
 					"value" : "true"
+				},
+				"SOAJS_REGISTRY_API": {
+					"type": "computed",
+					"value": "$SOAJS_REGISTRY_API"
 				}
 			},
 			"settings": {

@@ -2,10 +2,10 @@
 
 let doc = {
 	"_id": "5dead79e52e7046c7c0a4d53",
-	"name": "Mongo Recipe",
+	"name": "Mongo DB",
 	"type": "cluster",
 	"subtype": "mongo",
-	"description": "This recipe allows you to deploy a mongo server",
+	"description": "Deploy single instance of Mongo DB",
 	"locked": true,
 	"restriction": {
 		"deployment": [
@@ -47,20 +47,20 @@ let doc = {
 					docker: {
 						volume: {
 							"Type": "volume",
-							"Source": "custom-mongo-volume",
+							"Source": "dashboard-soajsdata",
 							"Target": "/data/db/"
 						}
 					},
 					kubernetes: {
 						volume: {
-							"name": "custom-mongo-volume",
+							"name": "dashboard-soajsdata",
 							"hostPath": {
-								"path": "/var/data/custom/db/"
+								"path": "/var/data/db/"
 							}
 						},
 						volumeMount: {
 							"mountPath": "/var/data/db/",
-							"name": "custom-mongo-volume"
+							"name": "dashboard-soajsdata"
 						}
 					}
 				}
