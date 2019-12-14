@@ -72,8 +72,8 @@ let doc = {
 					],
 					"args": [
 						"-c",
-						"node . -T golang -S deploy",
-						"node . -T golang -S install",
+						"node . -T nodejs -S deploy",
+						"node . -T nodejs -S install",
 						"node . -T nodejs -S run"
 					]
 				}
