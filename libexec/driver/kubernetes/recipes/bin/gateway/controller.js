@@ -53,7 +53,7 @@ function getrecipe(localConfig) {
 				},
 				"template": {
 					"metadata": {
-						"name": "controllercon",
+						"name": localConfig._label,
 						"labels": localConfig._labels
 					},
 					"spec": {

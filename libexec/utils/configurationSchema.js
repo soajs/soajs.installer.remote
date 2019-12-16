@@ -182,6 +182,10 @@ let schema = {
 				"token": {
 					"type": "string",
 					"required": true
+				},
+				"namespace": {
+					"type": "string",
+					"required": false
 				}
 			}
 		},

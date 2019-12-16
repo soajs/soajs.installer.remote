@@ -17,6 +17,7 @@ const logger = require("./utils/utils.js").getLogger();
 const drivers = {
 	"kubernetes": require("./driver/kubernetes/index.js")
 };
+
 const uuidv4 = require('uuid/v4');
 const async = require('async');
 const configurationSchema = require("./utils/configurationSchema");
@@ -78,6 +79,7 @@ function importData(options, data, profileImport, cb) {
 		doc.sitePrefix = options.nginx.sitePrefix;
 		doc.apiPrefix = options.nginx.apiPrefix;
 		doc.deployer.selected = "container.kubernetes.remote";
+		doc.deployer.container.kubernetes.remote.namespace.default = options.kubernetes.namespace;
 		doc.deployer.container.kubernetes.remote.nodes = options.kubernetes.ip;
 		doc.deployer.container.kubernetes.remote.apiPort = options.kubernetes.port;
 		doc.deployer.container.kubernetes.remote.auth.token = options.kubernetes.token;
@@ -153,6 +155,9 @@ function validateOptions(options, cb) {
 			if (!options.type) {
 				options.type = "bin";
 			}
+			if (!options.kubernetes.namespace) {
+				options.kubernetes.namespace = "soajs";
+			}
 			return cb(null);
 		}
 		return cb(new Error("The provided configuration is not healthy"));
@@ -224,13 +229,28 @@ let lib = {
 						return cb(error);
 					}
 					//clean up
-					driver.cleanUp(deployer, (error) => {
+					let config = {
+						"namespace": options.kubernetes.namespace
+					};
+					driver.cleanUp(config, deployer, (error) => {
 						if (error) {
 							return cb(error);
 						}
 						async.waterfall([
 							(cb) => {
 								return cb(null, {});
+							},
+							//Check namespace
+							(obj, cb) => {
+								let config = {
+									"namespace": options.kubernetes.namespace
+								};
+								driver.deploy.checkNamespace(config, deployer, (error) => {
+									if (error) {
+										return cb(error, obj);
+									}
+									return cb(null, obj);
+								});
 							},
 							//Install mongo
 							(obj, cb) => {
@@ -239,7 +259,8 @@ let lib = {
 									return cb(null, obj);
 								} else {
 									let config = {
-										"port": options.mongo.port
+										"port": options.mongo.port,
+										"namespace": options.kubernetes.namespace
 									};
 									driver.deploy.mongo(config, deployer, (error, response) => {
 										if (error) {
@@ -311,7 +332,8 @@ let lib = {
 									"profileSecret": obj.profileSecret,
 									"type": options.type,
 									"serviceVer": "1",
-									"repoVer": options.versions.services.gateway.ver
+									"repoVer": options.versions.services.gateway.ver,
+									"namespace": options.kubernetes.namespace
 								};
 								driver.deploy.gateway(config, deployer, (error, response) => {
 									if (error) {
@@ -342,7 +364,8 @@ let lib = {
 									"email": options.owner.email,
 									"extKey": obj.extKey,
 									
-									"gatewayIP": obj.gatewayIP
+									"gatewayIP": obj.gatewayIP,
+									"namespace": options.kubernetes.namespace
 								};
 								driver.deploy.nginx(config, deployer, (error, response) => {
 									if (error) {
@@ -362,7 +385,8 @@ let lib = {
 									"serviceVer": "1",
 									"repoVer": options.versions.services.dashboard.ver,
 									"serviceName": "dashboard",
-									"gatewayIP": obj.gatewayIP
+									"gatewayIP": obj.gatewayIP,
+									"namespace": options.kubernetes.namespace
 								};
 								driver.deploy.service(config, deployer, (error, response) => {
 									if (error) {
@@ -382,7 +406,8 @@ let lib = {
 									"serviceVer": "3",
 									"repoVer": options.versions.services.urac.ver,
 									"serviceName": "urac",
-									"gatewayIP": obj.gatewayIP
+									"gatewayIP": obj.gatewayIP,
+									"namespace": options.kubernetes.namespace
 								};
 								driver.deploy.service(config, deployer, (error, response) => {
 									if (error) {
@@ -402,7 +427,8 @@ let lib = {
 									"serviceVer": "1",
 									"repoVer": options.versions.services.oauth.ver,
 									"serviceName": "oauth",
-									"gatewayIP": obj.gatewayIP
+									"gatewayIP": obj.gatewayIP,
+									"namespace": options.kubernetes.namespace
 								};
 								driver.deploy.service(config, deployer, (error, response) => {
 									if (error) {
@@ -422,7 +448,8 @@ let lib = {
 									"serviceVer": "1",
 									"repoVer": options.versions.services.multitenant.ver,
 									"serviceName": "multitenant",
-									"gatewayIP": obj.gatewayIP
+									"gatewayIP": obj.gatewayIP,
+									"namespace": options.kubernetes.namespace
 								};
 								driver.deploy.service(config, deployer, (error, response) => {
 									if (error) {
@@ -437,6 +464,7 @@ let lib = {
 							}
 						], (error, obj) => {
 							logger.debug("The extKey: " + obj.extKey);
+							logger.debug("The namespace: " + options.kubernetes.namespace);
 							logger.debug("The Services IPS:");
 							if (!options.mongo.external) {
 								logger.debug("\tMongo: " + obj.mongoIP);

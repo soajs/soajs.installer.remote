@@ -34,7 +34,7 @@ let doc = {
 					"nodes": "",
 					"apiPort": "",
 					"namespace": {
-						"default": "soajs",
+						"default": "",
 						"perService": false
 					},
 					"auth": {
@@ -45,7 +45,7 @@ let doc = {
 					"nodes": "%containerNode%",
 					"apiPort": "%kubernetesRemotePort%",
 					"namespace": {
-						"default": "soajs",
+						"default": "%namespace%",
 						"perService": false
 					},
 					"auth": {

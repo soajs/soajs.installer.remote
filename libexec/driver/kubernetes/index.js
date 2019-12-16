@@ -53,6 +53,14 @@ let driver = {
 		}
 	},
 	"deploy": {
+		"checkNamespace": (options, deployer, cb) => {
+			lib.checkNamespace(deployer, options.namespace, (error) => {
+				if (error) {
+					return cb(error);
+				}
+				return cb(null);
+			});
+		},
 		/**
 		 * @param options Object
 		 * {
@@ -68,21 +76,16 @@ let driver = {
 			};
 			let recipe = require("./recipes/db/mongo.js")(config);
 			
-			lib.checkNamespace(deployer, gConfig.namespace, (error) => {
+			lib.createService(deployer, recipe.service, options.namespace, (error) => {
 				if (error) {
 					return cb(error);
 				}
-				lib.createService(deployer, recipe.service, gConfig.namespace, (error) => {
+				lib.createDeployment(deployer, recipe.deployment, options.namespace, (error) => {
 					if (error) {
 						return cb(error);
 					}
-					lib.createDeployment(deployer, recipe.deployment, gConfig.namespace, (error) => {
-						if (error) {
-							return cb(error);
-						}
-						lib.getServiceIPs(deployer, config.label, 1, gConfig.namespace, (error, response) => {
-							return cb(error, response);
-						});
+					lib.getServiceIPs(deployer, config.label, 1, options.namespace, (error, response) => {
+						return cb(error, response);
 					});
 				});
 			});
@@ -124,15 +127,15 @@ let driver = {
 			}
 			let recipe = require("./recipes/" + type + "/nginx/nginx.js")(config);
 			
-			lib.createService(deployer, recipe.service, gConfig.namespace, (error) => {
+			lib.createService(deployer, recipe.service, options.namespace, (error) => {
 				if (error) {
 					return cb(error);
 				}
-				lib.createDeployment(deployer, recipe.deployment, gConfig.namespace, (error) => {
+				lib.createDeployment(deployer, recipe.deployment, options.namespace, (error) => {
 					if (error) {
 						return cb(error);
 					}
-					lib.getServiceIPs(deployer, config.label, 1, gConfig.namespace, (error, response) => {
+					lib.getServiceIPs(deployer, config.label, 1, options.namespace, (error, response) => {
 						return cb(error, response);
 					});
 				});
@@ -148,7 +151,7 @@ let driver = {
 		 *
 		 */
 		"gateway": (options, deployer, cb) => {
-			lib.createProfileSecret(deployer, options.profileSecret, gConfig.namespace, (error) => {
+			lib.createProfileSecret(deployer, options.profileSecret, options.namespace, (error) => {
 				if (error) {
 					return cb(error);
 				}
@@ -164,15 +167,15 @@ let driver = {
 					config.branch = "release/v" + ver;
 				}
 				let recipe = require("./recipes/" + type + "/gateway/controller.js")(config);
-				lib.createService(deployer, recipe.service, gConfig.namespace, (error) => {
+				lib.createService(deployer, recipe.service, options.namespace, (error) => {
 					if (error) {
 						return cb(error);
 					}
-					lib.createDeployment(deployer, recipe.deployment, gConfig.namespace, (error) => {
+					lib.createDeployment(deployer, recipe.deployment, options.namespace, (error) => {
 						if (error) {
 							return cb(error);
 						}
-						lib.getServiceIPs(deployer, config.label, 1, gConfig.namespace, (error, response) => {
+						lib.getServiceIPs(deployer, config.label, 1, options.namespace, (error, response) => {
 							return cb(error, response);
 						});
 					});
@@ -204,28 +207,28 @@ let driver = {
 			}
 			let recipe = require("./recipes/" + type + "/ms/" + service + ".js")(config);
 			
-			lib.createService(deployer, recipe.service, gConfig.namespace, (error) => {
+			lib.createService(deployer, recipe.service, options.namespace, (error) => {
 				if (error) {
 					return cb(error);
 				}
-				lib.createDeployment(deployer, recipe.deployment, gConfig.namespace, (error) => {
+				lib.createDeployment(deployer, recipe.deployment, options.namespace, (error) => {
 					if (error) {
 						return cb(error);
 					}
-					lib.getServiceIPs(deployer, config.label, 1, gConfig.namespace, (error, response) => {
+					lib.getServiceIPs(deployer, config.label, 1, options.namespace, (error, response) => {
 						return cb(error, response);
 					});
 				});
 			});
 		}
 	},
-	"cleanUp": (deployer, cb) => {
-		lib.deleteDeployments(deployer, {}, gConfig.namespace, () => {
-			lib.deleteDaemonsets(deployer, {}, gConfig.namespace, () => {
-				lib.deleteKubeServices(deployer, {}, gConfig.namespace, () => {
-					lib.deletePods(deployer, {}, gConfig.namespace, () => {
-						lib.deleteSecrets(deployer, {}, gConfig.namespace, () => {
-							lib.ensurePods(deployer, {}, gConfig.namespace, (error) => {
+	"cleanUp": (options, deployer, cb) => {
+		lib.deleteDeployments(deployer, {}, options.namespace, () => {
+			lib.deleteDaemonsets(deployer, {}, options.namespace, () => {
+				lib.deleteKubeServices(deployer, {}, options.namespace, () => {
+					lib.deletePods(deployer, {}, options.namespace, () => {
+						lib.deleteSecrets(deployer, {}, options.namespace, () => {
+							lib.ensurePods(deployer, {}, options.namespace, (error) => {
 								return cb(error);
 							});
 						});
