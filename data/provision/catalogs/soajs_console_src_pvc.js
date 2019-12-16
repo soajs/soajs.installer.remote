@@ -124,7 +124,7 @@ let doc = {
 				"SOAJS_SSL_CONFIG": {
 					"type": "userInput",
 					"label": "SSL information",
-					"default": '{"email":"me@email.com" ,"redirect":false}',
+					"default": '{"email":"me@email.com" ,"redirect":"false"}',
 					"fieldMsg": "Add the SSL certificate email owner and set if you want to redirect http to https"
 				}
 			},
