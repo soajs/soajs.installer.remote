@@ -21,7 +21,7 @@ let doc = {
 				"tag": "3.x",
 				"pullPolicy": "Always",
 				"repositoryType": "public",
-				"override": false
+				"override": true
 			},
 			"sourceCode": {},
 			"certificates": "none",
