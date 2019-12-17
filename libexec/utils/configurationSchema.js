@@ -192,8 +192,7 @@ let schema = {
 			"properties": {
 				"ip": {
 					"type": "string",
-					"required": true,
-					"format": "ipv4"
+					"required": true
 				},
 				"port": {
 					"type": "integer",
