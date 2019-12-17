@@ -28,6 +28,10 @@ let schema = {
 								"ver": {
 									"type": "string",
 									"required": true
+								},
+								"msVer": {
+									"type": "integer",
+									"required": true
 								}
 							}
 						},
@@ -37,6 +41,10 @@ let schema = {
 							"properties": {
 								"ver": {
 									"type": "string",
+									"required": true
+								},
+								"msVer": {
+									"type": "integer",
 									"required": true
 								}
 							}
@@ -48,6 +56,10 @@ let schema = {
 								"ver": {
 									"type": "string",
 									"required": true
+								},
+								"msVer": {
+									"type": "integer",
+									"required": true
 								}
 							}
 						},
@@ -58,6 +70,10 @@ let schema = {
 								"ver": {
 									"type": "string",
 									"required": true
+								},
+								"msVer": {
+									"type": "integer",
+									"required": true
 								}
 							}
 						},
@@ -67,6 +83,10 @@ let schema = {
 							"properties": {
 								"ver": {
 									"type": "string",
+									"required": true
+								},
+								"msVer": {
+									"type": "integer",
 									"required": true
 								}
 							}

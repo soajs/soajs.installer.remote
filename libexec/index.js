@@ -148,7 +148,7 @@ function validateOptions(options, cb) {
 		if (check && check.errors && Array.isArray(check.errors) && check.errors.length > 0) {
 			logger.error("Configuration schema errors: ");
 			for (let i = 0; i < check.errors.length; i++) {
-				logger.error("\t" + check.errors[i].property + ": " + check.errors[i].message);
+				logger.error("\t" + check.errors[i]);
 			}
 		}
 		if (check.valid) {
@@ -214,7 +214,7 @@ let lib = {
 	"install": (options, cb) => {
 		validateOptions(options, (error) => {
 			if (error) {
-				logger.error(error.message);
+				logger.error(error);
 				return cb(new Error("Unable continue, please provide valid configuration!"));
 			}
 			if (drivers[options.driverName]) {
@@ -331,7 +331,7 @@ let lib = {
 								let config = {
 									"profileSecret": obj.profileSecret,
 									"type": options.type,
-									"serviceVer": "1",
+									"serviceVer": options.versions.services.gateway.msVer || 1,
 									"repoVer": options.versions.services.gateway.ver,
 									"namespace": options.kubernetes.namespace
 								};
@@ -382,7 +382,7 @@ let lib = {
 							(obj, cb) => {
 								let config = {
 									"type": options.type,
-									"serviceVer": "1",
+									"serviceVer": options.versions.services.dashboard.msVer || 1,
 									"repoVer": options.versions.services.dashboard.ver,
 									"serviceName": "dashboard",
 									"gatewayIP": obj.gatewayIP,
@@ -403,7 +403,7 @@ let lib = {
 							(obj, cb) => {
 								let config = {
 									"type": options.type,
-									"serviceVer": "3",
+									"serviceVer": options.versions.services.urac.msVer || 3,
 									"repoVer": options.versions.services.urac.ver,
 									"serviceName": "urac",
 									"gatewayIP": obj.gatewayIP,
@@ -424,7 +424,7 @@ let lib = {
 							(obj, cb) => {
 								let config = {
 									"type": options.type,
-									"serviceVer": "1",
+									"serviceVer": options.versions.services.oauth.msVer || 1,
 									"repoVer": options.versions.services.oauth.ver,
 									"serviceName": "oauth",
 									"gatewayIP": obj.gatewayIP,
@@ -445,7 +445,7 @@ let lib = {
 							(obj, cb) => {
 								let config = {
 									"type": options.type,
-									"serviceVer": "1",
+									"serviceVer": options.versions.services.multitenant.msVer || 1,
 									"repoVer": options.versions.services.multitenant.ver,
 									"serviceName": "multitenant",
 									"gatewayIP": obj.gatewayIP,
