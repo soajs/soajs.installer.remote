@@ -230,7 +230,7 @@ let lib = {
 		validateOptions(options, (error) => {
 			if (error) {
 				logger.error(error);
-				return cb(new Error("Unable continue, please provide valid configuration!"));
+				return cb(new Error("Unable to continue, please provide valid configuration!"));
 			}
 			if (drivers[options.driverName]) {
 				let driver = drivers[options.driverName];
@@ -260,7 +260,7 @@ let lib = {
 								let config = {
 									"namespace": options.kubernetes.namespace
 								};
-								driver.deploy.checkNamespace(config, deployer, (error) => {
+								driver.deploy.checkNamespace(config, deployer, true, (error) => {
 									if (error) {
 										return cb(error, obj);
 									}
@@ -574,8 +574,40 @@ let lib = {
 	},
 	
 	"getDeployment": (options, cb) => {
-		
-		return cb(null, {});
+		validateOptions(options, (error) => {
+			if (error) {
+				logger.error(error);
+				return cb(new Error("Unable to continue, please provide valid configuration!"));
+			}
+			if (drivers[options.driverName]) {
+				let driver = drivers[options.driverName];
+				let config = {
+					"ip": options.kubernetes.ip,
+					"port": options.kubernetes.port,
+					"token": options.kubernetes.token
+				};
+				driver.init(config, (error, deployer) => {
+					if (error) {
+						return cb(error);
+					}
+					let config = {
+						"namespace": options.kubernetes.namespace
+					};
+					driver.deploy.checkNamespace(config, deployer, false, (error, found) => {
+						if (error) {
+							return cb(error);
+						}
+						if (!found) {
+							let error = new Error("Unable to find namespace: " + config.namespace);
+							return cb(error);
+						}
+						driver.info(options, deployer, (error, info) => {
+							return cb(error, info);
+						});
+					});
+				});
+			}
+		});
 	},
 	
 	"migrate": (options, strategy, cb) => {

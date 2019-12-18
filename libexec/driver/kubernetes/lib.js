@@ -37,7 +37,7 @@ let lib = {
 		}
 	},
 	
-	"checkNamespace": (deployer, namespace, cb) => {
+	"checkNamespace": (deployer, namespace, createIfNotExist, cb) => {
 		//1. check if namespace already exists. if it does, return true
 		//2. if namespace does not exist create it and return true
 		wrapper.namespace.get(deployer, {}, (error, namespacesList) => {
@@ -48,21 +48,24 @@ let lib = {
 				return callback(null, oneNamespace.metadata.name === namespace);
 			}, (error, foundNamespace) => {
 				if (foundNamespace) {
-					logger.info('Reusing existing namespace: ' + foundNamespace.metadata.name + ' ...');
+					logger.info('Found namespace: ' + foundNamespace.metadata.name + ' ...');
 					return cb(null, true);
 				}
-				logger.info('Creating a new namespace: ' + namespace + ' ...');
-				let recipe = {
-					kind: 'Namespace',
-					apiVersion: 'v1',
-					metadata: {
-						name: namespace,
-						labels: {
-							'soajs.content': 'true'
+				if (createIfNotExist) {
+					logger.info('Creating a new namespace: ' + namespace + ' ...');
+					let recipe = {
+						kind: 'Namespace',
+						apiVersion: 'v1',
+						metadata: {
+							name: namespace,
+							labels: {
+								'soajs.content': 'true'
+							}
 						}
-					}
-				};
-				return wrapper.namespace.post(deployer, {body: recipe}, cb);
+					};
+					return wrapper.namespace.post(deployer, {body: recipe}, cb);
+				}
+				return cb(null, false);
 			});
 		});
 	},
@@ -240,7 +243,7 @@ let lib = {
 			}, cb);
 		});
 	},
-	"deleteKubeServices": (deployer, options, namespace, cb) => {
+	"deleteServices": (deployer, options, namespace, cb) => {
 		let filter = {labelSelector: 'soajs.content=true', gracePeriodSeconds: 0};
 		wrapper.service.get(deployer, {namespace: namespace, qs: filter}, (error, serviceList) => {
 			if (error) {
@@ -305,7 +308,55 @@ let lib = {
 				}, 1000);
 			}
 		});
-	}
+	},
 	
+	"getServices": (deployer, options, namespace, cb) => {
+		let filter = {labelSelector: 'soajs.content=true', gracePeriodSeconds: 0};
+		wrapper.service.get(deployer, {namespace: namespace, qs: filter}, (error, serviceList) => {
+			if (error) {
+				return cb(error);
+			}
+			if (!serviceList || !serviceList.items || serviceList.items.length === 0) {
+				let error = new Error("Unable to find any SOAJS services");
+				return cb(error);
+			}
+			let servicesInfo = [];
+			async.each(serviceList.items, (oneService, callback) => {
+				let item = {
+					"serviceName": oneService.metadata.labels['soajs.service.name'],
+					"name": oneService.metadata.name,
+					"ip": oneService.spec.clusterIP,
+					"serviceVer": oneService.metadata.labels['soajs.service.version'],
+					"mode": oneService.metadata.labels['soajs.service.mode'],
+					"label": oneService.spec.selector['soajs.service.label']
+				};
+				if (item.serviceName === 'nginx') {
+					item.serviceName = 'ui';
+				}
+				if (oneService.spec.selector['service.branch']) {
+					item.branch = oneService.spec.selector['service.branch'];
+				}
+				let filter = {labelSelector: 'soajs.service.label=' + item.label};
+				let mode = item.mode;
+				wrapper[mode].get(deployer, {
+					namespace: namespace,
+					qs: filter
+				}, (error, deployments) => {
+					if (error) {
+						return callback(error);
+					}
+					if (deployments && deployments.items && deployments.items.length === 1) {
+						let oneDeployment = deployments.items[0];
+						item.image = oneDeployment.spec.template.spec.containers[0].image;
+					}
+					servicesInfo.push(item);
+					return callback();
+				});
+				
+			}, (error) => {
+				return cb(error, servicesInfo);
+			});
+		});
+	}
 };
 module.exports = lib;

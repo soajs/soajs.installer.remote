@@ -53,12 +53,12 @@ let driver = {
 		}
 	},
 	"deploy": {
-		"checkNamespace": (options, deployer, cb) => {
-			lib.checkNamespace(deployer, options.namespace, (error) => {
+		"checkNamespace": (options, deployer, createIfNotExist, cb) => {
+			lib.checkNamespace(deployer, options.namespace, createIfNotExist, (error, found) => {
 				if (error) {
 					return cb(error);
 				}
-				return cb(null);
+				return cb(null, found);
 			});
 		},
 		/**
@@ -263,10 +263,23 @@ let driver = {
 			});
 		}
 	},
+	"info": (options, deployer, cb) => {
+		lib.getServices(deployer, {}, options.namespace, (error, servicesInfo) => {
+			if (error) {
+				return cb(error);
+			}
+			if (!servicesInfo || servicesInfo.length === 0) {
+				let error = new Error("Unable to find any SOAJS service");
+				return cb(error);
+			}
+			return cb(null, servicesInfo);
+		})
+	},
+	
 	"cleanUp": (options, deployer, cb) => {
 		lib.deleteDeployments(deployer, {}, options.namespace, () => {
 			lib.deleteDaemonsets(deployer, {}, options.namespace, () => {
-				lib.deleteKubeServices(deployer, {}, options.namespace, () => {
+				lib.deleteServices(deployer, {}, options.namespace, () => {
 					lib.deletePods(deployer, {}, options.namespace, () => {
 						lib.deleteSecrets(deployer, {}, options.namespace, () => {
 							lib.ensurePods(deployer, {}, options.namespace, (error) => {
