@@ -106,6 +106,11 @@ let schema = {
 			}
 		},
 		
+		"installerVersion": {
+			"type": "object",
+			"required": true
+		},
+		
 		"cleanDataBefore": {
 			"type": "boolean",
 			"required": true

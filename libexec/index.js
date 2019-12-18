@@ -12,8 +12,10 @@ const soajs = require('soajs');
 const randomString = require("randomstring");
 
 //set the logger
-const logger = require("./utils/utils.js").getLogger();
+const utils = require("./utils/utils.js");
+const logger = utils.getLogger();
 
+const coreProvisionModel = require("./model/core_provision.js");
 const drivers = {
 	"kubernetes": require("./driver/kubernetes/index.js")
 };
@@ -110,6 +112,12 @@ function importData(options, data, profileImport, cb) {
 			};
 		}
 	};
+	let settings = (doc) => {
+		if (doc.type === "installer") {
+			doc.releaseInfo = options.versions;
+			doc.installerVersion = options.installerVersion;
+		}
+	};
 	let tenants = (doc) => {
 		if (doc.code === "DBTN") {
 			doc.applications[0].keys[0].extKeys[0].extKey = data.extKey;
@@ -131,6 +139,7 @@ function importData(options, data, profileImport, cb) {
 		"environment": environment,
 		"infra": infra,
 		"resources": resources,
+		"settings": settings,
 		"tenants": tenants,
 		"users": users
 	};
@@ -549,27 +558,33 @@ let lib = {
 		});
 	},
 	
+	"getSettings": (options, cb) => {
+		validateOptions(options, (error) => {
+			if (error) {
+				logger.error(error.message);
+				return cb(new Error("Unable to continue, please provide valid configuration!"));
+			}
+			let profileImport = utils.getProfile(options);
+			let cpModelObj = new coreProvisionModel(profileImport);
+			
+			cpModelObj.getSettings((error, settings) => {
+				return cb(error, settings);
+			});
+		});
+	},
+	
+	"getDeployment": (options, cb) => {
+		
+		return cb(null, {});
+	},
+	
 	"migrate": (options, strategy, cb) => {
 		validateOptions(options, (error) => {
 			if (error) {
 				logger.error(error.message);
-				return cb(new Error("Unable continue, please provide valid configuration!"));
+				return cb(new Error("Unable to continue, please provide valid configuration!"));
 			}
-			let profileImport = null;
-			if (options.mongo.external) {
-				profileImport = {
-					"name": "core_provision",
-					"prefix": "",
-					"servers": options.mongo.profile.servers,
-					"credentials": options.mongo.profile.credentials,
-					"streaming": {},
-					"extraParam": {},
-					"URLParam": options.mongo.profile.URLParam,
-				};
-			} else {
-				profileImport = require("../data/soajs_profile.js");
-				profileImport.servers[0].host = options.kubernetes.ip;
-			}
+			let profileImport = utils.getProfile(options);
 			
 			let strategyFunction = require("./migrate/" + strategy + ".js");
 			
