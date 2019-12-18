@@ -268,10 +268,22 @@ let schema = {
 			}
 		},
 		
-		"type": {
-			"type": "string",
-			"enum": ['bin', 'src'],
-			"required": false
+		"deployment": {
+			"type": "object",
+			"required": false,
+			"additionalProperties": false,
+			"properties": {
+				"type": {
+					"type": "string",
+					"enum": ['bin', 'src'],
+					"required": false
+				},
+				"style": {
+					"type": "string",
+					"enum": ['sem', 'major'],
+					"required": false
+				}
+			}
 		}
 	}
 };

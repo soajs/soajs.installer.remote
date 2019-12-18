@@ -152,8 +152,14 @@ function validateOptions(options, cb) {
 			}
 		}
 		if (check.valid) {
-			if (!options.type) {
-				options.type = "bin";
+			if (!options.deployment) {
+				options.deployment = {};
+			}
+			if (!options.deployment.type) {
+				options.deployment.type = "bin";
+			}
+			if (!options.deployment.style) {
+				options.deployment.style = "sem";
 			}
 			if (!options.kubernetes.namespace) {
 				options.kubernetes.namespace = "soajs";
@@ -330,9 +336,11 @@ let lib = {
 							(obj, cb) => {
 								let config = {
 									"profileSecret": obj.profileSecret,
-									"type": options.type,
+									"type": options.deployment.type,
+									"style": options.deployment.style,
 									"serviceVer": options.versions.services.gateway.msVer || 1,
 									"repoVer": options.versions.services.gateway.ver,
+									"semVer": options.versions.services.gateway.semVer,
 									"namespace": options.kubernetes.namespace
 								};
 								driver.deploy.gateway(config, deployer, (error, response) => {
@@ -349,8 +357,10 @@ let lib = {
 							//Install nginx
 							(obj, cb) => {
 								let config = {
-									"type": options.type,
+									"type": options.deployment.type,
+									"style": options.deployment.style,
 									"repoVer": options.versions.services.ui.ver,
+									"semVer": options.versions.services.ui.semVer,
 									
 									"httpPort": options.nginx.httpPort,
 									"httpsPort": options.nginx.httpsPort,
@@ -381,9 +391,11 @@ let lib = {
 							//Install dashboard service
 							(obj, cb) => {
 								let config = {
-									"type": options.type,
+									"type": options.deployment.type,
+									"style": options.deployment.style,
 									"serviceVer": options.versions.services.dashboard.msVer || 1,
 									"repoVer": options.versions.services.dashboard.ver,
+									"semVer": options.versions.services.dashboard.semVer,
 									"serviceName": "dashboard",
 									"gatewayIP": obj.gatewayIP,
 									"namespace": options.kubernetes.namespace
@@ -402,9 +414,11 @@ let lib = {
 							//Install urac service
 							(obj, cb) => {
 								let config = {
-									"type": options.type,
+									"type": options.deployment.type,
+									"style": options.deployment.style,
 									"serviceVer": options.versions.services.urac.msVer || 3,
 									"repoVer": options.versions.services.urac.ver,
+									"semVer": options.versions.services.urac.semVer,
 									"serviceName": "urac",
 									"gatewayIP": obj.gatewayIP,
 									"namespace": options.kubernetes.namespace
@@ -423,9 +437,11 @@ let lib = {
 							//Install oauth service
 							(obj, cb) => {
 								let config = {
-									"type": options.type,
+									"type": options.deployment.type,
+									"style": options.deployment.style,
 									"serviceVer": options.versions.services.oauth.msVer || 1,
 									"repoVer": options.versions.services.oauth.ver,
+									"semVer": options.versions.services.oauth.semVer,
 									"serviceName": "oauth",
 									"gatewayIP": obj.gatewayIP,
 									"namespace": options.kubernetes.namespace
@@ -444,9 +460,11 @@ let lib = {
 							//Install multitenant service
 							(obj, cb) => {
 								let config = {
-									"type": options.type,
+									"type": options.deployment.type,
+									"style": options.deployment.style,
 									"serviceVer": options.versions.services.multitenant.msVer || 1,
 									"repoVer": options.versions.services.multitenant.ver,
+									"semVer": options.versions.services.multitenant.semVer,
 									"serviceName": "multitenant",
 									"gatewayIP": obj.gatewayIP,
 									"namespace": options.kubernetes.namespace
