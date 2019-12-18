@@ -93,19 +93,20 @@ let driver = {
 		/**
 		 * @param options Object
 		 * {
-		 *     type: "bin",
-		 *     repoVer: "2.x"
+		 *     "type": "bin"
+		 *     "style": "sem"
+		 *     "repoVer": "2.x"
+		 *     "semVer": "2.0.1"
 		 *     ...
 		 * }
 		 *
 		 */
 		"nginx": (options, deployer, cb) => {
 			let type = options.type;
-			let ver = options.repoVer;
 			let config = {
 				"label": gConfig.label.ui,
 				"catId": gConfig.catalog.ui[type],
-				"image": gConfig.images.ui[type] + ver,
+				"image": gConfig.images.ui[type] + options.semVer,
 				
 				"httpPort": options.httpPort,
 				"httpsPort": options.httpsPort,
@@ -121,9 +122,15 @@ let driver = {
 				"sslSecret": options.sslSecret,
 				"gatewayIP": options.gatewayIP
 			};
+			if (options.style === "major") {
+				config.image = gConfig.images.ui[type] + options.repoVer;
+			}
 			if (type === "src") {
 				config.image = gConfig.images.ui[type];
-				config.branch = "release/v" + ver;
+				config.branch = options.semVer;
+				if (options.style === "major") {
+					config.branch = "release/v" + options.repoVer;
+				}
 			}
 			let recipe = require("./recipes/" + type + "/nginx/nginx.js")(config);
 			
@@ -136,7 +143,12 @@ let driver = {
 						return cb(error);
 					}
 					lib.getServiceIPs(deployer, config.label, 1, options.namespace, (error, response) => {
-						return cb(error, response);
+						let deployment = {
+							ip: response,
+							image: config.image,
+							branch: config.branch || null
+						};
+						return cb(error, deployment);
 					});
 				});
 			});
@@ -144,9 +156,13 @@ let driver = {
 		/**
 		 * @param options Object
 		 * {
-		 *     secretProfile : {},
-		 *     type: "bin"
-		 *     repoVer: "2.x"
+		 *     "secretProfile" : {},
+		 *     "type": "bin"
+		 *     "style": "sem"
+		 *     "serviceVer": 1
+		 *     "repoVer": "2.x"
+		 *     "semVer": "2.0.1"
+		 *     "namespace": "soajs
 		 * }
 		 *
 		 */
@@ -156,15 +172,20 @@ let driver = {
 					return cb(error);
 				}
 				let type = options.type;
-				let ver = options.repoVer;
 				let config = {
 					"label": gConfig.label.gateway + options.serviceVer,
 					"catId": gConfig.catalog.gateway[type],
-					"image": gConfig.images.gateway[type] + ver
+					"image": gConfig.images.gateway[type] + options.semVer
 				};
+				if (options.style === "major") {
+					config.image = gConfig.images.gateway[type] + options.repoVer;
+				}
 				if (type === "src") {
 					config.image = gConfig.images.gateway[type];
-					config.branch = "release/v" + ver;
+					config.branch = options.semVer;
+					if (options.style === "major") {
+						config.branch = "release/v" + options.repoVer;
+					}
 				}
 				let recipe = require("./recipes/" + type + "/gateway/controller.js")(config);
 				lib.createService(deployer, recipe.service, options.namespace, (error) => {
@@ -176,7 +197,12 @@ let driver = {
 							return cb(error);
 						}
 						lib.getServiceIPs(deployer, config.label, 1, options.namespace, (error, response) => {
-							return cb(error, response);
+							let deployment = {
+								ip: response,
+								image: config.image,
+								branch: config.branch || null
+							};
+							return cb(error, deployment);
 						});
 					});
 				});
@@ -185,25 +211,35 @@ let driver = {
 		/**
 		 * @param options Object
 		 * {
-		 *      type: "bin"
-		 *      repoVer: "2.x"
-		 *      gatewayIP:
+		 *      "type": "bin"
+		 *      "style": "sem"
+		 *      "serviceVer": 1
+		 *      "repoVer": "2.x"
+		 *      "semVer": "2.0.1"
+		 *      "serviceName": "urac"
+		 *      "gatewayIP": "IP"
+		 *      "namespace": "soajs"
 		 * }
 		 *
 		 */
 		"service": (options, deployer, cb) => {
-			let type = options.type;
 			let service = options.serviceName;
-			let ver = options.repoVer;
+			let type = options.type;
 			let config = {
 				"label": gConfig.label[service] + options.serviceVer,
 				"catId": gConfig.catalog[service][type],
-				"image": gConfig.images[service][type] + ver,
+				"image": gConfig.images[service][type] + options.semVer,
 				"registryAPI": options.gatewayIP + ":5000"
 			};
+			if (options.style === "major") {
+				config.image = gConfig.images[service][type] + options.repoVer;
+			}
 			if (type === "src") {
 				config.image = gConfig.images[service][type];
-				config.branch = "release/v" + ver;
+				config.branch = options.semVer;
+				if (options.style === "major") {
+					config.branch = "release/v" + options.repoVer;
+				}
 			}
 			let recipe = require("./recipes/" + type + "/ms/" + service + ".js")(config);
 			
@@ -216,7 +252,12 @@ let driver = {
 						return cb(error);
 					}
 					lib.getServiceIPs(deployer, config.label, 1, options.namespace, (error, response) => {
-						return cb(error, response);
+						let deployment = {
+							ip: response,
+							image: config.image,
+							branch: config.branch || null
+						};
+						return cb(error, deployment);
 					});
 				});
 			});

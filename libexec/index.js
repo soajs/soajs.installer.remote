@@ -244,7 +244,7 @@ let lib = {
 						}
 						async.waterfall([
 							(cb) => {
-								return cb(null, {});
+								return cb(null, {"deployments": {}});
 							},
 							//Check namespace
 							(obj, cb) => {
@@ -349,7 +349,8 @@ let lib = {
 									}
 									obj.gatewayIP = null;
 									if (response) {
-										obj.gatewayIP = response;
+										obj.gatewayIP = response.ip;
+										obj.deployments.gateway = response;
 									}
 									return cb(null, obj);
 								});
@@ -384,6 +385,7 @@ let lib = {
 									obj.nginxIP = null;
 									if (response) {
 										obj.nginxIP = response;
+										obj.deployments.ui = response;
 									}
 									return cb(null, obj);
 								});
@@ -406,7 +408,8 @@ let lib = {
 									}
 									obj.dashboardIP = null;
 									if (response) {
-										obj.dashboardIP = response;
+										obj.dashboardIP = response.ip;
+										obj.deployments.dashboard = response;
 									}
 									return cb(null, obj);
 								});
@@ -429,7 +432,8 @@ let lib = {
 									}
 									obj.uracIP = null;
 									if (response) {
-										obj.uracIP = response;
+										obj.uracIP = response.ip;
+										obj.deployments.urac = response;
 									}
 									return cb(null, obj);
 								});
@@ -452,7 +456,8 @@ let lib = {
 									}
 									obj.oauthIP = null;
 									if (response) {
-										obj.oauthIP = response;
+										obj.oauthIP = response.ip;
+										obj.deployments.oauth = response;
 									}
 									return cb(null, obj);
 								});
@@ -475,7 +480,8 @@ let lib = {
 									}
 									obj.multitenantIP = null;
 									if (response) {
-										obj.multitenantIP = response;
+										obj.multitenantIP = response.ip;
+										obj.deployments.multitenant = response;
 									}
 									return cb(null, obj);
 								});
@@ -483,16 +489,55 @@ let lib = {
 						], (error, obj) => {
 							logger.debug("The extKey: " + obj.extKey);
 							logger.debug("The namespace: " + options.kubernetes.namespace);
-							logger.debug("The Services IPS:");
+							
+							logger.debug("The Services Information:");
+							
 							if (!options.mongo.external) {
-								logger.debug("\tMongo: " + obj.mongoIP);
+								logger.debug("\tMongo: ");
+								logger.debug("\t\t IP: " + obj.mongoIP);
 							}
-							logger.debug("\tGateway: " + obj.gatewayIP);
-							logger.debug("\tNginx: " + obj.nginxIP);
-							logger.debug("\tDashboard: " + obj.dashboardIP);
-							logger.debug("\tURAC: " + obj.uracIP);
-							logger.debug("\toAuth: " + obj.oauthIP);
-							logger.debug("\tMultitenant: " + obj.multitenantIP);
+							
+							logger.debug("\tGateway: ");
+							logger.debug("\t\t IP: " + obj.deployments.gateway.ip);
+							logger.debug("\t\t Image: " + obj.deployments.gateway.image);
+							if (obj.deployments.gateway.branch) {
+								logger.debug("\t\t Branch: " + obj.deployments.gateway.branch);
+							}
+							
+							logger.debug("\tUI: ");
+							logger.debug("\t\t IP: " + obj.deployments.ui.ip);
+							logger.debug("\t\t Image: " + obj.deployments.ui.image);
+							if (obj.deployments.ui.branch) {
+								logger.debug("\t\t Branch: " + obj.deployments.ui.branch);
+							}
+							
+							logger.debug("\tDashboard: ");
+							logger.debug("\t\t IP: " + obj.deployments.dashboard.ip);
+							logger.debug("\t\t Image: " + obj.deployments.dashboard.image);
+							if (obj.deployments.dashboard.branch) {
+								logger.debug("\t\t Branch: " + obj.deployments.dashboard.branch);
+							}
+							
+							logger.debug("\tURAC: ");
+							logger.debug("\t\t IP: " + obj.deployments.urac.ip);
+							logger.debug("\t\t Image: " + obj.deployments.urac.image);
+							if (obj.deployments.urac.branch) {
+								logger.debug("\t\t Branch: " + obj.deployments.urac.branch);
+							}
+							
+							logger.debug("\toAuth: ");
+							logger.debug("\t\t IP: " + obj.deployments.oauth.ip);
+							logger.debug("\t\t Image: " + obj.deployments.oauth.image);
+							if (obj.deployments.oauth.branch) {
+								logger.debug("\t\t Branch: " + obj.deployments.oauth.branch);
+							}
+							
+							logger.debug("\tMultitenant: ");
+							logger.debug("\t\t IP: " + obj.deployments.multitenant.ip);
+							logger.debug("\t\t Image: " + obj.deployments.multitenant.image);
+							if (obj.deployments.multitenant.branch) {
+								logger.debug("\t\t Branch: " + obj.deployments.multitenant.branch);
+							}
 							
 							return cb(error);
 						});
