@@ -601,8 +601,15 @@ let lib = {
 							let error = new Error("Unable to find namespace: " + config.namespace);
 							return cb(error);
 						}
-						driver.info(options, deployer, (error, info) => {
-							return cb(error, info);
+						driver.info(options, deployer, (error, services) => {
+							let response = {
+								"info": {
+									"type": options.deployment.type,
+									"style": options.deployment.style
+								},
+								"services": services
+							};
+							return cb(error, response);
 						});
 					});
 				});

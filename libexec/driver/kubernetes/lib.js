@@ -347,7 +347,9 @@ let lib = {
 					}
 					if (deployments && deployments.items && deployments.items.length === 1) {
 						let oneDeployment = deployments.items[0];
-						item.image = oneDeployment.spec.template.spec.containers[0].image;
+						if (oneDeployment.spec && oneDeployment.spec.template && oneDeployment.spec.template.spec && oneDeployment.spec.template.spec.containers && oneDeployment.spec.template.spec.containers[0] && oneDeployment.spec.template.spec.containers[0].image) {
+							item.image = oneDeployment.spec.template.spec.containers[0].image;
+						}
 					}
 					servicesInfo.push(item);
 					return callback();
