@@ -333,6 +333,9 @@ let lib = {
 				if (item.serviceName === 'nginx') {
 					item.serviceName = 'ui';
 				}
+				if (item.serviceName === 'controller') {
+					item.serviceName = 'gateway';
+				}
 				if (oneService.spec.selector['service.branch']) {
 					item.branch = oneService.spec.selector['service.branch'];
 				}
