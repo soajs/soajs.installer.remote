@@ -48,8 +48,14 @@ const lib = {
 			"src": "5df3ec10fa3912534948f007"
 		},
 		"ui": {
-			"bin": "5dea9e59be70f13a183a9c70",
-			"src": "5df3ec10fa3912534948f00f"
+			"secret": {
+				"bin": "5df3ec10fa3912534948effe",
+				"src": "5df3ec10fa3912534948f00f"
+			},
+			"pvc": {
+				"bin": "5df3ec10fa3912534948f00d",
+				"src": "5df3ec10fa3912534948f00e"
+			}
 		},
 		"mongo": "5df3ec10fa3912534948f003"
 	},

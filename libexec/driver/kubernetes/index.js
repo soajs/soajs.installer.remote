@@ -53,8 +53,8 @@ let driver = {
 		}
 	},
 	"deploy": {
-		"checkNamespace": (options, deployer, createIfNotExist, cb) => {
-			lib.checkNamespace(deployer, options.namespace, createIfNotExist, (error, found) => {
+		"assureNamespace": (options, deployer, createIfNotExist, cb) => {
+			lib.assureNamespace(deployer, options.namespace, createIfNotExist, (error, found) => {
 				if (error) {
 					return cb(error);
 				}
@@ -103,9 +103,10 @@ let driver = {
 		 */
 		"nginx": (options, deployer, cb) => {
 			let type = options.type;
+			let sslType = options.sslType;
 			let config = {
 				"label": gConfig.label.ui,
-				"catId": gConfig.catalog.ui[type],
+				"catId": gConfig.catalog.ui[type][sslType],
 				"image": gConfig.images.ui[type] + options.semVer,
 				
 				"httpPort": options.httpPort,
@@ -119,7 +120,8 @@ let driver = {
 				"email": options.email,
 				
 				"deployType": options.deployType,
-				"sslSecret": options.sslSecret,
+				//"sslSecret": options.sslSecret,
+				"sslType": sslType,
 				"gatewayIP": options.gatewayIP
 			};
 			if (options.style === "major") {
@@ -263,8 +265,30 @@ let driver = {
 			});
 		}
 	},
+	/**
+	 * To update a service within the same release and patch number
+	 * @param options
+	 * @param deployer
+	 * @param cb
+	 */
+	"updateService": (options, deployer, cb) => {
+		options.label = gConfig.label[options.serviceName] + options.version.msVer;
+		options.image = {
+			"bin": gConfig.images[options.serviceName].bin,
+			"src": gConfig.images[options.serviceName].src
+		};
+		lib.updateService(deployer, options, options.namespace, (error, done) => {
+			return cb(error, done);
+		});
+	},
+	/**
+	 * Get the deployed version information
+	 * @param options
+	 * @param deployer
+	 * @param cb
+	 */
 	"info": (options, deployer, cb) => {
-		lib.getServices(deployer, {}, options.namespace, (error, servicesInfo) => {
+		lib.getServicesInfo(deployer, {}, options.namespace, (error, servicesInfo) => {
 			if (error) {
 				return cb(error);
 			}

@@ -24,6 +24,7 @@
   "dependencies": {
     "async": "3.1.0",
     "kubernetes-client": "8.3.4",
+    "mkdirp": "0.5.1",
     "path": "0.12.7",
     "randomstring": "1.1.5",
     "soajs": "2.6.1",

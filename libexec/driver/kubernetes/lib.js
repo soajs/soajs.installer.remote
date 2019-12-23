@@ -10,6 +10,8 @@
 
 const async = require('async');
 const wrapper = require('./wrapper.js');
+const fs = require('fs');
+const mkdirp = require("mkdirp");
 
 //set the logger
 const logger = require("../../utils/utils.js").getLogger();
@@ -37,7 +39,7 @@ let lib = {
 		}
 	},
 	
-	"checkNamespace": (deployer, namespace, createIfNotExist, cb) => {
+	"assureNamespace": (deployer, namespace, createIfNotExist, cb) => {
 		//1. check if namespace already exists. if it does, return true
 		//2. if namespace does not exist create it and return true
 		wrapper.namespace.get(deployer, {}, (error, namespacesList) => {
@@ -69,28 +71,7 @@ let lib = {
 			});
 		});
 	},
-	"createService": (deployer, service, namespace, cb) => {
-		if (!service || !namespace) {
-			return cb(null, true);
-		}
-		return wrapper.service.post(deployer, {namespace: namespace, body: service}, cb);
-	},
-	"createDeployment": (deployer, deployment, namespace, cb) => {
-		if (!deployment || !namespace) {
-			return cb(null, true);
-		}
-		let deploytype;
-		if (deployment.kind === "DaemonSet") {
-			deploytype = "daemonset";
-		}
-		else if (deployment.kind === "Deployment") {
-			deploytype = "deployment";
-		}
-		return wrapper[deploytype].post(deployer, {
-			namespace: namespace,
-			body: deployment
-		}, cb);
-	},
+	
 	"getServiceIPs": (deployer, serviceName, replicaCount, namespace, counter, cb) => {
 		if (typeof (counter) === 'function') {
 			cb = counter; //counter wasn't passed as param
@@ -139,6 +120,29 @@ let lib = {
 				});
 			}
 		});
+	},
+	
+	"createService": (deployer, service, namespace, cb) => {
+		if (!service || !namespace) {
+			return cb(null, true);
+		}
+		return wrapper.service.post(deployer, {namespace: namespace, body: service}, cb);
+	},
+	"createDeployment": (deployer, deployment, namespace, cb) => {
+		if (!deployment || !namespace) {
+			return cb(null, true);
+		}
+		let deploytype;
+		if (deployment.kind === "DaemonSet") {
+			deploytype = "daemonset";
+		}
+		else if (deployment.kind === "Deployment") {
+			deploytype = "deployment";
+		}
+		return wrapper[deploytype].post(deployer, {
+			namespace: namespace,
+			body: deployment
+		}, cb);
 	},
 	"createProfileSecret": (deployer, profile, namespace, cb) => {
 		let content = '"use strict";\n';
@@ -310,7 +314,257 @@ let lib = {
 		});
 	},
 	
-	"getServices": (deployer, options, namespace, cb) => {
+	"updateServiceDeployment": (deployer, oneService, oneDeployment, namespace, cb) => {
+		wrapper.service.put(deployer, {
+			namespace: namespace,
+			body: oneService,
+			name: oneService.metadata.name
+		}, (error) => {
+			if (error) {
+				return cb(error);
+			}
+			wrapper[mode].put(deployer, {
+				namespace: namespace,
+				body: oneDeployment,
+				name: oneDeployment.metadata.name
+			}, (error) => {
+				if (error) {
+					return cb(error);
+				}
+				return cb(null, true);
+			})
+		});
+	},
+	"updateService": (deployer, options, namespace, cb) => {
+		lib.getService(deployer, options.serviceName, namespace, (error, oneService) => {
+			if (error) {
+				return cb(error);
+			}
+			let oneServiceBackup = JSON.stringify(oneService);
+			let mode = oneService.metadata.labels['soajs.service.mode'];
+			lib.getDeployment(deployer, {
+				"label": oneService.spec.selector['soajs.service.label'],
+				"mode": mode
+			}, namespace, (error, oneDeployment) => {
+				if (error) {
+					return cb(error);
+				}
+				let oneDeploymentBackup = JSON.stringify(oneDeployment);
+				lib.getServiceInfo(deployer, oneService, namespace, (error, item) => {
+					if (error) {
+						return cb(error);
+					}
+					let type = "bin";
+					let style = "sem";
+					if (item.branch) {
+						type = "src";
+						if (item.branch.indexOf(".x") !== -1) {
+							style = "major";
+						}
+					} else {
+						if (item.image.indexOf(".x") !== -1) {
+							style = "major";
+						}
+					}
+					logger.debug(options.serviceName + " deployment has type [" + type + "] and style [" + style + "]");
+					
+					if (type === "bin") {
+						if (style === "sem") {
+							options.image[type] += options.version.semVer;
+						} else {
+							options.image[type] += options.version.ver;
+						}
+					}
+					
+					let mustUpdate = false;
+					if (item.serviceVer !== ('' + options.version.msVer)) {
+						mustUpdate = true;
+						logger.debug(options.serviceName + " serviceVer changed from [" + item.serviceVer + "] to [" + options.version.msVer + "]");
+						oneService.metadata.name = options.label + "-service";
+						oneService.metadata.labels['soajs.service.version'] = '' + options.version.msVer;
+						oneService.metadata.labels['soajs.service.label'] = options.label;
+						oneService.spec.selector['soajs.service.label'] = options.label;
+						
+						oneDeployment.metadata.name = options.label + "-service";
+						oneDeployment.metadata.labels['soajs.service.version'] = '' + options.version.msVer;
+						oneDeployment.metadata.labels['soajs.service.label'] = options.label;
+						oneDeployment.spec.selector.matchLabels['soajs.service.label'] = options.label;
+						oneDeployment.spec.template.metadata.name = options.label + "-service";
+						oneDeployment.spec.template.metadata.labels['soajs.service.version'] = '' + options.version.msVer;
+						oneDeployment.spec.template.metadata.labels['soajs.service.label'] = options.label;
+						
+					}
+					if (item.image !== options.image[type]) {
+						mustUpdate = true;
+						logger.debug(options.serviceName + " image changed from [" + item.image + "] to [" + options.image[type] + "]");
+						oneDeployment.spec.template.spec.containers[0].image = options.image[type];
+					}
+					if (item.branch) {
+						let newBranch = null;
+						if (style === "sem") {
+							if (item.branch !== options.version.semVer) {
+								newBranch = options.version.semVer;
+								logger.debug(options.serviceName + " branch changed from [" + item.branch + "] to [" + newBranch + "]");
+							}
+						} else {
+							if (item.branch !== ("release/v" + options.version.ver)) {
+								newBranch = "release/v" + options.version.ver;
+								logger.debug(options.serviceName + " branch changed from [" + item.branch + "] to [" + newBranch + "]");
+							}
+						}
+						if (newBranch) {
+							mustUpdate = true;
+							oneService.metadata.labels['service.branch'] = newBranch;
+							
+							oneDeployment.metadata.labels['service.branch'] = newBranch;
+							oneDeployment.spec.template.metadata.labels['service.branch'] = newBranch;
+							
+							for (let i = 0; i < oneDeployment.spec.template.spec.containers[0].env.length; i++) {
+								let oneEnv = oneDeployment.spec.template.spec.containers[0].env[i];
+								if (oneEnv.name === "SOAJS_GIT_BRANCH") {
+									oneDeployment.spec.template.spec.containers[0].env[i].value = newBranch;
+									break;
+								}
+							}
+						}
+					}
+					
+					if (mustUpdate) {
+						let update = () => {
+							lib.updateServiceDeployment(deployer, oneService, oneDeployment, name, (error, done) => {
+								if (error) {
+									return cb(error);
+								}
+								return cb(null, true);
+							});
+						};
+						if (options.rollback && options.rollback.path) {
+							let rollbackID = new Date().getTime().toString();
+							let filePath = options.rollback.path + "/" + rollbackID + "/";
+							logger.info("The rollback ID for this update is: " + rollbackID);
+							mkdirp(filePath, (error) => {
+								if (error) {
+									logger.error(`An error occurred while writing rollback folder ${filePath}`);
+									return cb(error);
+								}
+								fs.writeFile(filePath + "oneservice.txt", oneServiceBackup, (error) => {
+									if (error) {
+										logger.error(`An error occurred while writing ${filePath}oneservice.txt, skipping file ...`);
+										return cb(error);
+									}
+									fs.writeFile(filePath + "oneDeployment.txt", oneDeploymentBackup, (error) => {
+										if (error) {
+											logger.error(`An error occurred while writing ${filePath}oneDeployment.txt, skipping file ...`);
+											return cb(error);
+										}
+										update();
+									});
+								});
+							});
+						} else {
+							logger.info("Unable to create rollback for this update ...");
+							update();
+						}
+					} else {
+						logger.debug(options.serviceName + " does not need updates.");
+						return cb(null, false);
+					}
+				});
+			});
+		});
+	},
+	
+	/**
+	 * Return the complete service information at location 0
+	 * @param deployer
+	 * @param serviceName
+	 * @param namespace
+	 * @param cb
+	 */
+	"getService": (deployer, serviceName, namespace, cb) => {
+		if (serviceName === 'ui') {
+			serviceName = 'nginx';
+		}
+		if (serviceName === 'gateway') {
+			serviceName = 'controller';
+		}
+		let filter = {labelSelector: 'soajs.service.name=' + serviceName, gracePeriodSeconds: 0};
+		wrapper.service.get(deployer, {namespace: namespace, qs: filter}, (error, serviceList) => {
+			if (error) {
+				return cb(error);
+			}
+			if (!serviceList || !serviceList.items || serviceList.items.length === 0) {
+				return cb(new Error("Unable to find service: " + serviceName));
+			}
+			return cb(null, serviceList.items[0]);
+		});
+	},
+	/**
+	 * Return the complete deployment/daemonset information at location 0
+	 * @param deployer
+	 * @param options
+	 * @param namespace
+	 * @param cb
+	 */
+	"getDeployment": (deployer, options, namespace, cb) => {
+		let filter = {labelSelector: 'soajs.service.label=' + options.label};
+		let mode = options.mode;
+		wrapper[mode].get(deployer, {
+			namespace: namespace,
+			qs: filter
+		}, (error, deployments) => {
+			if (error) {
+				return cb(error);
+			}
+			if (!deployments || !deployments.items || deployments.items.length === 0) {
+				return cb(new Error("Unable to find a " + mode + " for " + options.label));
+			}
+			return cb(null, deployments.items[0]);
+		});
+	},
+	/**
+	 * Needs a complete service information and return a summary of the service and deployment/daemonset
+	 * @param deployer
+	 * @param oneService
+	 * @param namespace
+	 * @param cb
+	 */
+	"getServiceInfo": (deployer, oneService, namespace, cb) => {
+		let item = {
+			"serviceName": oneService.metadata.labels['soajs.service.name'],
+			"name": oneService.metadata.name,
+			"ip": oneService.spec.clusterIP,
+			"serviceVer": oneService.metadata.labels['soajs.service.version'],
+			"mode": oneService.metadata.labels['soajs.service.mode'],
+			"label": oneService.spec.selector['soajs.service.label']
+		};
+		if (item.serviceName === 'nginx') {
+			item.serviceName = 'ui';
+		}
+		if (item.serviceName === 'controller') {
+			item.serviceName = 'gateway';
+		}
+		if (oneService.metadata.labels['service.branch']) {
+			item.branch = oneService.metadata.labels['service.branch'];
+		}
+		lib.getDeployment(deployer, {"label": item.label, "mode": item.mode}, namespace, (error, oneDeployment) => {
+			if (error) {
+				return cb(error);
+			}
+			if (oneDeployment.spec && oneDeployment.spec.template && oneDeployment.spec.template.spec && oneDeployment.spec.template.spec.containers && oneDeployment.spec.template.spec.containers[0] && oneDeployment.spec.template.spec.containers[0].image) {
+				item.image = oneDeployment.spec.template.spec.containers[0].image;
+			}
+			return cb(null, item);
+		});
+	},
+	/**
+	 * Return all services and deployment/daemonset summary information with soajs.content=true as label
+	 * @param deployer
+	 * @param options
+	 * @param namespace
+	 * @param cb
+	 */
+	"getServicesInfo": (deployer, options, namespace, cb) => {
 		let filter = {labelSelector: 'soajs.content=true', gracePeriodSeconds: 0};
 		wrapper.service.get(deployer, {namespace: namespace, qs: filter}, (error, serviceList) => {
 			if (error) {
@@ -322,37 +576,9 @@ let lib = {
 			}
 			let servicesInfo = [];
 			async.each(serviceList.items, (oneService, callback) => {
-				let item = {
-					"serviceName": oneService.metadata.labels['soajs.service.name'],
-					"name": oneService.metadata.name,
-					"ip": oneService.spec.clusterIP,
-					"serviceVer": oneService.metadata.labels['soajs.service.version'],
-					"mode": oneService.metadata.labels['soajs.service.mode'],
-					"label": oneService.spec.selector['soajs.service.label']
-				};
-				if (item.serviceName === 'nginx') {
-					item.serviceName = 'ui';
-				}
-				if (item.serviceName === 'controller') {
-					item.serviceName = 'gateway';
-				}
-				if (oneService.spec.selector['service.branch']) {
-					item.branch = oneService.spec.selector['service.branch'];
-				}
-				let filter = {labelSelector: 'soajs.service.label=' + item.label};
-				let mode = item.mode;
-				wrapper[mode].get(deployer, {
-					namespace: namespace,
-					qs: filter
-				}, (error, deployments) => {
+				lib.getServiceInfo(deployer, oneService, namespace, (error, item) => {
 					if (error) {
 						return callback(error);
-					}
-					if (deployments && deployments.items && deployments.items.length === 1) {
-						let oneDeployment = deployments.items[0];
-						if (oneDeployment.spec && oneDeployment.spec.template && oneDeployment.spec.template.spec && oneDeployment.spec.template.spec.containers && oneDeployment.spec.template.spec.containers[0] && oneDeployment.spec.template.spec.containers[0].image) {
-							item.image = oneDeployment.spec.template.spec.containers[0].image;
-						}
 					}
 					servicesInfo.push(item);
 					return callback();

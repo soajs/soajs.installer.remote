@@ -138,6 +138,7 @@ let doc = {
 					],
 					"args": [
 						"-c",
+						"node index.js -T nginx -S deploy",
 						"node index.js -T nginx -S install",
 						"/opt/soajs/soajs.deployer/deployer/bin/nginx.sh"
 					]
