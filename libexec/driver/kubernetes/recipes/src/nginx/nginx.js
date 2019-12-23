@@ -156,7 +156,7 @@ function getrecipe(localConfig) {
 									},
 									{
 										"name": "SOAJS_SSL_CONFIG",
-										"value": '{"email":"' + localConfig.email + '" ,"redirect":false}'
+										"value": '{"email":"' + localConfig.email + '" ,"redirect":"false"}'
 									}
 								],
 								"volumeMounts": []
