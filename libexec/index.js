@@ -609,7 +609,7 @@ let lib = {
 					let config = {
 						"namespace": options.kubernetes.namespace
 					};
-					driver.deploy.checkNamespace(config, deployer, false, (error, found) => {
+					driver.deploy.assureNamespace(config, deployer, false, (error, found) => {
 						if (error) {
 							return cb(error);
 						}
@@ -654,7 +654,7 @@ let lib = {
 					let config = {
 						"namespace": options.kubernetes.namespace
 					};
-					driver.deploy.checkNamespace(config, deployer, false, (error, found) => {
+					driver.deploy.assureNamespace(config, deployer, false, (error, found) => {
 						if (error) {
 							return cb(error);
 						}
