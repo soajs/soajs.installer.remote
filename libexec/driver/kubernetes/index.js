@@ -106,7 +106,7 @@ let driver = {
 			let sslType = options.sslType;
 			let config = {
 				"label": gConfig.label.ui,
-				"catId": gConfig.catalog.ui[type][sslType],
+				"catId": gConfig.catalog.ui[sslType][type],
 				"image": gConfig.images.ui[type] + options.semVer,
 				
 				"httpPort": options.httpPort,

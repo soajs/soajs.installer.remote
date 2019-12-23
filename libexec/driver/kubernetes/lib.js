@@ -42,6 +42,8 @@ let lib = {
 	"assureNamespace": (deployer, namespace, createIfNotExist, cb) => {
 		//1. check if namespace already exists. if it does, return true
 		//2. if namespace does not exist create it and return true
+		
+		logger.info('Checking for namespace: ' + namespace + ' and creating if not there is [' + createIfNotExist + '] ...');
 		wrapper.namespace.get(deployer, {}, (error, namespacesList) => {
 			if (error) {
 				return cb(error, null);

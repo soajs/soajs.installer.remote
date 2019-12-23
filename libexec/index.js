@@ -247,45 +247,46 @@ let lib = {
 						return cb(error);
 					}
 					async.waterfall([
-						(cb) => {
-							return cb(null, {"deployments": {}});
+						(callback) => {
+							return callback(null, {"deployments": {}});
 						},
 						
 						//clean up if namespace is there
-						(obj, cb) => {
+						(obj, callback) => {
+							let config = {
+								"namespace": options.kubernetes.namespace
+							};
 							driver.deploy.assureNamespace(config, deployer, false, (error, found) => {
 								if (found) {
-									let config = {
-										"namespace": options.kubernetes.namespace
-									};
+									logger.info("namespace [" + config.namespace + "] cleaning previous installation");
 									driver.cleanUp(config, deployer, (error) => {
 										if (error) {
-											return cb(error);
+											return callback(error);
 										}
-										return cb(null, obj);
+										return callback(null, obj);
 									});
 								} else {
-									return cb(null, obj);
+									return callback(null, obj);
 								}
 							});
 						},
 						//Assure namespace
-						(obj, cb) => {
+						(obj, callback) => {
 							let config = {
 								"namespace": options.kubernetes.namespace
 							};
 							driver.deploy.assureNamespace(config, deployer, true, (error) => {
 								if (error) {
-									return cb(error, obj);
+									return callback(error, obj);
 								}
-								return cb(null, obj);
+								return callback(null, obj);
 							});
 						},
 						//Install mongo
-						(obj, cb) => {
+						(obj, callback) => {
 							if (options.mongo.external) {
 								logger.info('External Mongo deployment detected, data containers will not be deployed ...');
-								return cb(null, obj);
+								return callback(null, obj);
 							} else {
 								let config = {
 									"port": options.mongo.port,
@@ -293,18 +294,18 @@ let lib = {
 								};
 								driver.deploy.mongo(config, deployer, (error, response) => {
 									if (error) {
-										return cb(error, obj);
+										return callback(error, obj);
 									}
 									obj.mongoIP = null;
 									if (response) {
 										obj.mongoIP = response;
 									}
-									return cb(null, obj);
+									return callback(null, obj);
 								})
 							}
 						},
 						//Patch data
-						(obj, cb) => {
+						(obj, callback) => {
 							let profileImport = null;
 							let profileSecret = null;
 							if (obj.mongoIP) {
@@ -337,7 +338,7 @@ let lib = {
 									};
 									generateKey(opts, (error, extKey) => {
 										if (error) {
-											return cb(error, obj);
+											return callback(error, obj);
 										}
 										obj.extKey = extKey;
 										importData(options, {
@@ -347,16 +348,16 @@ let lib = {
 										}, profileImport, (error, msg) => {
 											logger.debug(msg);
 											obj.profileSecret = profileSecret;
-											return cb(null, obj);
+											return callback(null, obj);
 										});
 									});
 								}, 30000);
 							} else {
-								return cb(new Error("Mongo profile is not healthy, unable to continue"), obj);
+								return callback(new Error("Mongo profile is not healthy, unable to continue"), obj);
 							}
 						},
 						//Install gateway
-						(obj, cb) => {
+						(obj, callback) => {
 							let config = {
 								"profileSecret": obj.profileSecret,
 								"type": options.deployment.type,
@@ -368,18 +369,18 @@ let lib = {
 							};
 							driver.deploy.gateway(config, deployer, (error, response) => {
 								if (error) {
-									return cb(error, obj);
+									return callback(error, obj);
 								}
 								obj.gatewayIP = null;
 								if (response) {
 									obj.gatewayIP = response.ip;
 									obj.deployments.gateway = response;
 								}
-								return cb(null, obj);
+								return callback(null, obj);
 							});
 						},
 						//Install nginx
-						(obj, cb) => {
+						(obj, callback) => {
 							let config = {
 								"type": options.deployment.type,
 								"style": options.deployment.style,
@@ -404,18 +405,18 @@ let lib = {
 							};
 							driver.deploy.nginx(config, deployer, (error, response) => {
 								if (error) {
-									return cb(error, obj);
+									return callback(error, obj);
 								}
 								obj.nginxIP = null;
 								if (response) {
 									obj.nginxIP = response;
 									obj.deployments.ui = response;
 								}
-								return cb(null, obj);
+								return callback(null, obj);
 							});
 						},
 						//Install dashboard service
-						(obj, cb) => {
+						(obj, callback) => {
 							let config = {
 								"type": options.deployment.type,
 								"style": options.deployment.style,
@@ -428,18 +429,18 @@ let lib = {
 							};
 							driver.deploy.service(config, deployer, (error, response) => {
 								if (error) {
-									return cb(error, obj);
+									return callback(error, obj);
 								}
 								obj.dashboardIP = null;
 								if (response) {
 									obj.dashboardIP = response.ip;
 									obj.deployments.dashboard = response;
 								}
-								return cb(null, obj);
+								return callback(null, obj);
 							});
 						},
 						//Install urac service
-						(obj, cb) => {
+						(obj, callback) => {
 							let config = {
 								"type": options.deployment.type,
 								"style": options.deployment.style,
@@ -452,18 +453,18 @@ let lib = {
 							};
 							driver.deploy.service(config, deployer, (error, response) => {
 								if (error) {
-									return cb(error, obj);
+									return callback(error, obj);
 								}
 								obj.uracIP = null;
 								if (response) {
 									obj.uracIP = response.ip;
 									obj.deployments.urac = response;
 								}
-								return cb(null, obj);
+								return callback(null, obj);
 							});
 						},
 						//Install oauth service
-						(obj, cb) => {
+						(obj, callback) => {
 							let config = {
 								"type": options.deployment.type,
 								"style": options.deployment.style,
@@ -476,18 +477,18 @@ let lib = {
 							};
 							driver.deploy.service(config, deployer, (error, response) => {
 								if (error) {
-									return cb(error, obj);
+									return callback(error, obj);
 								}
 								obj.oauthIP = null;
 								if (response) {
 									obj.oauthIP = response.ip;
 									obj.deployments.oauth = response;
 								}
-								return cb(null, obj);
+								return callback(null, obj);
 							});
 						},
 						//Install multitenant service
-						(obj, cb) => {
+						(obj, callback) => {
 							let config = {
 								"type": options.deployment.type,
 								"style": options.deployment.style,
@@ -500,14 +501,14 @@ let lib = {
 							};
 							driver.deploy.service(config, deployer, (error, response) => {
 								if (error) {
-									return cb(error, obj);
+									return callback(error, obj);
 								}
 								obj.multitenantIP = null;
 								if (response) {
 									obj.multitenantIP = response.ip;
 									obj.deployments.multitenant = response;
 								}
-								return cb(null, obj);
+								return callback(null, obj);
 							});
 						}
 					], (error, obj) => {
