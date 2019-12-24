@@ -476,6 +476,48 @@ let lib = {
 		});
 	},
 	
+	"backupService": (deployer, options, namespace, cb) => {
+		lib.getService(deployer, options.serviceName, namespace, (error, oneService) => {
+			if (error) {
+				return cb(error);
+			}
+			let oneServiceBackup = JSON.stringify(oneService);
+			
+			let mode = oneService.metadata.labels['soajs.service.mode'];
+			lib.getDeployment(deployer, {
+				"label": oneService.spec.selector['soajs.service.label'],
+				"mode": mode
+			}, namespace, (error, oneDeployment) => {
+				if (error) {
+					return cb(error);
+				}
+				let oneDeploymentBackup = JSON.stringify(oneDeployment);
+				
+				if (options.backup && options.backup.path) {
+					let filePath = options.backup.path;
+					mkdirp(filePath, (error) => {
+						if (error) {
+							logger.error(`An error occurred while writing to backup folder ${filePath}`);
+							return cb(error);
+						}
+						fs.writeFile(filePath + options.serviceName + "-service.txt", oneServiceBackup, (error) => {
+							if (error) {
+								logger.error(`An error occurred while writing ${filePath}oneservice.txt, skipping file ...`);
+								return cb(error);
+							}
+							fs.writeFile(filePath + options.serviceName + "-deployment.txt", oneDeploymentBackup, (error) => {
+								if (error) {
+									logger.error(`An error occurred while writing ${filePath}oneDeployment.txt, skipping file ...`);
+									return cb(error);
+								}
+								return cb(null, true);
+							});
+						});
+					});
+				}
+			});
+		});
+	},
 	/**
 	 * Return the complete service information at location 0
 	 * @param deployer

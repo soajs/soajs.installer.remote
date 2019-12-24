@@ -281,6 +281,12 @@ let driver = {
 			return cb(error, done);
 		});
 	},
+	
+	"backupService": (options, deployer, cb) => {
+		lib.backupService(deployer, options, options.namespace, (error, done) => {
+			return cb(error, done);
+		});
+	},
 	/**
 	 * Get the deployed version information
 	 * @param options

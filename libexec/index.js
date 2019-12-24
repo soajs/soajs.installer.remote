@@ -639,6 +639,38 @@ let lib = {
 		});
 	},
 	
+	"backupService": (options, serviceName, backup, cb) => {
+		validateOptions(options, (error) => {
+			if (error) {
+				logger.error(error);
+				return cb(new Error("Unable to continue, please provide valid configuration!"));
+			}
+			if (drivers[options.driverName]) {
+				let driver = drivers[options.driverName];
+				let config = {
+					"ip": options.kubernetes.ip,
+					"port": options.kubernetes.port,
+					"token": options.kubernetes.token
+				};
+				driver.init(config, (error, deployer) => {
+					if (error) {
+						return cb(error);
+					}
+					let config = {
+						"namespace": options.kubernetes.namespace,
+						"serviceName": serviceName,
+						"backup": backup
+					};
+					driver.backupService(config, deployer, (error, done) => {
+						return cb(error, done);
+					});
+				});
+			} else {
+				return cb(new Error("Unable to find driver [" + options.driverName + "] in configuration"));
+			}
+		});
+	},
+	
 	"getInfo": (options, cb) => {
 		validateOptions(options, (error) => {
 			if (error) {
