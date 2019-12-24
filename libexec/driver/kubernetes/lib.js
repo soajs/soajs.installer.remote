@@ -449,14 +449,14 @@ let lib = {
 									logger.error(`An error occurred while writing rollback folder ${filePath}`);
 									return cb(error);
 								}
-								fs.writeFile(filePath + "oneservice.txt", oneServiceBackup, (error) => {
+								fs.writeFile(filePath + "service.txt", oneServiceBackup, (error) => {
 									if (error) {
-										logger.error(`An error occurred while writing ${filePath}oneservice.txt, skipping file ...`);
+										logger.error(`An error occurred while writing ${filePath}service.txt, skipping file ...`);
 										return cb(error);
 									}
-									fs.writeFile(filePath + "oneDeployment.txt", oneDeploymentBackup, (error) => {
+									fs.writeFile(filePath + "deployment.txt", oneDeploymentBackup, (error) => {
 										if (error) {
-											logger.error(`An error occurred while writing ${filePath}oneDeployment.txt, skipping file ...`);
+											logger.error(`An error occurred while writing ${filePath}deployment.txt, skipping file ...`);
 											return cb(error);
 										}
 										update();
@@ -494,18 +494,18 @@ let lib = {
 				let oneDeploymentBackup = JSON.stringify(oneDeployment);
 				
 				if (options.backup && options.backup.path) {
-					let filePath = options.backup.path;
+					let filePath = options.backup.path + options.serviceName;
 					mkdirp(filePath, (error) => {
 						if (error) {
 							logger.error(`An error occurred while writing to backup folder ${filePath}`);
 							return cb(error);
 						}
-						fs.writeFile(filePath + options.serviceName + "-service.txt", oneServiceBackup, (error) => {
+						fs.writeFile(filePath + "/service.txt", oneServiceBackup, (error) => {
 							if (error) {
 								logger.error(`An error occurred while writing ${filePath}oneservice.txt, skipping file ...`);
 								return cb(error);
 							}
-							fs.writeFile(filePath + options.serviceName + "-deployment.txt", oneDeploymentBackup, (error) => {
+							fs.writeFile(filePath + "/deployment.txt", oneDeploymentBackup, (error) => {
 								if (error) {
 									logger.error(`An error occurred while writing ${filePath}oneDeployment.txt, skipping file ...`);
 									return cb(error);
