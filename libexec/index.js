@@ -574,6 +574,11 @@ let lib = {
 		});
 	},
 	
+	/**
+	 * Get saved setting in settings collection
+	 * @param options
+	 * @param cb
+	 */
 	"getSettings": (options, cb) => {
 		validateOptions(options, (error) => {
 			if (error) {
@@ -662,7 +667,7 @@ let lib = {
 							let error = new Error("Unable to find namespace: " + config.namespace);
 							return cb(error);
 						}
-						driver.info(options, deployer, (error, services) => {
+						driver.info(config, deployer, (error, services) => {
 							let response = {
 								"info": {
 									"type": options.deployment.type,

@@ -40,6 +40,10 @@ let doc = {
 			"invitePin": {
 				"subject": "Pin Code Created at SOAJS",
 				"path": "/opt/soajs/node_modules/soajs.urac/mail/urac/inviteCode.tmpl"
+			},
+			"resetPin": {
+				"subject": "Pin Code Reset at SOAJS",
+				"path": "/opt/soajs/node_modules/soajs.urac/mail/urac/resetPin.tmpl"
 			}
 		}
 	},
