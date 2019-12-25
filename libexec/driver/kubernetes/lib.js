@@ -39,11 +39,12 @@ let lib = {
 		}
 	},
 	
-	"assureNamespace": (deployer, namespace, createIfNotExist, cb) => {
+	"assureNamespace": (deployer, namespace, createIfNotExist, verbose, cb) => {
 		//1. check if namespace already exists. if it does, return true
 		//2. if namespace does not exist create it and return true
-		
-		logger.info('Checking for namespace: ' + namespace + ' and creating if not there is [' + createIfNotExist + '] ...');
+		if (verbose) {
+			logger.info('Checking for namespace: ' + namespace + ' and creating if not there is [' + createIfNotExist + '] ...');
+		}
 		wrapper.namespace.get(deployer, {}, (error, namespacesList) => {
 			if (error) {
 				return cb(error, null);
@@ -52,11 +53,15 @@ let lib = {
 				return callback(null, oneNamespace.metadata.name === namespace);
 			}, (error, foundNamespace) => {
 				if (foundNamespace) {
-					logger.info('Found namespace: ' + foundNamespace.metadata.name + ' ...');
+					if (verbose) {
+						logger.info('Found namespace: ' + foundNamespace.metadata.name + ' ...');
+					}
 					return cb(null, true);
 				}
 				if (createIfNotExist) {
-					logger.info('Creating a new namespace: ' + namespace + ' ...');
+					if (verbose) {
+						logger.info('Creating a new namespace: ' + namespace + ' ...');
+					}
 					let recipe = {
 						kind: 'Namespace',
 						apiVersion: 'v1',
@@ -437,7 +442,7 @@ let lib = {
 								if (error) {
 									return cb(error);
 								}
-								return cb(null, true);
+								return cb(null, done);
 							});
 						};
 						if (options.rollback && options.rollback.path) {

@@ -254,7 +254,8 @@ let lib = {
 						//clean up if namespace is there
 						(obj, callback) => {
 							let config = {
-								"namespace": options.kubernetes.namespace
+								"namespace": options.kubernetes.namespace,
+								"verbose": false
 							};
 							driver.deploy.assureNamespace(config, deployer, false, (error, found) => {
 								if (found) {
@@ -273,7 +274,8 @@ let lib = {
 						//Assure namespace
 						(obj, callback) => {
 							let config = {
-								"namespace": options.kubernetes.namespace
+								"namespace": options.kubernetes.namespace,
+								"verbose": true
 							};
 							driver.deploy.assureNamespace(config, deployer, true, (error) => {
 								if (error) {
@@ -612,23 +614,24 @@ let lib = {
 						return cb(error);
 					}
 					let config = {
-						"namespace": options.kubernetes.namespace
+						"namespace": options.kubernetes.namespace,
+						"verbose": false
 					};
 					driver.deploy.assureNamespace(config, deployer, false, (error, found) => {
 						if (error) {
 							return cb(error);
 						}
-						let config = {
+						if (!found) {
+							let error = new Error("Unable to find namespace: " + config.namespace);
+							return cb(error);
+						}
+						let config2 = {
 							"namespace": options.kubernetes.namespace,
 							"serviceName": serviceName,
 							"version": options.versions.services[serviceName],
 							"rollback": rollback
 						};
-						if (!found) {
-							let error = new Error("Unable to find namespace: " + config.namespace);
-							return cb(error);
-						}
-						driver.updateService(config, deployer, (error, done) => {
+						driver.updateService(config2, deployer, (error, done) => {
 							return cb(error, done);
 						});
 					});
@@ -656,13 +659,75 @@ let lib = {
 					if (error) {
 						return cb(error);
 					}
+					
 					let config = {
 						"namespace": options.kubernetes.namespace,
-						"serviceName": serviceName,
-						"backup": backup
+						"verbose": false
 					};
-					driver.backupService(config, deployer, (error, done) => {
-						return cb(error, done);
+					driver.deploy.assureNamespace(config, deployer, false, (error, found) => {
+						if (error) {
+							return cb(error);
+						}
+						if (!found) {
+							let error = new Error("Unable to find namespace: " + config.namespace);
+							return cb(error);
+						}
+						
+						let config2 = {
+							"namespace": options.kubernetes.namespace,
+							"serviceName": serviceName,
+							"backup": backup
+						};
+						driver.backupService(config2, deployer, (error, done) => {
+							return cb(error, done);
+						});
+					});
+				});
+			} else {
+				return cb(new Error("Unable to find driver [" + options.driverName + "] in configuration"));
+			}
+		});
+	},
+	
+	"restoreOne": (options, oneService, oneDeployment, cb) => {
+		validateOptions(options, (error) => {
+			if (error) {
+				logger.error(error);
+				return cb(new Error("Unable to continue, please provide valid configuration!"));
+			}
+			if (drivers[options.driverName]) {
+				let driver = drivers[options.driverName];
+				let config = {
+					"ip": options.kubernetes.ip,
+					"port": options.kubernetes.port,
+					"token": options.kubernetes.token
+				};
+				driver.init(config, (error, deployer) => {
+					if (error) {
+						return cb(error);
+					}
+					
+					let config = {
+						"namespace": options.kubernetes.namespace,
+						"verbose": false
+					};
+					driver.deploy.assureNamespace(config, deployer, false, (error, found) => {
+						if (error) {
+							return cb(error);
+						}
+						if (!found) {
+							let error = new Error("Unable to find namespace: " + config.namespace);
+							return cb(error);
+						}
+						
+						let config2 = {
+							"namespace": options.kubernetes.namespace,
+							"oneService": oneService,
+							"oneDeployment": oneDeployment
+						};
+						driver.restoreServiceDeployment(config2, deployer, (error, done) => {
+							return cb(error, done);
+						});
 					});
 				});
 			} else {
@@ -689,7 +754,8 @@ let lib = {
 						return cb(error);
 					}
 					let config = {
-						"namespace": options.kubernetes.namespace
+						"namespace": options.kubernetes.namespace,
+						"verbose": false
 					};
 					driver.deploy.assureNamespace(config, deployer, false, (error, found) => {
 						if (error) {

@@ -54,7 +54,7 @@ let driver = {
 	},
 	"deploy": {
 		"assureNamespace": (options, deployer, createIfNotExist, cb) => {
-			lib.assureNamespace(deployer, options.namespace, createIfNotExist, (error, found) => {
+			lib.assureNamespace(deployer, options.namespace, createIfNotExist, options.verbose, (error, found) => {
 				if (error) {
 					return cb(error);
 				}
@@ -304,6 +304,12 @@ let driver = {
 			}
 			return cb(null, servicesInfo);
 		})
+	},
+	
+	"restoreServiceDeployment": (options, deployer, cb) => {
+		lib.updateServiceDeployment(deployer, options.oneService, options.oneDeployment, options.namespace, (error) => {
+			return cb(error);
+		});
 	},
 	
 	"cleanUp": (options, deployer, cb) => {
