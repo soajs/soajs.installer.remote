@@ -151,10 +151,6 @@ function getrecipe(localConfig) {
 									},
 									
 									{
-										"name": "SOAJS_SSL_SECRET",
-										"value": 'true'
-									},
-									{
 										"name": "SOAJS_SSL_CONFIG",
 										"value": '{"email":"' + localConfig.email + '" ,"redirect":"false"}'
 									}
@@ -169,6 +165,29 @@ function getrecipe(localConfig) {
 		}
 	};
 	
+	if (localConfig.sslType === "pvc") {
+		components.deployment.spec.template.spec.containers[0].volumeMounts.push(
+			{
+				"mountPath": "/opt/soajs/certificates/",
+				"name": "soajscert"
+			}
+		);
+		components.deployment.spec.template.spec.volumes.push(
+			{
+				"name": "soajscert",
+				"persistentVolumeClaim": {
+					"claimName": localConfig.pvcClaimName
+				}
+			}
+		);
+	} else {
+		components.deployment.spec.template.spec.containers[0].env.push(
+			{
+				"name": "SOAJS_SSL_SECRET",
+				"value": 'true'
+			}
+		);
+	}
 	
 	components.deployment.spec.template.spec.containers[0].env.push(
 		{
@@ -200,7 +219,7 @@ module.exports = function (_config) {
 		"extKey": _config.extKey,
 		"email": _config.email,
 		"deployType": _config.deployType,
-		"sslSecret": _config.sslSecret,
+		//"sslSecret": _config.sslSecret,
 		"gatewayIP": _config.gatewayIP,
 		"_labels": {
 			"service.image.ts": new Date().getTime().toString(),

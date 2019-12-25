@@ -123,6 +123,7 @@ function getrecipe(localConfig) {
 										"name": "SOAJS_NX_CONTROLLER_PORT",
 										"value": "4000"
 									},
+									
 									{
 										"name": "SOAJS_SSL_CONFIG",
 										"value": '{"email":"' + localConfig.email + '" ,"redirect":"false"}'
@@ -161,6 +162,7 @@ function getrecipe(localConfig) {
 			}
 		);
 	}
+	
 	components.deployment.spec.template.spec.containers[0].env.push(
 		{
 			"name": "SOAJS_NX_CONTROLLER_IP_1",
