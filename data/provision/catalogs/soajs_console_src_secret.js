@@ -63,14 +63,14 @@ let doc = {
 					"docker": {},
 					"kubernetes": {
 						"volume": {
-							"name": "private_key",
+							"name": "private-key",
 							"secret": {
-								"secretName": "private_key"
+								"secretName": "private-key"
 							}
 						},
 						"volumeMount": {
 							"mountPath": "/opt/soajs/certificates/secret/private_key/",
-							"name": "private_key"
+							"name": "private-key"
 						}
 					}
 				},
@@ -78,14 +78,14 @@ let doc = {
 					"docker": {},
 					"kubernetes": {
 						"volume": {
-							"name": "fullchain_crt",
+							"name": "fullchain-crt",
 							"secret": {
-								"secretName": "fullchain_crt"
+								"secretName": "fullchain-crt"
 							}
 						},
 						"volumeMount": {
 							"mountPath": "/opt/soajs/certificates/secret/fullchain_crt/",
-							"name": "fullchain_crt"
+							"name": "fullchain-crt"
 						}
 					}
 				}
