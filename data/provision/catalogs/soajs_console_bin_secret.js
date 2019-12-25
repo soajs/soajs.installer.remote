@@ -50,7 +50,38 @@ let doc = {
 					"preserveClientIP": true
 				}
 			],
-			"voluming": [],
+			"voluming": [
+				{
+					"docker": {},
+					"kubernetes": {
+						"volume": {
+							"name": "private-key",
+							"secret": {
+								"secretName": "private-key"
+							}
+						},
+						"volumeMount": {
+							"mountPath": "/opt/soajs/certificates/secret/private_key/",
+							"name": "private-key"
+						}
+					}
+				},
+				{
+					"docker": {},
+					"kubernetes": {
+						"volume": {
+							"name": "fullchain-crt",
+							"secret": {
+								"secretName": "fullchain-crt"
+							}
+						},
+						"volumeMount": {
+							"mountPath": "/opt/soajs/certificates/secret/fullchain_crt/",
+							"name": "fullchain-crt"
+						}
+					}
+				}
+			],
 			"restartPolicy": {
 				"condition": "any",
 				"maxAttempts": 5

@@ -235,12 +235,23 @@ let schema = {
 					"enum": ['NodePort', 'LoadBalancer'],
 					"required": true
 				},
-				/*
+				
 				"sslSecret": {
-					"type": "boolean",
-					"required": true
+					"type": "object",
+					"required": false,
+					"additionalProperties": false,
+					"properties": {
+						"private_key": {
+							"type": "string",
+							"required": true
+						},
+						"fullchain_crt": {
+							"type": "string",
+							"required": true
+						}
+					}
 				},
-				*/
+				
 				"httpPort": {
 					"type": "integer",
 					"required": true
@@ -252,7 +263,7 @@ let schema = {
 				"sslType": {
 					"type": "string",
 					"enum": ['pvc', 'secret'],
-					"required": false
+					"required": true
 				}
 			}
 		},

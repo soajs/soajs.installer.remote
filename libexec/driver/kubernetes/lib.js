@@ -175,7 +175,39 @@ let lib = {
 		
 		wrapper.secret.post(deployer, {namespace: namespace, body: secret}, (error) => {
 			return cb(error);
-		})
+		});
+	},
+	
+	"createSecret": (deployer, contentPath, secretName, namespace, cb) => {
+		fs.readFile(contentPath, 'utf8', (error, content) => {
+			if (error) {
+				return cb(error);
+			} else if (!content) {
+				return callback("Unable to read from: " + contentPath);
+			}
+			//Delete the secret before creating it
+			wrapper.secret.delete(deployer, {namespace: namespace, name: secretName}, () => {
+				let secret = {
+					kind: 'Secret',
+					apiVersion: 'v1',
+					type: 'Opaque',
+					metadata: {
+						name: secretName,
+						labels: {
+							'soajs.secret.name': secretName,
+							'soajs.secret.type': 'Opaque'
+						}
+					},
+					stringData: {
+						[secretName]: content
+					}
+				};
+				
+				wrapper.secret.post(deployer, {namespace: namespace, body: secret}, (error) => {
+					return cb(error);
+				});
+			});
+		});
 	},
 	
 	"deleteDeployments": (deployer, options, namespace, cb) => {

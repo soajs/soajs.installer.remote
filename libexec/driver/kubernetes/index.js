@@ -120,7 +120,7 @@ let driver = {
 				"email": options.email,
 				
 				"deployType": options.deployType,
-				//"sslSecret": options.sslSecret,
+				"sslSecret": options.sslSecret,
 				"sslType": sslType,
 				"gatewayIP": options.gatewayIP
 			};
@@ -136,24 +136,42 @@ let driver = {
 			}
 			let recipe = require("./recipes/" + type + "/nginx/nginx.js")(config);
 			
-			lib.createService(deployer, recipe.service, options.namespace, (error) => {
-				if (error) {
-					return cb(error);
-				}
-				lib.createDeployment(deployer, recipe.deployment, options.namespace, (error) => {
+			let createService = () => {
+				lib.createService(deployer, recipe.service, options.namespace, (error) => {
 					if (error) {
 						return cb(error);
 					}
-					lib.getServiceIPs(deployer, config.label, 1, options.namespace, (error, response) => {
-						let deployment = {
-							ip: response,
-							image: config.image,
-							branch: config.branch || null
-						};
-						return cb(error, deployment);
+					lib.createDeployment(deployer, recipe.deployment, options.namespace, (error) => {
+						if (error) {
+							return cb(error);
+						}
+						lib.getServiceIPs(deployer, config.label, 1, options.namespace, (error, response) => {
+							let deployment = {
+								ip: response,
+								image: config.image,
+								branch: config.branch || null
+							};
+							return cb(error, deployment);
+						});
 					});
 				});
-			});
+			};
+			
+			if (sslType === "secret") {
+				lib.createSecret(deployer, options.sslSecret.private_key, "private-key", options.namespace, (error) => {
+					if (error) {
+						return cb(error);
+					}
+					lib.createSecret(deployer, options.sslSecret.fullchain_crt, "fullchain-crt", options.namespace, (error) => {
+						if (error) {
+							return cb(error);
+						}
+						createService();
+					});
+				});
+			} else {
+				createService();
+			}
 		},
 		/**
 		 * @param options Object

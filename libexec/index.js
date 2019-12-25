@@ -173,8 +173,10 @@ function validateOptions(options, cb) {
 			if (!options.kubernetes.namespace) {
 				options.kubernetes.namespace = "soajs";
 			}
-			if (!options.nginx.sslType) {
-				options.nginx.sslType = "secret";
+			if (options.nginx.sslType === "secret") {
+				if (!options.nginx.hasOwnProperty("sslSecret")) {
+					return cb(new Error("The provided configuration is not healthy, please provide sslSecret information."));
+				}
 			}
 			return cb(null);
 		}
@@ -396,7 +398,7 @@ let lib = {
 								"sitePrefix": options.nginx.sitePrefix,
 								"apiPrefix": options.nginx.apiPrefix,
 								"deployType": options.nginx.deployType,
-								//"sslSecret": options.nginx.sslSecret,
+								"sslSecret": options.nginx.sslSecret,
 								"sslType": options.nginx.sslType,
 								
 								"email": options.owner.email,

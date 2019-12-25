@@ -187,6 +187,37 @@ function getrecipe(localConfig) {
 				"value": 'true'
 			}
 		);
+		
+		components.deployment.spec.template.spec.containers[0].volumeMounts.push(
+			{
+				"mountPath": "/opt/soajs/certificates/secret/private_key/",
+				"name": "private-key"
+			}
+		);
+		components.deployment.spec.template.spec.volumes.push(
+			
+			{
+				"name": "private-key",
+				"secret": {
+					"secretName": "private-key"
+				}
+			}
+		);
+		components.deployment.spec.template.spec.containers[0].volumeMounts.push(
+			{
+				"mountPath": "/opt/soajs/certificates/secret/fullchain_crt/",
+				"name": "fullchain-crt"
+			}
+		);
+		components.deployment.spec.template.spec.volumes.push(
+			
+			{
+				"name": "fullchain-crt",
+				"secret": {
+					"secretName": "fullchain-crt"
+				}
+			}
+		);
 	}
 	
 	components.deployment.spec.template.spec.containers[0].env.push(
@@ -219,7 +250,7 @@ module.exports = function (_config) {
 		"extKey": _config.extKey,
 		"email": _config.email,
 		"deployType": _config.deployType,
-		//"sslSecret": _config.sslSecret,
+		"sslSecret": _config.sslSecret,
 		"gatewayIP": _config.gatewayIP,
 		"_labels": {
 			"service.image.ts": new Date().getTime().toString(),
