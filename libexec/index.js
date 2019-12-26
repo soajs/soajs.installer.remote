@@ -60,7 +60,7 @@ function generateKey(opts, cb) {
 
 function importData(options, data, profileImport, cb) {
 	let catalogs = (doc) => {
-			
+		if (options.deployment.style === "sem") {
 			//console bin pvc
 			if (doc._id === "5df3ec10fa3912534948f00d") {
 				if (options.versions.services.ui.semVer) {
@@ -104,7 +104,7 @@ function importData(options, data, profileImport, cb) {
 					doc.recipe.deployOptions.image.tag = options.versions.services.urac.semVer;
 				}
 			}
-		
+		}
 	};
 	let customRegistry = (doc) => {
 		if (doc.name === "urac") {
