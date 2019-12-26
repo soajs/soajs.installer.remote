@@ -60,12 +60,51 @@ function generateKey(opts, cb) {
 
 function importData(options, data, profileImport, cb) {
 	let catalogs = (doc) => {
-		if (doc.name === "Console UI SSL") {
-			doc.recipe.buildOptions.env.SOAJS_SSL_CONFIG = {
-				"type": "static",
-				"value": '{"email":"' + options.owner.email + '" ,"redirect":false}'
-			};
-		}
+			
+			//console bin pvc
+			if (doc._id === "5df3ec10fa3912534948f00d") {
+				if (options.versions.services.ui.semVer) {
+					doc.recipe.deployOptions.image.tag = options.versions.services.ui.semVer;
+				}
+			}
+			//console bin secret
+			if (doc._id === "5df3ec10fa3912534948effe") {
+				if (options.versions.services.ui.semVer) {
+					doc.recipe.deployOptions.image.tag = options.versions.services.ui.semVer;
+				}
+			}
+			
+			//dashboard bin
+			if (doc._id === "5df3ec10fa3912534948efff") {
+				if (options.versions.services.dashboard.semVer) {
+					doc.recipe.deployOptions.image.tag = options.versions.services.dashboard.semVer;
+				}
+			}
+			//gateway bin
+			if (doc._id === "5df3ec10fa3912534948f000") {
+				if (options.versions.services.gateway.semVer) {
+					doc.recipe.deployOptions.image.tag = options.versions.services.gateway.semVer;
+				}
+			}
+			//multitenant bin
+			if (doc._id === "5df3ec10fa3912534948f004") {
+				if (options.versions.services.multitenant.semVer) {
+					doc.recipe.deployOptions.image.tag = options.versions.services.multitenant.semVer;
+				}
+			}
+			//oauth bin
+			if (doc._id === "5df3ec10fa3912534948f006") {
+				if (options.versions.services.oauth.semVer) {
+					doc.recipe.deployOptions.image.tag = options.versions.services.oauth.semVer;
+				}
+			}
+			//urac bin
+			if (doc._id === "5df3ec10fa3912534948f008") {
+				if (options.versions.services.urac.semVer) {
+					doc.recipe.deployOptions.image.tag = options.versions.services.urac.semVer;
+				}
+			}
+		
 	};
 	let customRegistry = (doc) => {
 		if (doc.name === "urac") {

@@ -58,7 +58,38 @@ let doc = {
 					"preserveClientIP": true
 				}
 			],
-			"voluming": [],
+			"voluming": [
+				{
+					"docker": {},
+					"kubernetes": {
+						"volume": {
+							"name": "private-key",
+							"secret": {
+								"secretName": "private-key"
+							}
+						},
+						"volumeMount": {
+							"mountPath": "/opt/soajs/certificates/secret/private_key/",
+							"name": "private-key"
+						}
+					}
+				},
+				{
+					"docker": {},
+					"kubernetes": {
+						"volume": {
+							"name": "fullchain-crt",
+							"secret": {
+								"secretName": "fullchain-crt"
+							}
+						},
+						"volumeMount": {
+							"mountPath": "/opt/soajs/certificates/secret/fullchain_crt/",
+							"name": "fullchain-crt"
+						}
+					}
+				}
+			],
 			"restartPolicy": {
 				"condition": "any",
 				"maxAttempts": 5
@@ -99,10 +130,15 @@ let doc = {
 					"type": "computed",
 					"value": "$SOAJS_NX_CONTROLLER_PORT"
 				},
+				
+				"SOAJS_SSL_SECRET": {
+					"type": "static",
+					"value": "true"
+				},
 				"SOAJS_SSL_CONFIG": {
 					"type": "userInput",
 					"label": "SSL information",
-					"default": '{"email":"me@email.com" ,"redirect":false}',
+					"default": '{"email":"me@email.com" ,"redirect":"false"}',
 					"fieldMsg": "Add the SSL certificate email owner and set if you want to redirect http to https"
 				}
 			},
