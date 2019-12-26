@@ -354,6 +354,9 @@ let lib = {
 	},
 	
 	"updateServiceDeployment": (deployer, oneService, oneDeployment, namespace, cb) => {
+		
+		let mode = oneService.metadata.labels['soajs.service.mode'];
+		
 		wrapper.service.put(deployer, {
 			namespace: namespace,
 			body: oneService,
@@ -470,7 +473,7 @@ let lib = {
 					
 					if (mustUpdate) {
 						let update = () => {
-							lib.updateServiceDeployment(deployer, oneService, oneDeployment, name, (error, done) => {
+							lib.updateServiceDeployment(deployer, oneService, oneDeployment, namespace, (error, done) => {
 								if (error) {
 									return cb(error);
 								}

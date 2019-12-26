@@ -290,7 +290,7 @@ let driver = {
 	 * @param cb
 	 */
 	"updateService": (options, deployer, cb) => {
-		options.label = gConfig.label[options.serviceName] + options.version.msVer;
+		options.label = gConfig.label[options.serviceName] + (options.version.msVer || "");
 		options.image = {
 			"bin": gConfig.images[options.serviceName].bin,
 			"src": gConfig.images[options.serviceName].src
