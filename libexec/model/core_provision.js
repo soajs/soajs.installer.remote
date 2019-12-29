@@ -21,11 +21,18 @@ CoreProvision.prototype.updateCatalog = function (obj, cb) {
 		if (_id) {
 			let condition = {"_id": _id};
 			obj._id = _id;
-			delete obj.v;
-			let e = {$set: {"recipe.deployOptions.image.tag": obj.recipe.deployOptions.image.tag}, $setOnInsert: obj};
-			__self.mongoCore.updateOne("catalogs", condition, e, {'upsert': true}, (error, response) => {
-				
-				return cb(error, response);
+			
+			__self.mongoCore.findOne("catalogs", condition, (error, response) => {
+				if (response) {
+					let e = {$set: {"recipe.deployOptions.image.tag": obj.recipe.deployOptions.image.tag}};
+					__self.mongoCore.updateOne("catalogs", condition, e, (error, response) => {
+						return cb(error, response);
+					});
+				} else {
+					__self.mongoCore.insertOne("catalogs", obj, (error, response) => {
+						return cb(error, response);
+					})
+				}
 			});
 		} else {
 			return cb(error);

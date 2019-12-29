@@ -295,8 +295,8 @@ let driver = {
 			"bin": gConfig.images[options.serviceName].bin,
 			"src": gConfig.images[options.serviceName].src
 		};
-		lib.updateService(deployer, options, options.namespace, (error, done, updateCatalogBin) => {
-			return cb(error, done, updateCatalogBin);
+		lib.updateService(deployer, options, options.namespace, (error, done, imageInfo) => {
+			return cb(error, done, imageInfo);
 		});
 	},
 	
@@ -305,6 +305,7 @@ let driver = {
 			return cb(error, done);
 		});
 	},
+	
 	/**
 	 * Get the deployed version information
 	 * @param options
@@ -325,8 +326,8 @@ let driver = {
 	},
 	
 	"restoreServiceDeployment": (options, deployer, cb) => {
-		lib.updateServiceDeployment(deployer, options.oneService, options.oneDeployment, options.namespace, (error) => {
-			return cb(error);
+		lib.updateServiceDeployment(deployer, options.oneService, options.oneDeployment, options.namespace, (error, done, imageInfo) => {
+			return cb(error, done, imageInfo);
 		});
 	},
 	

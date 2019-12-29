@@ -398,7 +398,22 @@ let lib = {
 						if (error) {
 							return cb(error);
 						}
-						return cb(null, true);
+						let imageInfo = {
+							"changed": false,
+							"style": "sem",
+							"tag": null
+						};
+						if (deploymentRec.spec.template.spec.containers[0].image !== oneDeployment.spec.template.spec.containers[0].image) {
+							let image = oneDeployment.spec.template.spec.containers[0].image;
+							if (image.indexOf(".x") !== -1) {
+								imageInfo.style = "major";
+							}
+							if (image.indexOf(":") !== -1) {
+								imageInfo.tag = image.substr(image.indexOf(":") + 1);
+							}
+							imageInfo.changed = true
+						}
+						return cb(null, true, imageInfo);
 					})
 				});
 			});
@@ -502,16 +517,12 @@ let lib = {
 					
 					if (mustUpdate) {
 						let update = () => {
-							lib.updateServiceDeployment(deployer, oneService, oneDeployment, namespace, (error, done) => {
+							lib.updateServiceDeployment(deployer, oneService, oneDeployment, namespace, (error, done, imageInfo) => {
 								if (error) {
 									return cb(error);
 								}
+								return cb(null, done, imageInfo);
 								
-								if (imageChanged && style === "sem") {
-									return cb(null, done, true);
-								} else {
-									return cb(null, done, false);
-								}
 							});
 						};
 						if (options.rollback && options.rollback.path) {

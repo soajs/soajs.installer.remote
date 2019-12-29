@@ -24,6 +24,35 @@ const uuidv4 = require('uuid/v4');
 const async = require('async');
 const configurationSchema = require("./utils/configurationSchema");
 
+function handleImageInfo(options, imageInfo, serviceName, cb) {
+	let profileImport = utils.getProfile(options);
+	let cpModelObj = new CoreProvisionModel(profileImport);
+	if (imageInfo && imageInfo.style) {
+		options.deployment.style = imageInfo.style;
+	}
+	let catObjs = requireCatalog(options, serviceName);
+	
+	if (catObjs.length > 0) {
+		async.each(catObjs, (oneCatObj, callback) => {
+			if (imageInfo && imageInfo.tag) {
+				oneCatObj.recipe.deployOptions.image.tag = imageInfo.tag;
+			}
+			cpModelObj.updateCatalog(oneCatObj, (error, response) => {
+				if (error) {
+					logger.info("Unable to update Catalog [" + oneCatObj.name + "] image tag, error: " + error);
+				}
+				if (response) {
+					logger.info("Catalog [" + oneCatObj.name + "] image tag was updated successfully");
+				}
+				return callback();
+			});
+		}, (error) => {
+			return cb(error);
+		});
+	} else {
+		return cb();
+	}
+}
 
 function generateKey(opts, cb) {
 	//soajs encryption engine
@@ -59,23 +88,36 @@ function generateKey(opts, cb) {
 }
 
 function setImageTag(options, doc) {
+	
 	//console bin pvc
 	if (doc._id === "5df3ec10fa3912534948f00d") {
-		if (options.versions.services.ui.semVer) {
-			doc.recipe.deployOptions.image.tag = options.versions.services.ui.semVer;
+		if (options.deployment.style === "sem") {
+			if (options.versions.services.ui.semVer) {
+				doc.recipe.deployOptions.image.tag = options.versions.services.ui.semVer;
+			}
+		} else if (options.versions.services.ui.ver) {
+			doc.recipe.deployOptions.image.tag = options.versions.services.ui.ver;
 		}
 	}
 	//console bin secret
 	if (doc._id === "5df3ec10fa3912534948effe") {
-		if (options.versions.services.ui.semVer) {
-			doc.recipe.deployOptions.image.tag = options.versions.services.ui.semVer;
+		if (options.deployment.style === "sem") {
+			if (options.versions.services.ui.semVer) {
+				doc.recipe.deployOptions.image.tag = options.versions.services.ui.semVer;
+			}
+		} else if (options.versions.services.ui.ver) {
+			doc.recipe.deployOptions.image.tag = options.versions.services.ui.ver;
 		}
 	}
 	
 	//dashboard bin
 	if (doc._id === "5df3ec10fa3912534948efff") {
-		if (options.versions.services.dashboard.semVer) {
-			doc.recipe.deployOptions.image.tag = options.versions.services.dashboard.semVer;
+		if (options.deployment.style === "sem") {
+			if (options.versions.services.dashboard.semVer) {
+				doc.recipe.deployOptions.image.tag = options.versions.services.dashboard.semVer;
+			}
+		} else if (options.versions.services.dashboard.ver) {
+			doc.recipe.deployOptions.image.tag = options.versions.services.dashboard.ver;
 		}
 	}
 	//gateway bin
@@ -86,20 +128,32 @@ function setImageTag(options, doc) {
 	}
 	//multitenant bin
 	if (doc._id === "5df3ec10fa3912534948f004") {
-		if (options.versions.services.multitenant.semVer) {
-			doc.recipe.deployOptions.image.tag = options.versions.services.multitenant.semVer;
+		if (options.deployment.style === "sem") {
+			if (options.versions.services.multitenant.semVer) {
+				doc.recipe.deployOptions.image.tag = options.versions.services.multitenant.semVer;
+			}
+		} else if (options.versions.services.multitenant.ver) {
+			doc.recipe.deployOptions.image.tag = options.versions.services.multitenant.ver;
 		}
 	}
 	//oauth bin
 	if (doc._id === "5df3ec10fa3912534948f006") {
-		if (options.versions.services.oauth.semVer) {
-			doc.recipe.deployOptions.image.tag = options.versions.services.oauth.semVer;
+		if (options.deployment.style === "sem") {
+			if (options.versions.services.oauth.semVer) {
+				doc.recipe.deployOptions.image.tag = options.versions.services.oauth.semVer;
+			}
+		} else if (options.versions.services.oauth.ver) {
+			doc.recipe.deployOptions.image.tag = options.versions.services.oauth.ver;
 		}
 	}
 	//urac bin
 	if (doc._id === "5df3ec10fa3912534948f008") {
-		if (options.versions.services.urac.semVer) {
-			doc.recipe.deployOptions.image.tag = options.versions.services.urac.semVer;
+		if (options.deployment.style === "sem") {
+			if (options.versions.services.urac.semVer) {
+				doc.recipe.deployOptions.image.tag = options.versions.services.urac.semVer;
+			}
+		} else if (options.versions.services.urac.ver) {
+			doc.recipe.deployOptions.image.tag = options.versions.services.urac.ver;
 		}
 	}
 }
@@ -149,9 +203,7 @@ function requireCatalog(options, serviceName) {
 
 function importData(options, data, profileImport, cb) {
 	let catalogs = (doc) => {
-		if (options.deployment.style === "sem") {
-			setImageTag(options, doc);
-		}
+		setImageTag(options, doc);
 	};
 	let customRegistry = (doc) => {
 		if (doc.name === "urac") {
@@ -719,26 +771,11 @@ let lib = {
 							"version": options.versions.services[serviceName],
 							"rollback": rollback
 						};
-						driver.updateService(config2, deployer, (error, done, updateCatalogBin) => {
-							if (!error && done && updateCatalogBin) {
-								let profileImport = utils.getProfile(options);
-								let cpModelObj = new CoreProvisionModel(profileImport);
-								let catObjs = requireCatalog(options, serviceName);
-								
-								if (catObjs.length > 0) {
-									async.each(catObjs, (oneCatObj, callback) => {
-										cpModelObj.updateCatalog(oneCatObj, (error, response) => {
-											if (response) {
-												logger.info("Catalog [" + oneCatObj.name + "] image tag was updated successfully");
-											}
-											return callback();
-										});
-									}, (error) => {
-										return cb(error, done);
-									});
-								} else {
-									return cb(error, done);
-								}
+						driver.updateService(config2, deployer, (error, done, imageInfo) => {
+							if (!error && done && imageInfo.changed) {
+								handleImageInfo(options, imageInfo, serviceName, (newError) => {
+									return cb((newError || error), done);
+								});
 							} else {
 								return cb(error, done);
 							}
@@ -834,8 +871,22 @@ let lib = {
 							"oneService": oneService,
 							"oneDeployment": oneDeployment
 						};
-						driver.restoreServiceDeployment(config2, deployer, (error, done) => {
-							return cb(error, done);
+						driver.restoreServiceDeployment(config2, deployer, (error, done, imageInfo) => {
+							if (!error && done && imageInfo.changed) {
+								
+								let serviceName = oneService.metadata.labels['soajs.service.name'];
+								if (serviceName === "nginx") {
+									serviceName = 'ui';
+								}
+								if (serviceName === 'controller') {
+									serviceName = 'gateway';
+								}
+								handleImageInfo(options, imageInfo, serviceName, (newError) => {
+									return cb((newError || error), done);
+								});
+							} else {
+								return cb(error, done);
+							}
 						});
 					});
 				});
