@@ -295,8 +295,8 @@ let driver = {
 			"bin": gConfig.images[options.serviceName].bin,
 			"src": gConfig.images[options.serviceName].src
 		};
-		lib.updateService(deployer, options, options.namespace, (error, done) => {
-			return cb(error, done);
+		lib.updateService(deployer, options, options.namespace, (error, done, updateCatalogBin) => {
+			return cb(error, done, updateCatalogBin);
 		});
 	},
 	

@@ -1,13 +1,13 @@
 let Mongo = require("soajs").mongo;
 
-function coreProvision(profile) {
+function CoreProvision(profile) {
 	let __self = this;
 	
 	__self.mongoCore = new Mongo(profile);
 }
 
 
-coreProvision.prototype.getSettings = function (cb) {
+CoreProvision.prototype.getSettings = function (cb) {
 	let __self = this;
 	let condition = {"type": "installer"};
 	__self.mongoCore.findOne("settings", condition, null, (err, record) => {
@@ -15,7 +15,25 @@ coreProvision.prototype.getSettings = function (cb) {
 	});
 };
 
-coreProvision.prototype.validateId = function (id, cb) {
+CoreProvision.prototype.updateCatalog = function (obj, cb) {
+	let __self = this;
+	__self.validateId(obj._id, (error, _id) => {
+		if (_id) {
+			let condition = {"_id": _id};
+			obj._id = _id;
+			delete obj.v;
+			let e = {$set: {"recipe.deployOptions.image.tag": obj.recipe.deployOptions.image.tag}, $setOnInsert: obj};
+			__self.mongoCore.updateOne("catalogs", condition, e, {'upsert': true}, (error, response) => {
+				
+				return cb(error, response);
+			});
+		} else {
+			return cb(error);
+		}
+	});
+};
+
+CoreProvision.prototype.validateId = function (id, cb) {
 	let __self = this;
 	
 	if (!id) {
@@ -32,10 +50,10 @@ coreProvision.prototype.validateId = function (id, cb) {
 	}
 };
 
-coreProvision.prototype.closeConnection = function () {
+CoreProvision.prototype.closeConnection = function () {
 	let __self = this;
 	
 	__self.mongoCore.closeDb();
 };
 
-module.exports = coreProvision;
+module.exports = CoreProvision;

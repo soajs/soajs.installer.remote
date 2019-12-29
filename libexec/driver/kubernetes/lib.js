@@ -357,24 +357,51 @@ let lib = {
 		
 		let mode = oneService.metadata.labels['soajs.service.mode'];
 		
-		wrapper.service.put(deployer, {
-			namespace: namespace,
-			body: oneService,
-			name: oneService.metadata.name
-		}, (error) => {
+		delete oneService.status;
+		delete oneService.metadata.uid;
+		delete oneService.metadata.selfLink;
+		delete oneService.metadata.creationTimestamp;
+		
+		delete oneDeployment.status;
+		delete oneDeployment.metadata.uid;
+		delete oneDeployment.metadata.selfLink;
+		delete oneDeployment.metadata.creationTimestamp;
+		delete oneDeployment.spec.template.metadata.creationTimestamp;
+		
+		lib.getService(deployer, oneService.metadata.labels['soajs.service.name'], namespace, (error, serviceRec) => {
 			if (error) {
 				return cb(error);
 			}
-			wrapper[mode].put(deployer, {
-				namespace: namespace,
-				body: oneDeployment,
-				name: oneDeployment.metadata.name
-			}, (error) => {
+			oneService.metadata.resourceVersion = serviceRec.metadata.resourceVersion;
+			lib.getDeployment(deployer, {
+				"label": oneService.spec.selector['soajs.service.label'],
+				"mode": mode
+			}, namespace, (error, deploymentRec) => {
 				if (error) {
 					return cb(error);
 				}
-				return cb(null, true);
-			})
+				oneDeployment.metadata.resourceVersion = deploymentRec.metadata.resourceVersion;
+				
+				wrapper.service.put(deployer, {
+					namespace: namespace,
+					body: oneService,
+					name: oneService.metadata.name
+				}, (error) => {
+					if (error) {
+						return cb(error);
+					}
+					wrapper[mode].put(deployer, {
+						namespace: namespace,
+						body: oneDeployment,
+						name: oneDeployment.metadata.name
+					}, (error) => {
+						if (error) {
+							return cb(error);
+						}
+						return cb(null, true);
+					})
+				});
+			});
 		});
 	},
 	"updateService": (deployer, options, namespace, cb) => {
@@ -419,25 +446,27 @@ let lib = {
 					}
 					
 					let mustUpdate = false;
-					if (item.serviceVer !== ('' + options.version.msVer)) {
+					let imageChanged = false;
+					if (item.serviceVer !== ('' + (options.version.msVer || "1"))) {
 						mustUpdate = true;
-						logger.debug(options.serviceName + " serviceVer changed from [" + item.serviceVer + "] to [" + options.version.msVer + "]");
+						logger.debug(options.serviceName + " serviceVer changed from [" + item.serviceVer + "] to [" + (options.version.msVer || "1") + "]");
 						oneService.metadata.name = options.label + "-service";
-						oneService.metadata.labels['soajs.service.version'] = '' + options.version.msVer;
+						oneService.metadata.labels['soajs.service.version'] = '' + (options.version.msVer || "1");
 						oneService.metadata.labels['soajs.service.label'] = options.label;
 						oneService.spec.selector['soajs.service.label'] = options.label;
 						
 						oneDeployment.metadata.name = options.label + "-service";
-						oneDeployment.metadata.labels['soajs.service.version'] = '' + options.version.msVer;
+						oneDeployment.metadata.labels['soajs.service.version'] = '' + (options.version.msVer || "1");
 						oneDeployment.metadata.labels['soajs.service.label'] = options.label;
 						oneDeployment.spec.selector.matchLabels['soajs.service.label'] = options.label;
 						oneDeployment.spec.template.metadata.name = options.label + "-service";
-						oneDeployment.spec.template.metadata.labels['soajs.service.version'] = '' + options.version.msVer;
+						oneDeployment.spec.template.metadata.labels['soajs.service.version'] = '' + (options.version.msVer || "1");
 						oneDeployment.spec.template.metadata.labels['soajs.service.label'] = options.label;
 						
 					}
 					if (item.image !== options.image[type]) {
 						mustUpdate = true;
+						imageChanged = true;
 						logger.debug(options.serviceName + " image changed from [" + item.image + "] to [" + options.image[type] + "]");
 						oneDeployment.spec.template.spec.containers[0].image = options.image[type];
 					}
@@ -477,7 +506,12 @@ let lib = {
 								if (error) {
 									return cb(error);
 								}
-								return cb(null, done);
+								
+								if (imageChanged && style === "sem") {
+									return cb(null, done, true);
+								} else {
+									return cb(null, done, false);
+								}
 							});
 						};
 						if (options.rollback && options.rollback.path) {

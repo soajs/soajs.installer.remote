@@ -15,7 +15,7 @@ const randomString = require("randomstring");
 const utils = require("./utils/utils.js");
 const logger = utils.getLogger();
 
-const coreProvisionModel = require("./model/core_provision.js");
+const CoreProvisionModel = require("./model/core_provision.js");
 const drivers = {
 	"kubernetes": require("./driver/kubernetes/index.js")
 };
@@ -58,52 +58,99 @@ function generateKey(opts, cb) {
 	});
 }
 
+function setImageTag(options, doc) {
+	//console bin pvc
+	if (doc._id === "5df3ec10fa3912534948f00d") {
+		if (options.versions.services.ui.semVer) {
+			doc.recipe.deployOptions.image.tag = options.versions.services.ui.semVer;
+		}
+	}
+	//console bin secret
+	if (doc._id === "5df3ec10fa3912534948effe") {
+		if (options.versions.services.ui.semVer) {
+			doc.recipe.deployOptions.image.tag = options.versions.services.ui.semVer;
+		}
+	}
+	
+	//dashboard bin
+	if (doc._id === "5df3ec10fa3912534948efff") {
+		if (options.versions.services.dashboard.semVer) {
+			doc.recipe.deployOptions.image.tag = options.versions.services.dashboard.semVer;
+		}
+	}
+	//gateway bin
+	if (doc._id === "5df3ec10fa3912534948f000") {
+		if (options.versions.services.gateway.semVer) {
+			doc.recipe.deployOptions.image.tag = options.versions.services.gateway.semVer;
+		}
+	}
+	//multitenant bin
+	if (doc._id === "5df3ec10fa3912534948f004") {
+		if (options.versions.services.multitenant.semVer) {
+			doc.recipe.deployOptions.image.tag = options.versions.services.multitenant.semVer;
+		}
+	}
+	//oauth bin
+	if (doc._id === "5df3ec10fa3912534948f006") {
+		if (options.versions.services.oauth.semVer) {
+			doc.recipe.deployOptions.image.tag = options.versions.services.oauth.semVer;
+		}
+	}
+	//urac bin
+	if (doc._id === "5df3ec10fa3912534948f008") {
+		if (options.versions.services.urac.semVer) {
+			doc.recipe.deployOptions.image.tag = options.versions.services.urac.semVer;
+		}
+	}
+}
+
+function requireCatalog(options, serviceName) {
+	let catObjs = [];
+	let dataPath = "../data/provision/catalogs/";
+	
+	if (serviceName === 'ui') {
+		let doc = require(dataPath + "soajs_console_bin_pvc.js");
+		setImageTag(options, doc);
+		catObjs.push(doc);
+		let doc2 = require(dataPath + "soajs_console_bin_secret.js");
+		setImageTag(options, doc2);
+		catObjs.push(doc2);
+	}
+	
+	if (serviceName === 'gateway') {
+		let doc = require(dataPath + "soajs_gateway_bin.js");
+		setImageTag(options, doc);
+		catObjs.push(doc);
+	}
+	
+	if (serviceName === 'dashboard') {
+		let doc = require(dataPath + "soajs_dashboard_bin.js");
+		setImageTag(options, doc);
+		catObjs.push(doc);
+	}
+	if (serviceName === 'multitenant') {
+		let doc = require(dataPath + "soajs_multitenant_bin.js");
+		setImageTag(options, doc);
+		catObjs.push(doc);
+	}
+	if (serviceName === 'oauth') {
+		let doc = require(dataPath + "soajs_oauth_bin.js");
+		setImageTag(options, doc);
+		catObjs.push(doc);
+	}
+	if (serviceName === 'urac') {
+		let doc = require(dataPath + "soajs_urac_bin.js");
+		setImageTag(options, doc);
+		catObjs.push(doc);
+	}
+	
+	return catObjs;
+}
+
 function importData(options, data, profileImport, cb) {
 	let catalogs = (doc) => {
 		if (options.deployment.style === "sem") {
-			//console bin pvc
-			if (doc._id === "5df3ec10fa3912534948f00d") {
-				if (options.versions.services.ui.semVer) {
-					doc.recipe.deployOptions.image.tag = options.versions.services.ui.semVer;
-				}
-			}
-			//console bin secret
-			if (doc._id === "5df3ec10fa3912534948effe") {
-				if (options.versions.services.ui.semVer) {
-					doc.recipe.deployOptions.image.tag = options.versions.services.ui.semVer;
-				}
-			}
-			
-			//dashboard bin
-			if (doc._id === "5df3ec10fa3912534948efff") {
-				if (options.versions.services.dashboard.semVer) {
-					doc.recipe.deployOptions.image.tag = options.versions.services.dashboard.semVer;
-				}
-			}
-			//gateway bin
-			if (doc._id === "5df3ec10fa3912534948f000") {
-				if (options.versions.services.gateway.semVer) {
-					doc.recipe.deployOptions.image.tag = options.versions.services.gateway.semVer;
-				}
-			}
-			//multitenant bin
-			if (doc._id === "5df3ec10fa3912534948f004") {
-				if (options.versions.services.multitenant.semVer) {
-					doc.recipe.deployOptions.image.tag = options.versions.services.multitenant.semVer;
-				}
-			}
-			//oauth bin
-			if (doc._id === "5df3ec10fa3912534948f006") {
-				if (options.versions.services.oauth.semVer) {
-					doc.recipe.deployOptions.image.tag = options.versions.services.oauth.semVer;
-				}
-			}
-			//urac bin
-			if (doc._id === "5df3ec10fa3912534948f008") {
-				if (options.versions.services.urac.semVer) {
-					doc.recipe.deployOptions.image.tag = options.versions.services.urac.semVer;
-				}
-			}
+			setImageTag(options, doc);
 		}
 	};
 	let customRegistry = (doc) => {
@@ -629,7 +676,7 @@ let lib = {
 				return cb(new Error("Unable to continue, please provide valid configuration!"));
 			}
 			let profileImport = utils.getProfile(options);
-			let cpModelObj = new coreProvisionModel(profileImport);
+			let cpModelObj = new CoreProvisionModel(profileImport);
 			
 			cpModelObj.getSettings((error, settings) => {
 				return cb(error, settings);
@@ -672,8 +719,29 @@ let lib = {
 							"version": options.versions.services[serviceName],
 							"rollback": rollback
 						};
-						driver.updateService(config2, deployer, (error, done) => {
-							return cb(error, done);
+						driver.updateService(config2, deployer, (error, done, updateCatalogBin) => {
+							if (!error && done && updateCatalogBin) {
+								let profileImport = utils.getProfile(options);
+								let cpModelObj = new CoreProvisionModel(profileImport);
+								let catObjs = requireCatalog(options, serviceName);
+								
+								if (catObjs.length > 0) {
+									async.each(catObjs, (oneCatObj, callback) => {
+										cpModelObj.updateCatalog(oneCatObj, (error, response) => {
+											if (response) {
+												logger.info("Catalog [" + oneCatObj.name + "] image tag was updated successfully");
+											}
+											return callback();
+										});
+									}, (error) => {
+										return cb(error, done);
+									});
+								} else {
+									return cb(error, done);
+								}
+							} else {
+								return cb(error, done);
+							}
 						});
 					});
 				});
