@@ -373,6 +373,10 @@ let lib = {
 				return cb(error);
 			}
 			oneService.metadata.resourceVersion = serviceRec.metadata.resourceVersion;
+			if (!oneService.spec.clusterIP) {
+				oneService.spec.clusterIP = serviceRec.spec.clusterIP;
+			}
+			
 			lib.getDeployment(deployer, {
 				"label": oneService.spec.selector['soajs.service.label'],
 				"mode": mode
@@ -461,7 +465,6 @@ let lib = {
 					}
 					
 					let mustUpdate = false;
-					let imageChanged = false;
 					if (item.serviceVer !== ('' + (options.version.msVer || "1"))) {
 						mustUpdate = true;
 						logger.debug(options.serviceName + " serviceVer changed from [" + item.serviceVer + "] to [" + (options.version.msVer || "1") + "]");
@@ -481,7 +484,6 @@ let lib = {
 					}
 					if (item.image !== options.image[type]) {
 						mustUpdate = true;
-						imageChanged = true;
 						logger.debug(options.serviceName + " image changed from [" + item.image + "] to [" + options.image[type] + "]");
 						oneDeployment.spec.template.spec.containers[0].image = options.image[type];
 					}

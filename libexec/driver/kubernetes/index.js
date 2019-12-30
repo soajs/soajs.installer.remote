@@ -13,6 +13,91 @@ const gConfig = require("./config.js");
 const lib = require("./lib.js");
 const swagger = require('./swagger/swagger.json');
 
+
+let recipies = {
+	"nginxRecipe": (options) => {
+		let type = options.type;
+		let sslType = options.sslType;
+		let config = {
+			"label": gConfig.label.ui,
+			"catId": gConfig.catalog.ui[sslType][type],
+			"image": gConfig.images.ui[type] + options.semVer,
+			
+			"httpPort": options.httpPort,
+			"httpsPort": options.httpsPort,
+			"domain": options.domain,
+			"sitePrefix": options.sitePrefix,
+			"apiPrefix": options.apiPrefix,
+			
+			"extKey": options.extKey,
+			
+			"email": options.email,
+			
+			"deployType": options.deployType,
+			"sslSecret": options.sslSecret,
+			"sslType": sslType,
+			"gatewayIP": options.gatewayIP
+		};
+		if (options.style === "major") {
+			config.image = gConfig.images.ui[type] + options.repoVer;
+		}
+		if (type === "src") {
+			config.image = gConfig.images.ui[type];
+			config.branch = options.semVer;
+			if (options.style === "major") {
+				config.branch = "release/v" + options.repoVer;
+			}
+		}
+		let recipe = require("./recipes/" + type + "/nginx/nginx.js")(config);
+		
+		return {"recipe": recipe, "config": config};
+	},
+	"gatewayRecipe": (options) => {
+		let type = options.type;
+		let config = {
+			"label": gConfig.label.gateway + options.serviceVer,
+			"catId": gConfig.catalog.gateway[type],
+			"image": gConfig.images.gateway[type] + options.semVer
+		};
+		if (options.style === "major") {
+			config.image = gConfig.images.gateway[type] + options.repoVer;
+		}
+		if (type === "src") {
+			config.image = gConfig.images.gateway[type];
+			config.branch = options.semVer;
+			if (options.style === "major") {
+				config.branch = "release/v" + options.repoVer;
+			}
+		}
+		let recipe = require("./recipes/" + type + "/gateway/controller.js")(config);
+		
+		return {"recipe": recipe, "config": config};
+	},
+	"serviceRecipe": (options) => {
+		let service = options.serviceName;
+		let type = options.type;
+		let config = {
+			"label": gConfig.label[service] + options.serviceVer,
+			"catId": gConfig.catalog[service][type],
+			"image": gConfig.images[service][type] + options.semVer,
+			"registryAPI": options.gatewayIP + ":5000"
+		};
+		if (options.style === "major") {
+			config.image = gConfig.images[service][type] + options.repoVer;
+		}
+		if (type === "src") {
+			config.image = gConfig.images[service][type];
+			config.branch = options.semVer;
+			if (options.style === "major") {
+				config.branch = "release/v" + options.repoVer;
+			}
+		}
+		let recipe = require("./recipes/" + type + "/ms/" + service + ".js")(config);
+		
+		return {"recipe": recipe, "config": config};
+	}
+};
+
 let driver = {
 	/**
 	 * @param driverConfig Object
@@ -102,6 +187,7 @@ let driver = {
 		 *
 		 */
 		"nginx": (options, deployer, cb) => {
+			/*
 			let type = options.type;
 			let sslType = options.sslType;
 			let config = {
@@ -135,6 +221,11 @@ let driver = {
 				}
 			}
 			let recipe = require("./recipes/" + type + "/nginx/nginx.js")(config);
+			*/
+			let sslType = options.sslType;
+			let nginxObj = recipies.nginxRecipe(options);
+			let config = nginxObj.config;
+			let recipe = nginxObj.recipe;
 			
 			let createService = () => {
 				lib.createService(deployer, recipe.service, options.namespace, (error) => {
@@ -191,6 +282,7 @@ let driver = {
 				if (error) {
 					return cb(error);
 				}
+				/*
 				let type = options.type;
 				let config = {
 					"label": gConfig.label.gateway + options.serviceVer,
@@ -208,6 +300,11 @@ let driver = {
 					}
 				}
 				let recipe = require("./recipes/" + type + "/gateway/controller.js")(config);
+				*/
+				let gatewayObj = recipies.gatewayRecipe(options);
+				let config = gatewayObj.config;
+				let recipe = gatewayObj.recipe;
+				
 				lib.createService(deployer, recipe.service, options.namespace, (error) => {
 					if (error) {
 						return cb(error);
@@ -243,6 +340,7 @@ let driver = {
 		 *
 		 */
 		"service": (options, deployer, cb) => {
+			/*
 			let service = options.serviceName;
 			let type = options.type;
 			let config = {
@@ -262,6 +360,10 @@ let driver = {
 				}
 			}
 			let recipe = require("./recipes/" + type + "/ms/" + service + ".js")(config);
+			*/
+			let serviceObj = recipies.serviceRecipe(options);
+			let config = serviceObj.config;
+			let recipe = serviceObj.recipe;
 			
 			lib.createService(deployer, recipe.service, options.namespace, (error) => {
 				if (error) {
@@ -283,6 +385,68 @@ let driver = {
 			});
 		}
 	},
+	
+	"upgrade": {
+		"nginx": (options, deployer, cb) => {
+			//TODO: (sslType might have been changed) get nginx service and check if pvc or secret then set options.sslType
+			let nginxObj = recipies.nginxRecipe(options);
+			let config = nginxObj.config;
+			let recipe = nginxObj.recipe;
+			lib.updateServiceDeployment(deployer, recipe.service, recipe.deployment, options.namespace, (error, done, imageInfo) => {
+				if (done) {
+					lib.getServiceIPs(deployer, config.label, 1, options.namespace, (error, response) => {
+						let deployment = {
+							ip: response,
+							image: config.image,
+							branch: config.branch || null
+						};
+						return cb(error, done, imageInfo, deployment);
+					});
+				} else {
+					return cb(error, done, imageInfo);
+				}
+			});
+		},
+		"gateway": (options, deployer, cb) => {
+			let gatewayObj = recipies.gatewayRecipe(options);
+			let config = gatewayObj.config;
+			let recipe = gatewayObj.recipe;
+			lib.updateServiceDeployment(deployer, recipe.service, recipe.deployment, options.namespace, (error, done, imageInfo) => {
+				if (done) {
+					lib.getServiceIPs(deployer, config.label, 1, options.namespace, (error, response) => {
+						let deployment = {
+							ip: response,
+							image: config.image,
+							branch: config.branch || null
+						};
+						return cb(error, done, imageInfo, deployment);
+					});
+				} else {
+					return cb(error, done, imageInfo);
+				}
+			});
+		},
+		"service": (options, deployer, cb) => {
+			let gatewayObj = recipies.serviceRecipe(options);
+			let config = gatewayObj.config;
+			let recipe = gatewayObj.recipe;
+			lib.updateServiceDeployment(deployer, recipe.service, recipe.deployment, options.namespace, (error, done, imageInfo) => {
+				if (done) {
+					lib.getServiceIPs(deployer, config.label, 1, options.namespace, (error, response) => {
+						let deployment = {
+							ip: response,
+							image: config.image,
+							branch: config.branch || null
+						};
+						return cb(error, done, imageInfo, deployment);
+					});
+				} else {
+					return cb(error, done, imageInfo);
+				}
+			});
+		}
+	},
+	
 	/**
 	 * To update a service within the same release and patch number
 	 * @param options

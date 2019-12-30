@@ -15,6 +15,29 @@ CoreProvision.prototype.getSettings = function (cb) {
 	});
 };
 
+CoreProvision.prototype.getExtKey = function (cb) {
+	let __self = this;
+	let condition = {"code": "DBTN"};
+	__self.mongoCore.findOne("tenants", condition, null, (err, record) => {
+		let extKey = null;
+		if (record && record.applications) {
+			let app = record.applications[0];
+			if (app.keys) {
+				let key = app.keys[0];
+				if (key.extKeys) {
+					let oneKey = key.extKeys[0];
+					extKey = oneKey.extKey
+				}
+			}
+		}
+		
+		if (!extKey && !err) {
+			err = new Error("Unable to find extKey!");
+		}
+		return cb(err, extKey);
+	});
+};
+
 CoreProvision.prototype.updateCatalog = function (obj, cb) {
 	let __self = this;
 	__self.validateId(obj._id, (error, _id) => {

@@ -323,6 +323,156 @@ function validateOptions(options, cb) {
 	return cb(new Error("Empty configuration"));
 }
 
+let getConfig = {
+	"gateway": (options, obj) => {
+		let config = {
+			"profileSecret": obj.profileSecret || null,
+			"type": options.deployment.type,
+			"style": options.deployment.style,
+			"serviceVer": options.versions.services.gateway.msVer || 1,
+			"repoVer": options.versions.services.gateway.ver,
+			"semVer": options.versions.services.gateway.semVer,
+			"namespace": options.kubernetes.namespace
+		};
+		return config;
+	},
+	"nginx": (options, obj) => {
+		let config = {
+			"type": options.deployment.type,
+			"style": options.deployment.style,
+			"repoVer": options.versions.services.ui.ver,
+			"semVer": options.versions.services.ui.semVer,
+			
+			"httpPort": options.nginx.httpPort,
+			"httpsPort": options.nginx.httpsPort,
+			
+			"domain": options.nginx.domain,
+			"sitePrefix": options.nginx.sitePrefix,
+			"apiPrefix": options.nginx.apiPrefix,
+			"deployType": options.nginx.deployType,
+			"sslSecret": options.nginx.sslSecret,
+			"sslType": options.nginx.sslType,
+			
+			"email": options.owner.email,
+			"extKey": obj.extKey,
+			
+			"gatewayIP": obj.gatewayIP,
+			"namespace": options.kubernetes.namespace
+		};
+		return config;
+	},
+	
+	"dashboard": (options, obj) => {
+		let config = {
+			"type": options.deployment.type,
+			"style": options.deployment.style,
+			"serviceVer": options.versions.services.dashboard.msVer || 1,
+			"repoVer": options.versions.services.dashboard.ver,
+			"semVer": options.versions.services.dashboard.semVer,
+			"serviceName": "dashboard",
+			"gatewayIP": obj.gatewayIP,
+			"namespace": options.kubernetes.namespace
+		};
+		return config;
+	},
+	
+	"urac": (options, obj) => {
+		let config = {
+			"type": options.deployment.type,
+			"style": options.deployment.style,
+			"serviceVer": options.versions.services.urac.msVer || 3,
+			"repoVer": options.versions.services.urac.ver,
+			"semVer": options.versions.services.urac.semVer,
+			"serviceName": "urac",
+			"gatewayIP": obj.gatewayIP,
+			"namespace": options.kubernetes.namespace
+		};
+		return config;
+	},
+	
+	"oauth": (options, obj) => {
+		let config = {
+			"type": options.deployment.type,
+			"style": options.deployment.style,
+			"serviceVer": options.versions.services.oauth.msVer || 1,
+			"repoVer": options.versions.services.oauth.ver,
+			"semVer": options.versions.services.oauth.semVer,
+			"serviceName": "oauth",
+			"gatewayIP": obj.gatewayIP,
+			"namespace": options.kubernetes.namespace
+		};
+		return config;
+	},
+	
+	"multitenant": (options, obj) => {
+		let config = {
+			"type": options.deployment.type,
+			"style": options.deployment.style,
+			"serviceVer": options.versions.services.multitenant.msVer || 1,
+			"repoVer": options.versions.services.multitenant.ver,
+			"semVer": options.versions.services.multitenant.semVer,
+			"serviceName": "multitenant",
+			"gatewayIP": obj.gatewayIP,
+			"namespace": options.kubernetes.namespace
+		};
+		return config;
+	}
+};
+
+function echoResult(options, obj) {
+	logger.debug("The extKey: " + obj.extKey);
+	logger.debug("The namespace: " + options.kubernetes.namespace);
+	
+	logger.debug("The Services Information:");
+	
+	if (!options.mongo.external && obj.mongoIP) {
+		logger.debug("\tMongo: ");
+		logger.debug("\t\t IP: " + obj.mongoIP);
+	}
+	
+	logger.debug("\tGateway: ");
+	logger.debug("\t\t IP: " + obj.deployments.gateway.ip);
+	logger.debug("\t\t Image: " + obj.deployments.gateway.image);
+	if (obj.deployments.gateway.branch) {
+		logger.debug("\t\t Branch: " + obj.deployments.gateway.branch);
+	}
+	
+	logger.debug("\tUI: ");
+	logger.debug("\t\t IP: " + obj.deployments.ui.ip);
+	logger.debug("\t\t Image: " + obj.deployments.ui.image);
+	if (obj.deployments.ui.branch) {
+		logger.debug("\t\t Branch: " + obj.deployments.ui.branch);
+	}
+	
+	logger.debug("\tDashboard: ");
+	logger.debug("\t\t IP: " + obj.deployments.dashboard.ip);
+	logger.debug("\t\t Image: " + obj.deployments.dashboard.image);
+	if (obj.deployments.dashboard.branch) {
+		logger.debug("\t\t Branch: " + obj.deployments.dashboard.branch);
+	}
+	
+	logger.debug("\tURAC: ");
+	logger.debug("\t\t IP: " + obj.deployments.urac.ip);
+	logger.debug("\t\t Image: " + obj.deployments.urac.image);
+	if (obj.deployments.urac.branch) {
+		logger.debug("\t\t Branch: " + obj.deployments.urac.branch);
+	}
+	
+	logger.debug("\toAuth: ");
+	logger.debug("\t\t IP: " + obj.deployments.oauth.ip);
+	logger.debug("\t\t Image: " + obj.deployments.oauth.image);
+	if (obj.deployments.oauth.branch) {
+		logger.debug("\t\t Branch: " + obj.deployments.oauth.branch);
+	}
+	
+	logger.debug("\tMultitenant: ");
+	logger.debug("\t\t IP: " + obj.deployments.multitenant.ip);
+	logger.debug("\t\t Image: " + obj.deployments.multitenant.image);
+	if (obj.deployments.multitenant.branch) {
+		logger.debug("\t\t Branch: " + obj.deployments.multitenant.branch);
+	}
+}
+
 let lib = {
 	/**
 	 * @param options Object
@@ -500,15 +650,7 @@ let lib = {
 						},
 						//Install gateway
 						(obj, callback) => {
-							let config = {
-								"profileSecret": obj.profileSecret,
-								"type": options.deployment.type,
-								"style": options.deployment.style,
-								"serviceVer": options.versions.services.gateway.msVer || 1,
-								"repoVer": options.versions.services.gateway.ver,
-								"semVer": options.versions.services.gateway.semVer,
-								"namespace": options.kubernetes.namespace
-							};
+							let config = getConfig.gateway(options, obj);
 							driver.deploy.gateway(config, deployer, (error, response) => {
 								if (error) {
 									return callback(error, obj);
@@ -523,28 +665,7 @@ let lib = {
 						},
 						//Install nginx
 						(obj, callback) => {
-							let config = {
-								"type": options.deployment.type,
-								"style": options.deployment.style,
-								"repoVer": options.versions.services.ui.ver,
-								"semVer": options.versions.services.ui.semVer,
-								
-								"httpPort": options.nginx.httpPort,
-								"httpsPort": options.nginx.httpsPort,
-								
-								"domain": options.nginx.domain,
-								"sitePrefix": options.nginx.sitePrefix,
-								"apiPrefix": options.nginx.apiPrefix,
-								"deployType": options.nginx.deployType,
-								"sslSecret": options.nginx.sslSecret,
-								"sslType": options.nginx.sslType,
-								
-								"email": options.owner.email,
-								"extKey": obj.extKey,
-								
-								"gatewayIP": obj.gatewayIP,
-								"namespace": options.kubernetes.namespace
-							};
+							let config = getConfig.nginx(options, obj);
 							driver.deploy.nginx(config, deployer, (error, response) => {
 								if (error) {
 									return callback(error, obj);
@@ -559,16 +680,7 @@ let lib = {
 						},
 						//Install dashboard service
 						(obj, callback) => {
-							let config = {
-								"type": options.deployment.type,
-								"style": options.deployment.style,
-								"serviceVer": options.versions.services.dashboard.msVer || 1,
-								"repoVer": options.versions.services.dashboard.ver,
-								"semVer": options.versions.services.dashboard.semVer,
-								"serviceName": "dashboard",
-								"gatewayIP": obj.gatewayIP,
-								"namespace": options.kubernetes.namespace
-							};
+							let config = getConfig.dashboard(options, obj);
 							driver.deploy.service(config, deployer, (error, response) => {
 								if (error) {
 									return callback(error, obj);
@@ -583,16 +695,7 @@ let lib = {
 						},
 						//Install urac service
 						(obj, callback) => {
-							let config = {
-								"type": options.deployment.type,
-								"style": options.deployment.style,
-								"serviceVer": options.versions.services.urac.msVer || 3,
-								"repoVer": options.versions.services.urac.ver,
-								"semVer": options.versions.services.urac.semVer,
-								"serviceName": "urac",
-								"gatewayIP": obj.gatewayIP,
-								"namespace": options.kubernetes.namespace
-							};
+							let config = getConfig.urac(options, obj);
 							driver.deploy.service(config, deployer, (error, response) => {
 								if (error) {
 									return callback(error, obj);
@@ -607,16 +710,7 @@ let lib = {
 						},
 						//Install oauth service
 						(obj, callback) => {
-							let config = {
-								"type": options.deployment.type,
-								"style": options.deployment.style,
-								"serviceVer": options.versions.services.oauth.msVer || 1,
-								"repoVer": options.versions.services.oauth.ver,
-								"semVer": options.versions.services.oauth.semVer,
-								"serviceName": "oauth",
-								"gatewayIP": obj.gatewayIP,
-								"namespace": options.kubernetes.namespace
-							};
+							let config = getConfig.oauth(options, obj);
 							driver.deploy.service(config, deployer, (error, response) => {
 								if (error) {
 									return callback(error, obj);
@@ -631,16 +725,7 @@ let lib = {
 						},
 						//Install multitenant service
 						(obj, callback) => {
-							let config = {
-								"type": options.deployment.type,
-								"style": options.deployment.style,
-								"serviceVer": options.versions.services.multitenant.msVer || 1,
-								"repoVer": options.versions.services.multitenant.ver,
-								"semVer": options.versions.services.multitenant.semVer,
-								"serviceName": "multitenant",
-								"gatewayIP": obj.gatewayIP,
-								"namespace": options.kubernetes.namespace
-							};
+							let config = getConfig.multitenant(options, obj);
 							driver.deploy.service(config, deployer, (error, response) => {
 								if (error) {
 									return callback(error, obj);
@@ -655,57 +740,7 @@ let lib = {
 						}
 					], (error, obj) => {
 						if (!error) {
-							logger.debug("The extKey: " + obj.extKey);
-							logger.debug("The namespace: " + options.kubernetes.namespace);
-							
-							logger.debug("The Services Information:");
-							
-							if (!options.mongo.external) {
-								logger.debug("\tMongo: ");
-								logger.debug("\t\t IP: " + obj.mongoIP);
-							}
-							
-							logger.debug("\tGateway: ");
-							logger.debug("\t\t IP: " + obj.deployments.gateway.ip);
-							logger.debug("\t\t Image: " + obj.deployments.gateway.image);
-							if (obj.deployments.gateway.branch) {
-								logger.debug("\t\t Branch: " + obj.deployments.gateway.branch);
-							}
-							
-							logger.debug("\tUI: ");
-							logger.debug("\t\t IP: " + obj.deployments.ui.ip);
-							logger.debug("\t\t Image: " + obj.deployments.ui.image);
-							if (obj.deployments.ui.branch) {
-								logger.debug("\t\t Branch: " + obj.deployments.ui.branch);
-							}
-							
-							logger.debug("\tDashboard: ");
-							logger.debug("\t\t IP: " + obj.deployments.dashboard.ip);
-							logger.debug("\t\t Image: " + obj.deployments.dashboard.image);
-							if (obj.deployments.dashboard.branch) {
-								logger.debug("\t\t Branch: " + obj.deployments.dashboard.branch);
-							}
-							
-							logger.debug("\tURAC: ");
-							logger.debug("\t\t IP: " + obj.deployments.urac.ip);
-							logger.debug("\t\t Image: " + obj.deployments.urac.image);
-							if (obj.deployments.urac.branch) {
-								logger.debug("\t\t Branch: " + obj.deployments.urac.branch);
-							}
-							
-							logger.debug("\toAuth: ");
-							logger.debug("\t\t IP: " + obj.deployments.oauth.ip);
-							logger.debug("\t\t Image: " + obj.deployments.oauth.image);
-							if (obj.deployments.oauth.branch) {
-								logger.debug("\t\t Branch: " + obj.deployments.oauth.branch);
-							}
-							
-							logger.debug("\tMultitenant: ");
-							logger.debug("\t\t IP: " + obj.deployments.multitenant.ip);
-							logger.debug("\t\t Image: " + obj.deployments.multitenant.image);
-							if (obj.deployments.multitenant.branch) {
-								logger.debug("\t\t Branch: " + obj.deployments.multitenant.branch);
-							}
+							echoResult(options, obj);
 						}
 						return cb(error);
 					});
@@ -954,6 +989,190 @@ let lib = {
 			let strategyFunction = require("./migrate/" + strategy + ".js");
 			
 			return strategyFunction(profileImport, options.dataPath, cb);
+		});
+	},
+	
+	"upgrade": (options, cb) => {
+		validateOptions(options, (error) => {
+			if (error) {
+				logger.error(error);
+				return cb(new Error("Unable to continue, please provide valid configuration!"));
+			}
+			if (drivers[options.driverName]) {
+				let driver = drivers[options.driverName];
+				let config = {
+					"ip": options.kubernetes.ip,
+					"port": options.kubernetes.port,
+					"token": options.kubernetes.token
+				};
+				driver.init(config, (error, deployer) => {
+					if (error) {
+						return cb(error);
+					}
+					let config = {
+						"namespace": options.kubernetes.namespace,
+						"verbose": false
+					};
+					driver.deploy.assureNamespace(config, deployer, false, (error, found) => {
+						if (error) {
+							return cb(error);
+						}
+						if (!found) {
+							let error = new Error("Unable to find namespace: " + config.namespace);
+							return cb(error);
+						}
+						
+						async.waterfall([
+							(callback) => {
+								return callback(null, {"deployments": {}});
+							},
+							
+							//get extKey
+							(obj, callback) => {
+								
+								let profileImport = utils.getProfile(options);
+								let cpModelObj = new CoreProvisionModel(profileImport);
+								
+								cpModelObj.getExtKey((error, extKey) => {
+									obj.profileImport = profileImport;
+									if (extKey) {
+										obj.extKey = extKey;
+									}
+									return callback(error, obj);
+								});
+							},
+							
+							//Gateway
+							(obj, callback) => {
+								let config = getConfig.gateway(options, obj);
+								driver.upgrade.gateway(config, deployer, (error, done, imageInfo, response) => {
+									if (error) {
+										return callback(error, obj);
+									}
+									obj.gatewayIP = null;
+									if (response) {
+										obj.gatewayIP = response.ip;
+										obj.deployments.gateway = response;
+									}
+									return callback(null, obj);
+								});
+							},
+							
+							//nginx
+							(obj, callback) => {
+								let config = getConfig.nginx(options, obj);
+								driver.upgrade.nginx(config, deployer, (error, done, imageInfo, response) => {
+									if (error) {
+										return callback(error, obj);
+									}
+									obj.nginxIP = null;
+									if (response) {
+										obj.nginxIP = response;
+										obj.deployments.ui = response;
+									}
+									return callback(null, obj);
+								});
+							},
+							
+							//dashboard
+							(obj, callback) => {
+								let config = getConfig.dashboard(options, obj);
+								driver.upgrade.service(config, deployer, (error, done, imageInfo, response) => {
+									if (error) {
+										return callback(error, obj);
+									}
+									obj.dashboardIP = null;
+									if (response) {
+										obj.dashboardIP = response.ip;
+										obj.deployments.dashboard = response;
+									}
+									return callback(null, obj);
+								});
+							},
+							
+							//urac
+							(obj, callback) => {
+								let config = getConfig.urac(options, obj);
+								driver.upgrade.service(config, deployer, (error, done, imageInfo, response) => {
+									if (error) {
+										return callback(error, obj);
+									}
+									obj.uracIP = null;
+									if (response) {
+										obj.uracIP = response.ip;
+										obj.deployments.urac = response;
+									}
+									return callback(null, obj);
+								});
+							},
+							
+							//oauth
+							(obj, callback) => {
+								let config = getConfig.oauth(options, obj);
+								driver.upgrade.service(config, deployer, (error, done, imageInfo, response) => {
+									if (error) {
+										return callback(error, obj);
+									}
+									obj.oauthIP = null;
+									if (response) {
+										obj.oauthIP = response.ip;
+										obj.deployments.oauth = response;
+									}
+									return callback(null, obj);
+								});
+							},
+							
+							//multitenant
+							(obj, callback) => {
+								let config = getConfig.multitenant(options, obj);
+								driver.upgrade.service(config, deployer, (error, done, imageInfo, response) => {
+									if (error) {
+										return callback(error, obj);
+									}
+									obj.multitenantIP = null;
+									if (response) {
+										obj.multitenantIP = response.ip;
+										obj.deployments.multitenant = response;
+									}
+									return callback(null, obj);
+								});
+							},
+							
+							//update data (catalogs & settings
+							(obj, callback) => {
+								let catalogs = (doc) => {
+									setImageTag(options, doc);
+								};
+								let templates = {
+									"catalogs": catalogs
+								};
+								options.importer.runFor.catalogs(obj.profileImport, options.dataPath, false, templates, () => {
+									let settings = (doc) => {
+										if (doc.type === "installer") {
+											doc.releaseInfo = options.versions;
+											doc.installerVersion = options.installerVersion;
+										}
+									};
+									let templates = {
+										"settings": settings
+									};
+									options.importer.runFor.settings(obj.profileImport, options.dataPath, false, templates, () => {
+										
+										return callback(null, obj);
+									});
+								});
+							}
+						], (error, obj) => {
+							if (!error) {
+								echoResult(options, obj);
+							}
+							return cb(error);
+						});
+					});
+				});
+			} else {
+				return cb(new Error("Unable to find driver [" + options.driverName + "] in configuration"));
+			}
 		});
 	}
 };
