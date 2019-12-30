@@ -102,19 +102,19 @@ let lib = {
 										name: onePod.metadata.name,
 										ip: onePod.status.podIP
 									});
+									break;
 								}
 							}
 						}
 					}
 				});
 			}
-			
-			if (ips.length !== replicaCount) {
+			if (ips.length < replicaCount) {
 				//pod containers may not be ready yet
 				lib.printProgress('Waiting for ' + serviceName + ' containers to become available', counter++);
 				setTimeout(() => {
 					return lib.getServiceIPs(deployer, serviceName, replicaCount, namespace, counter, cb);
-				}, 1000);
+				}, 5000);
 			} else {
 				wrapper.service.get(deployer, {
 					namespace: namespace,
@@ -375,6 +375,9 @@ let lib = {
 			oneService.metadata.resourceVersion = serviceRec.metadata.resourceVersion;
 			if (!oneService.spec.clusterIP) {
 				oneService.spec.clusterIP = serviceRec.spec.clusterIP;
+			}
+			if (serviceRec.spec.healthCheckNodePort){
+				oneService.spec.healthCheckNodePort = serviceRec.spec.healthCheckNodePort;
 			}
 			
 			lib.getDeployment(deployer, {
