@@ -38,7 +38,7 @@ let doc = {
 									}
 								}
 							}, {
-								"group": "My Account",
+								"group": "My account",
 								"apis": {
 									"/user": {
 										"access": true
@@ -110,7 +110,7 @@ let doc = {
 								}
 							},
 							{
-								"group": "My account Guest",
+								"group": "My account guest",
 								"apis": {
 									"/password/reset": {
 										"access": false
@@ -372,9 +372,9 @@ let doc = {
 					}],
 					"urac": [{
 						"version": "3",
-						"get": ["My account guest", "Administration", "My Account", "User administration", "Group administration"],
+						"get": ["My account guest", "Administration", "My account", "User administration", "Group administration"],
 						"post": ["User administration", "Group administration"],
-						"put": ["My account guest", "My Account", "User administration", "Group administration"],
+						"put": ["My account guest", "My account", "User administration", "Group administration"],
 						"delete": ["Group administration"]
 					}],
 					"dashboard": [{
@@ -403,8 +403,8 @@ let doc = {
 					}],
 					"urac": [{
 						"version": "3",
-						"get": ["My account guest", "My Account"],
-						"put": ["My Account", "My account guest"]
+						"get": ["My account guest", "My account"],
+						"put": ["My account", "My account guest"]
 					}],
 					"dashboard": [{
 						"version": "1",
@@ -432,9 +432,8 @@ let doc = {
 					}],
 					"urac": [{
 						"version": "3",
-						"get": ["My Account", "My account guest"],
-						"put": ["My Account", "My account guest"],
-						"post": ["My Account"]
+						"get": ["My account", "My account guest"],
+						"put": ["My account", "My account guest"]
 					}],
 					"dashboard": [{
 						"version": "1",

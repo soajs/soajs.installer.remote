@@ -788,7 +788,7 @@ let services = [
 						l: "Join and create an account",
 						v: "/join",
 						m: "post",
-						group: "Guest Join"
+						group: "Guest join"
 					},
 					{
 						l: "Add user",
