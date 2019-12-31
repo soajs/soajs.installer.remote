@@ -757,7 +757,7 @@ let services = [
 						l: "List users matching certain keywords",
 						v: "/admin/users",
 						m: "get",
-						group: "User Administration",
+						group: "User administration",
 						groupMain: true
 					},
 					{
@@ -770,13 +770,13 @@ let services = [
 						l: "List all groups",
 						v: "/admin/groups",
 						m: "get",
-						group: "Group Administration"
+						group: "Group administration"
 					},
 					{
 						l: "Get group by id or code",
 						v: "/admin/group",
 						m: "get",
-						group: "Group Administration"
+						group: "Group administration"
 					},
 					{
 						l: "Get all users and groups of a main tenant",
@@ -807,13 +807,13 @@ let services = [
 						l: "Add group",
 						v: "/admin/group",
 						m: "post",
-						group: "Group Administration"
+						group: "Group administration"
 					},
 					{
 						l: "Delete group",
 						v: "/admin/group",
 						m: "delete",
-						group: "Group Administration"
+						group: "Group administration"
 					},
 					{
 						l: "Reset password",
@@ -867,31 +867,31 @@ let services = [
 						l: "Edit group by id",
 						v: "/admin/group",
 						m: "put",
-						group: "Group Administration"
+						group: "Group administration"
 					},
 					{
 						l: "Update environment(s) of group(s) by code(s) or id(s)",
 						v: "/admin/groups/environments",
 						m: "put",
-						group: "Group Administration"
+						group: "Group administration"
 					},
 					{
 						l: "Update package(s) of group(s) by code(s) or id(s)",
 						v: "/admin/groups/packages",
 						m: "put",
-						group: "Group Administration"
+						group: "Group administration"
 					},
 					{
 						l: "Invite users by id, username or email",
 						v: "/admin/users/invite",
 						m: "put",
-						group: "User Administration"
+						group: "User administration"
 					},
 					{
 						l: "un-Invite users by id, username or email",
 						v: "/admin/users/uninvite",
 						m: "put",
-						group: "User Administration"
+						group: "User administration"
 					}
 				],
 				"extKeyRequired": true,

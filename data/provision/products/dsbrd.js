@@ -23,7 +23,7 @@ let doc = {
 									}
 								}
 							}, {
-								"group": "User Administration",
+								"group": "User administration",
 								"apis": {
 									"/admin/users": {
 										"access": true
@@ -31,7 +31,7 @@ let doc = {
 								}
 							},
 							{
-								"group": "Group Administration",
+								"group": "Group administration",
 								"apis": {
 									"/admin/groups": {
 										"access": true
@@ -57,7 +57,7 @@ let doc = {
 							}],
 						"post": [
 							{
-								"group": "User Administration",
+								"group": "User administration",
 								"apis": {
 									"/admin/user": {
 										"access": true
@@ -65,7 +65,7 @@ let doc = {
 								}
 							},
 							{
-								"group": "Group Administration",
+								"group": "Group administration",
 								"apis": {
 									"/admin/group": {
 										"access": true
@@ -74,7 +74,7 @@ let doc = {
 							}],
 						"put": [
 							{
-								"group": "User Administration",
+								"group": "User administration",
 								"apis": {
 									"/admin/user/status": {
 										"access": true
@@ -85,7 +85,7 @@ let doc = {
 								}
 							},
 							{
-								"group": "Group Administration",
+								"group": "Group administration",
 								"apis": {
 									"/admin/group": {
 										"access": true
@@ -119,7 +119,7 @@ let doc = {
 							}
 						],
 						"delete": [{
-							"group": "Group Administration",
+							"group": "Group administration",
 							"apis": {
 								"/admin/group": {
 									"access": true
@@ -372,10 +372,10 @@ let doc = {
 					}],
 					"urac": [{
 						"version": "3",
-						"get": ["My account guest", "Administration", "My Account", "User Administration", "Group Administration"],
-						"post": ["User Administration", "Group Administration"],
-						"put": ["My account guest", "My Account", "User Administration", "Group Administration"],
-						"delete": ["Group Administration"]
+						"get": ["My account guest", "Administration", "My Account", "User administration", "Group administration"],
+						"post": ["User administration", "Group administration"],
+						"put": ["My account guest", "My Account", "User administration", "Group administration"],
+						"delete": ["Group administration"]
 					}],
 					"dashboard": [{
 						"version": "1",
