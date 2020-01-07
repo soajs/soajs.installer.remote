@@ -183,7 +183,7 @@ let lib = {
 			if (error) {
 				return cb(error);
 			} else if (!content) {
-				return callback("Unable to read from: " + contentPath);
+				return cb("Unable to read from: " + contentPath);
 			}
 			//Delete the secret before creating it
 			wrapper.secret.delete(deployer, {namespace: namespace, name: secretName}, () => {
