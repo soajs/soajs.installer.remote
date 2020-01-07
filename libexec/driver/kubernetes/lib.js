@@ -376,7 +376,7 @@ let lib = {
 			if (!oneService.spec.clusterIP) {
 				oneService.spec.clusterIP = serviceRec.spec.clusterIP;
 			}
-			if (serviceRec.spec.healthCheckNodePort){
+			if (serviceRec.spec.healthCheckNodePort) {
 				oneService.spec.healthCheckNodePort = serviceRec.spec.healthCheckNodePort;
 			}
 			
@@ -488,7 +488,13 @@ let lib = {
 					if (item.image !== options.image[type]) {
 						mustUpdate = true;
 						logger.debug(options.serviceName + " image changed from [" + item.image + "] to [" + options.image[type] + "]");
+						
 						oneDeployment.spec.template.spec.containers[0].image = options.image[type];
+						
+						let imageTs = new Date().getTime().toString();
+						oneService.metadata.labels['service.image.ts'] = imageTs;
+						oneDeployment.metadata.labels['service.image.ts'] = imageTs;
+						oneDeployment.spec.template.metadata.labels['service.image.ts'] = imageTs;
 					}
 					if (item.branch) {
 						let newBranch = null;
