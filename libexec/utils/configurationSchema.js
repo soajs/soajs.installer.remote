@@ -305,6 +305,23 @@ let schema = {
 					"type": "string",
 					"enum": ['sem', 'major'],
 					"required": false
+				},
+				"config": {
+					"type": "object",
+					"required": false,
+					"additionalProperties": false,
+					"properties": {
+						"hashIterations": {
+							"type": "integer",
+							"required": false,
+							"minimum": 12,
+							"maximum": 32
+						},
+						"optionalAlgorithm": {
+							"type": "string",
+							"required": false
+						}
+					}
 				}
 			}
 		}

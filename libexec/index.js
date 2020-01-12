@@ -8,6 +8,8 @@
  * found in the LICENSE file at the root of this repository
  */
 
+const crypto = require("crypto");
+
 const soajs = require('soajs');
 const randomString = require("randomstring");
 
@@ -259,13 +261,35 @@ function importData(options, data, profileImport, cb) {
 	let tenants = (doc) => {
 		if (doc.code === "DBTN") {
 			doc.applications[0].keys[0].extKeys[0].extKey = data.extKey;
+			if (options.deployment && options.deployment.config) {
+				if (options.deployment.config.hashIterations) {
+					doc.applications[0].keys[0].config.dashboard.urac.hashIterations = options.deployment.config.hashIterations;
+				}
+				if (options.deployment.config.optionalAlgorithm) {
+					doc.applications[0].keys[0].config.dashboard.urac.optionalAlgorithm = options.deployment.config.optionalAlgorithm;
+				}
+			}
 		}
 	};
 	
 	let users = (doc) => {
 		let Hasher = soajs.hasher;
-		Hasher.init({});
-		let hashedPwd = Hasher.hash(options.owner.password);
+		
+		let hasherConfig = {};
+		let pwd = options.owner.password;
+		if (options.deployment && options.deployment.config) {
+			if (options.deployment.config.hashIterations) {
+				hasherConfig.hashIterations = options.deployment.config.hashIterations;
+			}
+			if (options.deployment.config.optionalAlgorithm) {
+				let hash = crypto.createHash(options.deployment.config.optionalAlgorithm);
+				pwd = hash.update(pwd).digest('hex');
+			}
+		}
+		Hasher.init(hasherConfig);
+		
+		let hashedPwd = Hasher.hash(pwd);
+		
 		doc.username = options.owner.username;
 		doc.password = hashedPwd;
 		doc.email = options.owner.email;
