@@ -13,16 +13,14 @@ module.exports = (profile, dataPath, callback) => {
 	let record = require(dataPath + "products/dsbrd.js");
 	delete (record._id);
 	let condition = {"code": "DSBRD"};
-	
-	let extraOptions = {
-		'upsert': true
-	};
+	let extraOptions = {'upsert': false};
 	let s = {'$set': record};
-	
 	mongoConnectionTenant.updateOne("products", condition, s, extraOptions, (err, record) => {
-		logger.info(logger);
 		//close mongo connection
 		mongoConnectionTenant.closeDb();
+		if (record) {
+			logger.info(record.nModified);
+		}
 		return callback(err, "MongoDb Soajs Data migrate!")
 	});
 };

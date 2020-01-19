@@ -785,6 +785,12 @@ let services = [
 						group: "Administration"
 					},
 					{
+						l: "Send custom email",
+						v: "/email",
+						m: "post",
+						group: "Custom email"
+					},
+					{
 						l: "Join and create an account",
 						v: "/join",
 						m: "post",
