@@ -20,9 +20,16 @@ module.exports = (profile, dataPath, callback) => {
 	let s = {'$set': record};
 	
 	mongoConnectionTenant.updateOne("products", condition, s, extraOptions, (err, record) => {
-		logger.info(logger);
 		//close mongo connection
 		mongoConnectionTenant.closeDb();
+		if (record) {
+			logger.info(record.nModified);
+		}
+		if (record && record.nModified) {
+			logger.info("DSBRD updated: " + record.nModified);
+		} else if (record && record.ok && record.upserted && Array.isArray(record.upserted)) {
+			logger.info("DSBRD inserted: " + record.upserted.length);
+		}
 		return callback(err, "MongoDb Soajs Data migrate!")
 	});
 };
