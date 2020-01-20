@@ -23,25 +23,24 @@ module.exports = (profile, dataPath, callback) => {
 		let mongoConnection = new Mongo(profile);
 		async.eachSeries(
 			records,
-			(e, cb) => {
-				if (tCode !== e.tenant.code) {
-					logger.warn(e.code + ": skipped tenant code [" + e.tenant.code + "] does not match!");
+			(group, cb) => {
+				if (tCode !== group.tenant.code) {
+					logger.warn(e.code + ": skipped tenant code [" + group.tenant.code + "] does not match!");
 					return cb();
 				}
-				let condition = {"code": e.code};
-				if (e._id) {
-					delete (e._id);
+				let condition = {"code": group.code};
+				if (group._id) {
+					delete (group._id);
 				}
-				e = {$set: e};
+				let e = {$set: group};
 				mongoConnection.updateOne("groups", condition, e, {'upsert': false}, (error, record) => {
 					if (error) {
-						logger.error(e.code + ": " + error);
+						logger.error(group.code + ": " + error);
 					} else if (record) {
-						logger.info(e.code + ": " + record.nModified);
+						logger.info(group.code + ": " + record.nModified);
 					}
 					return cb();
 				});
-				
 			},
 			() => {
 				//close mongo connection
