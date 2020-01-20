@@ -8,12 +8,12 @@ const utils = require("../utils/utils.js");
 const logger = utils.getLogger();
 
 module.exports = (profile, dataPath, callback) => {
-	//use soajs.core.modules to create a connection to core_provision database
-	let mongoConnection = new Mongo(profile);
 	
 	//update product services
 	let records = require(dataPath + "services/index.js");
-	if (records && Array.isArray(records)) {
+	if (records && Array.isArray(records) && records.length > 0) {
+		//use soajs.core.modules to create a connection to core_provision database
+		let mongoConnection = new Mongo(profile);
 		async.each(records, (service, cb) => {
 				if (service.name) {
 					delete (service._id);
@@ -36,5 +36,7 @@ module.exports = (profile, dataPath, callback) => {
 				return callback(null, "MongoDb Soajs Data migrate!")
 			}
 		);
+	} else {
+		return callback(null, "Nothing to migrate");
 	}
 };
