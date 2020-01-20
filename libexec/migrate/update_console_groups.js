@@ -10,7 +10,7 @@ const logger = utils.getLogger();
 module.exports = (profile, dataPath, callback) => {
 	let records = [];
 	fs.readdirSync(dataPath + "urac/groups/").forEach(function (file) {
-		let rec = require(dataPath + file);
+		let rec = require(dataPath + "urac/groups/" + file);
 		if (Array.isArray(rec)) {
 			records = records.concat(rec);
 		} else {
