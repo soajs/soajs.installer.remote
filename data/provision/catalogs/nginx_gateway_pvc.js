@@ -116,10 +116,6 @@ let doc = {
 					"value": "$SOAJS_NX_CONTROLLER_PORT"
 				},
 				
-				"SOAJS_SSL_SECRET": {
-					"type": "static",
-					"value": "true"
-				},
 				"SOAJS_SSL_CONFIG": {
 					"type": "userInput",
 					"label": "SSL information",
