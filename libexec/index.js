@@ -26,6 +26,12 @@ const uuidv4 = require('uuid/v4');
 const async = require('async');
 const configurationSchema = require("./utils/configurationSchema");
 
+const soajsServicesArray = ["dashboard", "multitenant", "oauth", "urac"];
+let soajsService = {};
+for (let i = 0; i < soajsServicesArray.length; i++) {
+	soajsService[soajsServicesArray[i]] = require("./services/" + soajsServicesArray[i] + ".js");
+}
+
 function handleImageInfo(options, imageInfo, serviceName, cb) {
 	let profileImport = utils.getProfile(options);
 	let cpModelObj = new CoreProvisionModel(profileImport);
@@ -112,51 +118,15 @@ function setImageTag(options, doc) {
 		}
 	}
 	
-	//dashboard bin
-	if (doc._id === "5df3ec10fa3912534948efff") {
-		if (options.deployment.style === "sem") {
-			if (options.versions.services.dashboard.semVer) {
-				doc.recipe.deployOptions.image.tag = options.versions.services.dashboard.semVer;
-			}
-		} else if (options.versions.services.dashboard.ver) {
-			doc.recipe.deployOptions.image.tag = options.versions.services.dashboard.ver;
-		}
-	}
 	//gateway bin
 	if (doc._id === "5df3ec10fa3912534948f000") {
 		if (options.versions.services.gateway.semVer) {
 			doc.recipe.deployOptions.image.tag = options.versions.services.gateway.semVer;
 		}
 	}
-	//multitenant bin
-	if (doc._id === "5df3ec10fa3912534948f004") {
-		if (options.deployment.style === "sem") {
-			if (options.versions.services.multitenant.semVer) {
-				doc.recipe.deployOptions.image.tag = options.versions.services.multitenant.semVer;
-			}
-		} else if (options.versions.services.multitenant.ver) {
-			doc.recipe.deployOptions.image.tag = options.versions.services.multitenant.ver;
-		}
-	}
-	//oauth bin
-	if (doc._id === "5df3ec10fa3912534948f006") {
-		if (options.deployment.style === "sem") {
-			if (options.versions.services.oauth.semVer) {
-				doc.recipe.deployOptions.image.tag = options.versions.services.oauth.semVer;
-			}
-		} else if (options.versions.services.oauth.ver) {
-			doc.recipe.deployOptions.image.tag = options.versions.services.oauth.ver;
-		}
-	}
-	//urac bin
-	if (doc._id === "5df3ec10fa3912534948f008") {
-		if (options.deployment.style === "sem") {
-			if (options.versions.services.urac.semVer) {
-				doc.recipe.deployOptions.image.tag = options.versions.services.urac.semVer;
-			}
-		} else if (options.versions.services.urac.ver) {
-			doc.recipe.deployOptions.image.tag = options.versions.services.urac.ver;
-		}
+	
+	for (let i = 0; i < soajsServicesArray.length; i++) {
+		soajsService[soajsServicesArray[i]].setImageTag(options, doc);
 	}
 }
 
@@ -179,25 +149,11 @@ function requireCatalog(options, serviceName) {
 		catObjs.push(doc);
 	}
 	
-	if (serviceName === 'dashboard') {
-		let doc = require(dataPath + "soajs_dashboard_bin.js");
-		setImageTag(options, doc);
-		catObjs.push(doc);
-	}
-	if (serviceName === 'multitenant') {
-		let doc = require(dataPath + "soajs_multitenant_bin.js");
-		setImageTag(options, doc);
-		catObjs.push(doc);
-	}
-	if (serviceName === 'oauth') {
-		let doc = require(dataPath + "soajs_oauth_bin.js");
-		setImageTag(options, doc);
-		catObjs.push(doc);
-	}
-	if (serviceName === 'urac') {
-		let doc = require(dataPath + "soajs_urac_bin.js");
-		setImageTag(options, doc);
-		catObjs.push(doc);
+	for (let i = 0; i < soajsServicesArray.length; i++) {
+		let doc = soajsService[soajsServicesArray[i]].requireCatalog(options, serviceName, "../" + dataPath);
+		if (doc) {
+			catObjs.push(doc);
+		}
 	}
 	
 	return catObjs;
@@ -262,11 +218,14 @@ function importData(options, data, profileImport, cb) {
 		if (doc.code === "DBTN") {
 			doc.applications[0].keys[0].extKeys[0].extKey = data.extKey;
 			if (options.deployment && options.deployment.config) {
+				if (!doc.applications[0].keys[0].config.dashboard.commonFields) {
+					doc.applications[0].keys[0].config.dashboard.commonFields = {};
+				}
 				if (options.deployment.config.hashIterations) {
-					doc.applications[0].keys[0].config.dashboard.urac.hashIterations = options.deployment.config.hashIterations;
+					doc.applications[0].keys[0].config.dashboard.commonFields.hashIterations = options.deployment.config.hashIterations;
 				}
 				if (options.deployment.config.optionalAlgorithm) {
-					doc.applications[0].keys[0].config.dashboard.urac.optionalAlgorithm = options.deployment.config.optionalAlgorithm;
+					doc.applications[0].keys[0].config.dashboard.commonFields.optionalAlgorithm = options.deployment.config.optionalAlgorithm;
 				}
 			}
 		}
@@ -349,7 +308,7 @@ function validateOptions(options, cb) {
 
 let getConfig = {
 	"gateway": (options, obj) => {
-		let config = {
+		return {
 			"profileSecret": obj.profileSecret || null,
 			"type": options.deployment.type,
 			"style": options.deployment.style,
@@ -358,10 +317,9 @@ let getConfig = {
 			"semVer": options.versions.services.gateway.semVer,
 			"namespace": options.kubernetes.namespace
 		};
-		return config;
 	},
 	"nginx": (options, obj) => {
-		let config = {
+		return {
 			"type": options.deployment.type,
 			"style": options.deployment.style,
 			"repoVer": options.versions.services.ui.ver,
@@ -383,63 +341,6 @@ let getConfig = {
 			"gatewayIP": obj.gatewayIP,
 			"namespace": options.kubernetes.namespace
 		};
-		return config;
-	},
-	
-	"dashboard": (options, obj) => {
-		let config = {
-			"type": options.deployment.type,
-			"style": options.deployment.style,
-			"serviceVer": options.versions.services.dashboard.msVer || 1,
-			"repoVer": options.versions.services.dashboard.ver,
-			"semVer": options.versions.services.dashboard.semVer,
-			"serviceName": "dashboard",
-			"gatewayIP": obj.gatewayIP,
-			"namespace": options.kubernetes.namespace
-		};
-		return config;
-	},
-	
-	"urac": (options, obj) => {
-		let config = {
-			"type": options.deployment.type,
-			"style": options.deployment.style,
-			"serviceVer": options.versions.services.urac.msVer || 3,
-			"repoVer": options.versions.services.urac.ver,
-			"semVer": options.versions.services.urac.semVer,
-			"serviceName": "urac",
-			"gatewayIP": obj.gatewayIP,
-			"namespace": options.kubernetes.namespace
-		};
-		return config;
-	},
-	
-	"oauth": (options, obj) => {
-		let config = {
-			"type": options.deployment.type,
-			"style": options.deployment.style,
-			"serviceVer": options.versions.services.oauth.msVer || 1,
-			"repoVer": options.versions.services.oauth.ver,
-			"semVer": options.versions.services.oauth.semVer,
-			"serviceName": "oauth",
-			"gatewayIP": obj.gatewayIP,
-			"namespace": options.kubernetes.namespace
-		};
-		return config;
-	},
-	
-	"multitenant": (options, obj) => {
-		let config = {
-			"type": options.deployment.type,
-			"style": options.deployment.style,
-			"serviceVer": options.versions.services.multitenant.msVer || 1,
-			"repoVer": options.versions.services.multitenant.ver,
-			"semVer": options.versions.services.multitenant.semVer,
-			"serviceName": "multitenant",
-			"gatewayIP": obj.gatewayIP,
-			"namespace": options.kubernetes.namespace
-		};
-		return config;
 	}
 };
 
@@ -468,32 +369,8 @@ function echoResult(options, obj) {
 		logger.debug("\t\t Branch: " + obj.deployments.ui.branch);
 	}
 	
-	logger.debug("\tDashboard: ");
-	logger.debug("\t\t IP: " + obj.deployments.dashboard.ip);
-	logger.debug("\t\t Image: " + obj.deployments.dashboard.image);
-	if (obj.deployments.dashboard.branch) {
-		logger.debug("\t\t Branch: " + obj.deployments.dashboard.branch);
-	}
-	
-	logger.debug("\tURAC: ");
-	logger.debug("\t\t IP: " + obj.deployments.urac.ip);
-	logger.debug("\t\t Image: " + obj.deployments.urac.image);
-	if (obj.deployments.urac.branch) {
-		logger.debug("\t\t Branch: " + obj.deployments.urac.branch);
-	}
-	
-	logger.debug("\toAuth: ");
-	logger.debug("\t\t IP: " + obj.deployments.oauth.ip);
-	logger.debug("\t\t Image: " + obj.deployments.oauth.image);
-	if (obj.deployments.oauth.branch) {
-		logger.debug("\t\t Branch: " + obj.deployments.oauth.branch);
-	}
-	
-	logger.debug("\tMultitenant: ");
-	logger.debug("\t\t IP: " + obj.deployments.multitenant.ip);
-	logger.debug("\t\t Image: " + obj.deployments.multitenant.image);
-	if (obj.deployments.multitenant.branch) {
-		logger.debug("\t\t Branch: " + obj.deployments.multitenant.branch);
+	for (let i = 0; i < soajsServicesArray.length; i++) {
+		soajsService[soajsServicesArray[i]].echoResult(obj, logger);
 	}
 }
 
@@ -541,7 +418,7 @@ let lib = {
 	 *         password: "",
 	 *     }
 	 * }
-	 *
+	 * @param cb
 	 */
 	"install": (options, cb) => {
 		validateOptions(options, (error) => {
@@ -551,18 +428,23 @@ let lib = {
 			}
 			if (drivers[options.driverName]) {
 				let driver = drivers[options.driverName];
-				let config = {
+				let driverConfig = {
 					"ip": options.kubernetes.ip,
 					"port": options.kubernetes.port,
 					"token": options.kubernetes.token
 				};
-				driver.init(config, (error, deployer) => {
+				driver.init(driverConfig, (error, deployer) => {
 					if (error) {
 						return cb(error);
 					}
-					async.waterfall([
+					let waterfallArray = [
 						(callback) => {
-							return callback(null, {"deployments": {}});
+							return callback(null, {
+								"deployments": {},
+								"driver": driver,
+								"deployer": deployer,
+								"options": options
+							});
 						},
 						
 						//clean up if namespace is there
@@ -571,10 +453,10 @@ let lib = {
 								"namespace": options.kubernetes.namespace,
 								"verbose": false
 							};
-							driver.deploy.assureNamespace(config, deployer, false, (error, found) => {
+							obj.driver.deploy.assureNamespace(config, obj.deployer, false, (error, found) => {
 								if (found) {
 									logger.info("namespace [" + config.namespace + "] cleaning previous installation");
-									driver.cleanUp(config, deployer, (error) => {
+									driver.cleanUp(config, obj.deployer, (error) => {
 										if (error) {
 											return callback(error);
 										}
@@ -591,7 +473,7 @@ let lib = {
 								"namespace": options.kubernetes.namespace,
 								"verbose": true
 							};
-							driver.deploy.assureNamespace(config, deployer, true, (error) => {
+							obj.driver.deploy.assureNamespace(config, obj.deployer, true, (error) => {
 								if (error) {
 									return callback(error, obj);
 								}
@@ -608,7 +490,7 @@ let lib = {
 									"port": options.mongo.port,
 									"namespace": options.kubernetes.namespace
 								};
-								driver.deploy.mongo(config, deployer, (error, response) => {
+								obj.driver.deploy.mongo(config, obj.deployer, (error, response) => {
 									if (error) {
 										return callback(error, obj);
 									}
@@ -675,7 +557,7 @@ let lib = {
 						//Install gateway
 						(obj, callback) => {
 							let config = getConfig.gateway(options, obj);
-							driver.deploy.gateway(config, deployer, (error, response) => {
+							obj.driver.deploy.gateway(config, obj.deployer, (error, response) => {
 								if (error) {
 									return callback(error, obj);
 								}
@@ -690,7 +572,7 @@ let lib = {
 						//Install nginx
 						(obj, callback) => {
 							let config = getConfig.nginx(options, obj);
-							driver.deploy.nginx(config, deployer, (error, response) => {
+							obj.driver.deploy.nginx(config, obj.deployer, (error, response) => {
 								if (error) {
 									return callback(error, obj);
 								}
@@ -701,68 +583,12 @@ let lib = {
 								}
 								return callback(null, obj);
 							});
-						},
-						//Install dashboard service
-						(obj, callback) => {
-							let config = getConfig.dashboard(options, obj);
-							driver.deploy.service(config, deployer, (error, response) => {
-								if (error) {
-									return callback(error, obj);
-								}
-								obj.dashboardIP = null;
-								if (response) {
-									obj.dashboardIP = response.ip;
-									obj.deployments.dashboard = response;
-								}
-								return callback(null, obj);
-							});
-						},
-						//Install urac service
-						(obj, callback) => {
-							let config = getConfig.urac(options, obj);
-							driver.deploy.service(config, deployer, (error, response) => {
-								if (error) {
-									return callback(error, obj);
-								}
-								obj.uracIP = null;
-								if (response) {
-									obj.uracIP = response.ip;
-									obj.deployments.urac = response;
-								}
-								return callback(null, obj);
-							});
-						},
-						//Install oauth service
-						(obj, callback) => {
-							let config = getConfig.oauth(options, obj);
-							driver.deploy.service(config, deployer, (error, response) => {
-								if (error) {
-									return callback(error, obj);
-								}
-								obj.oauthIP = null;
-								if (response) {
-									obj.oauthIP = response.ip;
-									obj.deployments.oauth = response;
-								}
-								return callback(null, obj);
-							});
-						},
-						//Install multitenant service
-						(obj, callback) => {
-							let config = getConfig.multitenant(options, obj);
-							driver.deploy.service(config, deployer, (error, response) => {
-								if (error) {
-									return callback(error, obj);
-								}
-								obj.multitenantIP = null;
-								if (response) {
-									obj.multitenantIP = response.ip;
-									obj.deployments.multitenant = response;
-								}
-								return callback(null, obj);
-							});
 						}
-					], (error, obj) => {
+					];
+					for (let i = 0; i < soajsServicesArray.length; i++) {
+						waterfallArray.push(soajsService[soajsServicesArray[i]].install);
+					}
+					async.waterfall(waterfallArray, (error, obj) => {
 						if (!error) {
 							echoResult(options, obj);
 						}
@@ -1024,174 +850,124 @@ let lib = {
 			}
 			if (drivers[options.driverName]) {
 				let driver = drivers[options.driverName];
-				let config = {
+				let driverConfig = {
 					"ip": options.kubernetes.ip,
 					"port": options.kubernetes.port,
 					"token": options.kubernetes.token
 				};
-				driver.init(config, (error, deployer) => {
+				driver.init(driverConfig, (error, deployer) => {
 					if (error) {
 						return cb(error);
 					}
-					let config = {
-						"namespace": options.kubernetes.namespace,
-						"verbose": false
-					};
-					driver.deploy.assureNamespace(config, deployer, false, (error, found) => {
-						if (error) {
-							return cb(error);
-						}
-						if (!found) {
-							let error = new Error("Unable to find namespace: " + config.namespace);
-							return cb(error);
-						}
+					let waterfallArray = [
+						(callback) => {
+							return callback(null, {
+								"deployments": {},
+								"driver": driver,
+								"deployer": deployer,
+								"options": options
+							});
+						},
 						
-						async.waterfall([
-							(callback) => {
-								return callback(null, {"deployments": {}});
-							},
-							
-							//get extKey
-							(obj, callback) => {
-								
-								let profileImport = utils.getProfile(options);
-								let cpModelObj = new CoreProvisionModel(profileImport);
-								
-								cpModelObj.getExtKey((error, extKey) => {
-									obj.profileImport = profileImport;
-									if (extKey) {
-										obj.extKey = extKey;
-									}
+						//Assure namespace
+						(obj, callback) => {
+							let config = {
+								"namespace": options.kubernetes.namespace,
+								"verbose": false
+							};
+							obj.driver.deploy.assureNamespace(config, obj.deployer, false, (error, found) => {
+								if (error) {
 									return callback(error, obj);
-								});
-							},
+								}
+								if (!found) {
+									let error = new Error("Unable to find namespace: " + config.namespace);
+									return callback(error);
+								}
+								return callback(null, obj);
+							});
+						},
+						//get extKey
+						(obj, callback) => {
 							
-							//Gateway
-							(obj, callback) => {
-								let config = getConfig.gateway(options, obj);
-								driver.upgrade.gateway(config, deployer, (error, done, imageInfo, response) => {
-									if (error) {
-										return callback(error, obj);
-									}
-									obj.gatewayIP = null;
-									if (response) {
-										obj.gatewayIP = response.ip;
-										obj.deployments.gateway = response;
-									}
-									return callback(null, obj);
-								});
-							},
+							let profileImport = utils.getProfile(options);
+							let cpModelObj = new CoreProvisionModel(profileImport);
 							
-							//nginx
-							(obj, callback) => {
-								let config = getConfig.nginx(options, obj);
-								driver.upgrade.nginx(config, deployer, (error, done, imageInfo, response) => {
-									if (error) {
-										return callback(error, obj);
+							cpModelObj.getExtKey((error, extKey) => {
+								obj.profileImport = profileImport;
+								if (extKey) {
+									obj.extKey = extKey;
+								}
+								return callback(error, obj);
+							});
+						},
+						//Gateway
+						(obj, callback) => {
+							let config = getConfig.gateway(options, obj);
+							obj.driver.upgrade.gateway(config, obj.deployer, (error, done, imageInfo, response) => {
+								if (error) {
+									return callback(error, obj);
+								}
+								obj.gatewayIP = null;
+								if (response) {
+									obj.gatewayIP = response.ip;
+									obj.deployments.gateway = response;
+								}
+								return callback(null, obj);
+							});
+						},
+						//nginx
+						(obj, callback) => {
+							let config = getConfig.nginx(options, obj);
+							obj.driver.upgrade.nginx(config, obj.deployer, (error, done, imageInfo, response) => {
+								if (error) {
+									return callback(error, obj);
+								}
+								obj.nginxIP = null;
+								if (response) {
+									obj.nginxIP = response;
+									obj.deployments.ui = response;
+								}
+								return callback(null, obj);
+							});
+						}
+					];
+					
+					for (let i = 0; i < soajsServicesArray.length; i++) {
+						waterfallArray.push(soajsService[soajsServicesArray[i]].upgrade);
+					}
+					
+					waterfallArray.push(
+						//update data (catalogs & settings
+						(obj, callback) => {
+							let catalogs = (doc) => {
+								setImageTag(options, doc);
+							};
+							let templates = {
+								"catalogs": catalogs
+							};
+							options.importer.runFor.catalogs(obj.profileImport, options.dataPath, false, templates, () => {
+								let settings = (doc) => {
+									if (doc.type === "installer") {
+										doc.releaseInfo = options.versions;
+										doc.installerVersion = options.installerVersion;
 									}
-									obj.nginxIP = null;
-									if (response) {
-										obj.nginxIP = response;
-										obj.deployments.ui = response;
-									}
-									return callback(null, obj);
-								});
-							},
-							
-							//dashboard
-							(obj, callback) => {
-								let config = getConfig.dashboard(options, obj);
-								driver.upgrade.service(config, deployer, (error, done, imageInfo, response) => {
-									if (error) {
-										return callback(error, obj);
-									}
-									obj.dashboardIP = null;
-									if (response) {
-										obj.dashboardIP = response.ip;
-										obj.deployments.dashboard = response;
-									}
-									return callback(null, obj);
-								});
-							},
-							
-							//urac
-							(obj, callback) => {
-								let config = getConfig.urac(options, obj);
-								driver.upgrade.service(config, deployer, (error, done, imageInfo, response) => {
-									if (error) {
-										return callback(error, obj);
-									}
-									obj.uracIP = null;
-									if (response) {
-										obj.uracIP = response.ip;
-										obj.deployments.urac = response;
-									}
-									return callback(null, obj);
-								});
-							},
-							
-							//oauth
-							(obj, callback) => {
-								let config = getConfig.oauth(options, obj);
-								driver.upgrade.service(config, deployer, (error, done, imageInfo, response) => {
-									if (error) {
-										return callback(error, obj);
-									}
-									obj.oauthIP = null;
-									if (response) {
-										obj.oauthIP = response.ip;
-										obj.deployments.oauth = response;
-									}
-									return callback(null, obj);
-								});
-							},
-							
-							//multitenant
-							(obj, callback) => {
-								let config = getConfig.multitenant(options, obj);
-								driver.upgrade.service(config, deployer, (error, done, imageInfo, response) => {
-									if (error) {
-										return callback(error, obj);
-									}
-									obj.multitenantIP = null;
-									if (response) {
-										obj.multitenantIP = response.ip;
-										obj.deployments.multitenant = response;
-									}
-									return callback(null, obj);
-								});
-							},
-							
-							//update data (catalogs & settings
-							(obj, callback) => {
-								let catalogs = (doc) => {
-									setImageTag(options, doc);
 								};
 								let templates = {
-									"catalogs": catalogs
+									"settings": settings
 								};
-								options.importer.runFor.catalogs(obj.profileImport, options.dataPath, false, templates, () => {
-									let settings = (doc) => {
-										if (doc.type === "installer") {
-											doc.releaseInfo = options.versions;
-											doc.installerVersion = options.installerVersion;
-										}
-									};
-									let templates = {
-										"settings": settings
-									};
-									options.importer.runFor.settings(obj.profileImport, options.dataPath, false, templates, () => {
-										
-										return callback(null, obj);
-									});
+								options.importer.runFor.settings(obj.profileImport, options.dataPath, false, templates, () => {
+									
+									return callback(null, obj);
 								});
-							}
-						], (error, obj) => {
-							if (!error) {
-								echoResult(options, obj);
-							}
-							return cb(error);
-						});
+							});
+						}
+					);
+					
+					async.waterfall(waterfallArray, (error, obj) => {
+						if (!error) {
+							echoResult(options, obj);
+						}
+						return cb(error);
 					});
 				});
 			} else {
