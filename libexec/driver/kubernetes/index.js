@@ -392,7 +392,8 @@ let driver = {
 			let nginxObj = recipies.nginxRecipe(options);
 			let config = nginxObj.config;
 			let recipe = nginxObj.recipe;
-			lib.updateServiceDeployment(deployer, recipe.service, recipe.deployment, options.namespace, (error, done, imageInfo) => {
+			let createIfNotExist = false;
+			lib.updateServiceDeployment(deployer, recipe.service, recipe.deployment, options.namespace, createIfNotExist, (error, done, imageInfo) => {
 				if (done) {
 					lib.getServiceIPs(deployer, config.label, 1, options.namespace, (error, response) => {
 						let deployment = {
@@ -411,7 +412,8 @@ let driver = {
 			let gatewayObj = recipies.gatewayRecipe(options);
 			let config = gatewayObj.config;
 			let recipe = gatewayObj.recipe;
-			lib.updateServiceDeployment(deployer, recipe.service, recipe.deployment, options.namespace, (error, done, imageInfo) => {
+			let createIfNotExist = false;
+			lib.updateServiceDeployment(deployer, recipe.service, recipe.deployment, options.namespace, createIfNotExist, (error, done, imageInfo) => {
 				if (done) {
 					lib.getServiceIPs(deployer, config.label, 1, options.namespace, (error, response) => {
 						let deployment = {
@@ -430,7 +432,8 @@ let driver = {
 			let gatewayObj = recipies.serviceRecipe(options);
 			let config = gatewayObj.config;
 			let recipe = gatewayObj.recipe;
-			lib.updateServiceDeployment(deployer, recipe.service, recipe.deployment, options.namespace, (error, done, imageInfo) => {
+			let createIfNotExist = true;
+			lib.updateServiceDeployment(deployer, recipe.service, recipe.deployment, options.namespace, createIfNotExist, (error, done, imageInfo) => {
 				if (done) {
 					lib.getServiceIPs(deployer, config.label, 1, options.namespace, (error, response) => {
 						let deployment = {
@@ -490,7 +493,8 @@ let driver = {
 	},
 	
 	"restoreServiceDeployment": (options, deployer, cb) => {
-		lib.updateServiceDeployment(deployer, options.oneService, options.oneDeployment, options.namespace, (error, done, imageInfo) => {
+		let createIfNotExist = true;
+		lib.updateServiceDeployment(deployer, options.oneService, options.oneDeployment, options.namespace, createIfNotExist, (error, done, imageInfo) => {
 			return cb(error, done, imageInfo);
 		});
 	},

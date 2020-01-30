@@ -24,9 +24,10 @@ let lib = {
 	"requireCatalog": (options, serviceName, dataPath) => {
 		let doc = null;
 		if (serviceName === 'oauth') {
-			let doc = require(dataPath + "soajs_oauth_bin.js");
+			doc = require(dataPath + "soajs_oauth_bin.js");
 			lib.setImageTag(options, doc);
 		}
+		console.log(doc)
 		return (doc);
 	},
 	"getConfig": (options, obj) => {

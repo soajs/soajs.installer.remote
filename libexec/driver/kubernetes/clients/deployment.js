@@ -42,6 +42,7 @@ const deployments = {
 		main().then((result) => {
 			return cb(null, result.body);
 		}).catch((err) => {
+			console.log(err)
 			return cb(err);
 		});
 	},

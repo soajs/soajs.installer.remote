@@ -24,7 +24,7 @@ let lib = {
 	"requireCatalog": (options, serviceName, dataPath) => {
 		let doc = null;
 		if (serviceName === 'dashboard') {
-			let doc = require(dataPath + "soajs_dashboard_bin.js");
+			doc = require(dataPath + "soajs_dashboard_bin.js");
 			lib.setImageTag(options, doc);
 		}
 		return (doc);

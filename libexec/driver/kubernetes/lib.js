@@ -353,7 +353,7 @@ let lib = {
 		});
 	},
 	
-	"updateServiceDeployment": (deployer, oneService, oneDeployment, namespace, cb) => {
+	"updateServiceDeployment": (deployer, oneService, oneDeployment, namespace, createIfNotExist, cb) => {
 		
 		let mode = oneService.metadata.labels['soajs.service.mode'];
 		
@@ -368,10 +368,21 @@ let lib = {
 		delete oneDeployment.metadata.creationTimestamp;
 		delete oneDeployment.spec.template.metadata.creationTimestamp;
 		
-		lib.getService(deployer, oneService.metadata.labels['soajs.service.name'], namespace, (error, serviceRec) => {
-			if (error) {
-				return cb(error);
-			}
+		let _doAdd = (cb) => {
+			lib.createService(deployer, oneService, namespace, (error) => {
+				if (error) {
+					return cb(error);
+				}
+				lib.createDeployment(deployer, oneDeployment, namespace, (error) => {
+					if (error) {
+						return cb(error);
+					}
+					let imageInfo = null;
+					return cb(null, true, imageInfo);
+				});
+			});
+		};
+		let _doUpdate = (serviceRec, cb) => {
 			oneService.metadata.resourceVersion = serviceRec.metadata.resourceVersion;
 			if (!oneService.spec.clusterIP) {
 				oneService.spec.clusterIP = serviceRec.spec.clusterIP;
@@ -424,6 +435,18 @@ let lib = {
 					})
 				});
 			});
+		};
+		
+		lib.getService(deployer, oneService.metadata.labels['soajs.service.name'], namespace, (error, serviceRec) => {
+			if (error) {
+				if (createIfNotExist) {
+					_doAdd(cb);
+				} else {
+					return cb(error);
+				}
+			} else {
+				_doUpdate(serviceRec,cb);
+			}
 		});
 	},
 	"updateService": (deployer, options, namespace, cb) => {
@@ -528,7 +551,7 @@ let lib = {
 					
 					if (mustUpdate) {
 						let update = () => {
-							lib.updateServiceDeployment(deployer, oneService, oneDeployment, namespace, (error, done, imageInfo) => {
+							lib.updateServiceDeployment(deployer, oneService, oneDeployment, namespace, false, (error, done, imageInfo) => {
 								if (error) {
 									return cb(error);
 								}
