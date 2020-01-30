@@ -39,7 +39,6 @@ function handleImageInfo(options, imageInfo, serviceName, cb) {
 		options.deployment.style = imageInfo.style;
 	}
 	let catObjs = requireCatalog(options, serviceName);
-	console.log(catObjs)
 	if (catObjs.length > 0) {
 		async.each(catObjs, (oneCatObj, callback) => {
 			if (imageInfo && imageInfo.tag) {
