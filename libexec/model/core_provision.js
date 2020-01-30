@@ -43,7 +43,6 @@ CoreProvision.prototype.updateCatalog = function (obj, cb) {
 	__self.validateId(obj._id, (error, _id) => {
 		if (_id) {
 			let condition = {"_id": _id};
-			console.log(condition)
 			obj._id = _id;
 			
 			__self.mongoCore.findOne("catalogs", condition, (error, response) => {
