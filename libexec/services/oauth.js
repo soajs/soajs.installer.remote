@@ -27,7 +27,6 @@ let lib = {
 			doc = require(dataPath + "soajs_oauth_bin.js");
 			lib.setImageTag(options, doc);
 		}
-		console.log(doc)
 		return (doc);
 	},
 	"getConfig": (options, obj) => {
