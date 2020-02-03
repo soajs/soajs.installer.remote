@@ -429,9 +429,9 @@ let driver = {
 			});
 		},
 		"service": (options, deployer, cb) => {
-			let gatewayObj = recipies.serviceRecipe(options);
-			let config = gatewayObj.config;
-			let recipe = gatewayObj.recipe;
+			let serviceObj = recipies.serviceRecipe(options);
+			let config = serviceObj.config;
+			let recipe = serviceObj.recipe;
 			let createIfNotExist = true;
 			lib.updateServiceDeployment(deployer, recipe.service, recipe.deployment, options.namespace, createIfNotExist, (error, done, imageInfo) => {
 				if (done) {
@@ -448,6 +448,36 @@ let driver = {
 				}
 			});
 		}
+	},
+	
+	"patch": (serviceOptions, gatewayOptions, deployer, cb) => {
+		let gatewayObj = recipies.gatewayRecipe(gatewayOptions);
+		let gatewayConfig = gatewayObj.config;
+		
+		lib.getServiceIPs(deployer, gatewayConfig.label, 1, gatewayOptions.namespace, (error, response) => {
+			if (error) {
+				return cb(error);
+			}
+			serviceOptions.gatewayIP = response;
+			let serviceObj = recipies.serviceRecipe(serviceOptions);
+			let serviceConfig = serviceObj.config;
+			let recipe = serviceObj.recipe;
+			let createIfNotExist = true;
+			lib.updateServiceDeployment(deployer, recipe.service, recipe.deployment, serviceOptions.namespace, createIfNotExist, (error, done, imageInfo) => {
+				if (done) {
+					lib.getServiceIPs(deployer, serviceConfig.label, 1, serviceOptions.namespace, (error, response) => {
+						let deployment = {
+							ip: response,
+							image: serviceConfig.image,
+							branch: serviceConfig.branch || null
+						};
+						return cb(error, done, imageInfo, deployment);
+					});
+				} else {
+					return cb(error, done, imageInfo);
+				}
+			});
+		});
 	},
 	
 	/**

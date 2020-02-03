@@ -658,7 +658,7 @@ let lib = {
 						driver.updateService(config2, deployer, (error, done, imageInfo) => {
 							if (!error && done && imageInfo.changed) {
 								handleImageInfo(options, imageInfo, serviceName, (newError) => {
-									return cb((newError || error), done);
+									return cb(newError, done);
 								});
 							} else {
 								return cb(error, done);
@@ -766,7 +766,64 @@ let lib = {
 									serviceName = 'gateway';
 								}
 								handleImageInfo(options, imageInfo, serviceName, (newError) => {
-									return cb((newError || error), done);
+									return cb(newError, done);
+								});
+							} else {
+								return cb(error, done);
+							}
+						});
+					});
+				});
+			} else {
+				return cb(new Error("Unable to find driver [" + options.driverName + "] in configuration"));
+			}
+		});
+	},
+	
+	"patch": (options, serviceName, cb) => {
+		validateOptions(options, (error) => {
+			if (error) {
+				logger.error(error);
+				return cb(new Error("Unable to continue, please provide valid configuration!"));
+			}
+			if (!soajsService[serviceName]) {
+				return cb(new Error("Service [" + serviceName + "] cannot be recognized as a SOAJS service"));
+			}
+			if (drivers[options.driverName]) {
+				let driver = drivers[options.driverName];
+				let config = {
+					"ip": options.kubernetes.ip,
+					"port": options.kubernetes.port,
+					"token": options.kubernetes.token
+				};
+				driver.init(config, (error, deployer) => {
+					if (error) {
+						return cb(error);
+					}
+					
+					let config = {
+						"namespace": options.kubernetes.namespace,
+						"verbose": false
+					};
+					driver.deploy.assureNamespace(config, deployer, false, (error, found) => {
+						if (error) {
+							return cb(error);
+						}
+						if (!found) {
+							let error = new Error("Unable to find namespace: " + config.namespace);
+							return cb(error);
+						}
+						let gatewayOptions = getConfig.gateway(options, {});
+						let serviceOptions = soajsService[serviceName].getConfig(options, {});
+						driver.patch(serviceOptions, gatewayOptions, deployer, (error, done, imageInfo, deployment) => {
+							if (deployment) {
+								logger.debug("Service " + serviceName + ": patched");
+								let obj = {"deployments": {[serviceName]: deployment}};
+								soajsService[serviceName].echoResult(obj, logger);
+							}
+							if (!error && done && imageInfo.changed) {
+								handleImageInfo(options, imageInfo, serviceName, (newError) => {
+									return cb(newError, done);
 								});
 							} else {
 								return cb(error, done);
