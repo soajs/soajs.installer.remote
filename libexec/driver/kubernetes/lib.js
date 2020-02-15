@@ -211,6 +211,7 @@ let lib = {
 	},
 	
 	"deleteDeployments": (deployer, options, namespace, cb) => {
+		logger.info("Deleting all deployments ...");
 		let filter = {labelSelector: 'soajs.content=true'};
 		wrapper.deployment.get(deployer, {
 			namespace: namespace,
@@ -267,6 +268,7 @@ let lib = {
 		});
 	},
 	"deleteDaemonsets": (deployer, options, namespace, cb) => {
+		logger.info("Deleting all daemon sets ...");
 		let filter = {labelSelector: 'soajs.content=true'};
 		wrapper.daemonset.get(deployer, {
 			namespace: namespace,
@@ -287,6 +289,7 @@ let lib = {
 		});
 	},
 	"deleteServices": (deployer, options, namespace, cb) => {
+		logger.info("Deleting all services ...");
 		let filter = {labelSelector: 'soajs.content=true', gracePeriodSeconds: 0};
 		wrapper.service.get(deployer, {namespace: namespace, qs: filter}, (error, serviceList) => {
 			if (error) {
@@ -304,6 +307,7 @@ let lib = {
 		});
 	},
 	"deletePods": (deployer, options, namespace, cb) => {
+		logger.info("Deleting all pods ...");
 		//force delete all pods for a better cleanup
 		let filter = {labelSelector: 'soajs.content=true'};
 		wrapper.pod.get(deployer, {namespace: namespace, qs: filter}, (error, podList) => {
@@ -323,6 +327,7 @@ let lib = {
 		});
 	},
 	"deleteSecrets": (deployer, options, namespace, cb) => {
+		logger.info("Deleting soajsprofile secret ...");
 		wrapper.secret.delete(deployer, {
 			namespace: namespace,
 			name: 'soajsprofile',
@@ -353,7 +358,7 @@ let lib = {
 		});
 	},
 	
-	"updateServiceDeployment": (deployer, oneService, oneDeployment, namespace, createIfNotExist, cb) => {
+	"updateServiceDeployment": (deployer, oneService, oneDeployment, namespace, options, cb) => {
 		
 		let mode = oneService.metadata.labels['soajs.service.mode'];
 		
@@ -399,6 +404,7 @@ let lib = {
 					return cb(error);
 				}
 				oneDeployment.metadata.resourceVersion = deploymentRec.metadata.resourceVersion;
+				oneDeployment.spec.replicas = deploymentRec.spec.replicas;
 				
 				wrapper.service.put(deployer, {
 					namespace: namespace,
@@ -439,16 +445,17 @@ let lib = {
 		
 		lib.getService(deployer, oneService.metadata.labels['soajs.service.name'], namespace, (error, serviceRec) => {
 			if (error) {
-				if (createIfNotExist) {
+				if (options.createIfNotExist) {
 					_doAdd(cb);
 				} else {
 					return cb(error);
 				}
 			} else {
-				_doUpdate(serviceRec,cb);
+				_doUpdate(serviceRec, cb);
 			}
 		});
 	},
+	
 	"updateService": (deployer, options, namespace, cb) => {
 		lib.getService(deployer, options.serviceName, namespace, (error, oneService) => {
 			if (error) {
@@ -551,7 +558,10 @@ let lib = {
 					
 					if (mustUpdate) {
 						let update = () => {
-							lib.updateServiceDeployment(deployer, oneService, oneDeployment, namespace, false, (error, done, imageInfo) => {
+							let updateOptions = {
+								"createIfNotExist": false
+							};
+							lib.updateServiceDeployment(deployer, oneService, oneDeployment, namespace, updateOptions, (error, done, imageInfo) => {
 								if (error) {
 									return cb(error);
 								}

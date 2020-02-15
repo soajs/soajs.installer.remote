@@ -298,6 +298,9 @@ function validateOptions(options, cb) {
 					return cb(new Error("The provided configuration is not healthy, please provide sslSecret information."));
 				}
 			}
+			options.nginx.pvcClaimName = options.nginx.pvcClaimName || "nfs-pvc";
+			options.nginx.sslRedirect = options.nginx.sslRedirect || false;
+			
 			return cb(null);
 		}
 		return cb(new Error("The provided configuration is not healthy"));
@@ -331,6 +334,8 @@ let getConfig = {
 			"sitePrefix": options.nginx.sitePrefix,
 			"apiPrefix": options.nginx.apiPrefix,
 			"deployType": options.nginx.deployType,
+			"pvcClaimName": options.nginx.pvcClaimName,
+			"sslRedirect": options.nginx.sslRedirect,
 			"sslSecret": options.nginx.sslSecret,
 			"sslType": options.nginx.sslType,
 			
@@ -409,6 +414,8 @@ let lib = {
 	 *          sitePrefix: "",
 	 *          apiPrefix: "",
 	 *          deployType: "",
+	 *          pvcClaimName: "",
+	 *          sslRedirect: false,
 	 *          sslSecret: true
 	 *     },
 	 *     owner: {

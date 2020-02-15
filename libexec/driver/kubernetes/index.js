@@ -34,6 +34,8 @@ let recipies = {
 			"email": options.email,
 			
 			"deployType": options.deployType,
+			"pvcClaimName": options.pvcClaimName,
+			"sslRedirect": options.sslRedirect,
 			"sslSecret": options.sslSecret,
 			"sslType": sslType,
 			"gatewayIP": options.gatewayIP
@@ -187,41 +189,6 @@ let driver = {
 		 *
 		 */
 		"nginx": (options, deployer, cb) => {
-			/*
-			let type = options.type;
-			let sslType = options.sslType;
-			let config = {
-				"label": gConfig.label.ui,
-				"catId": gConfig.catalog.ui[sslType][type],
-				"image": gConfig.images.ui[type] + options.semVer,
-				
-				"httpPort": options.httpPort,
-				"httpsPort": options.httpsPort,
-				"domain": options.domain,
-				"sitePrefix": options.sitePrefix,
-				"apiPrefix": options.apiPrefix,
-				
-				"extKey": options.extKey,
-				
-				"email": options.email,
-				
-				"deployType": options.deployType,
-				"sslSecret": options.sslSecret,
-				"sslType": sslType,
-				"gatewayIP": options.gatewayIP
-			};
-			if (options.style === "major") {
-				config.image = gConfig.images.ui[type] + options.repoVer;
-			}
-			if (type === "src") {
-				config.image = gConfig.images.ui[type];
-				config.branch = options.semVer;
-				if (options.style === "major") {
-					config.branch = "release/v" + options.repoVer;
-				}
-			}
-			let recipe = require("./recipes/" + type + "/nginx/nginx.js")(config);
-			*/
 			let sslType = options.sslType;
 			let nginxObj = recipies.nginxRecipe(options);
 			let config = nginxObj.config;
@@ -388,12 +355,15 @@ let driver = {
 	
 	"upgrade": {
 		"nginx": (options, deployer, cb) => {
-			//TODO: (sslType might have been changed) get nginx service and check if pvc or secret then set options.sslType
+			//TODO: (sslType might have been changed) get nginx service and check if pvc or secret then set options.sslType - resolved by changing configuration
+			//TODO: get nginx service and set SOAJS_SSL_CONFIG since it might have been changed - resolved by changing configuration
 			let nginxObj = recipies.nginxRecipe(options);
 			let config = nginxObj.config;
 			let recipe = nginxObj.recipe;
-			let createIfNotExist = false;
-			lib.updateServiceDeployment(deployer, recipe.service, recipe.deployment, options.namespace, createIfNotExist, (error, done, imageInfo) => {
+			let updateOptions = {
+				"createIfNotExist": false
+			};
+			lib.updateServiceDeployment(deployer, recipe.service, recipe.deployment, options.namespace, updateOptions, (error, done, imageInfo) => {
 				if (done) {
 					lib.getServiceIPs(deployer, config.label, 1, options.namespace, (error, response) => {
 						let deployment = {
@@ -412,8 +382,10 @@ let driver = {
 			let gatewayObj = recipies.gatewayRecipe(options);
 			let config = gatewayObj.config;
 			let recipe = gatewayObj.recipe;
-			let createIfNotExist = false;
-			lib.updateServiceDeployment(deployer, recipe.service, recipe.deployment, options.namespace, createIfNotExist, (error, done, imageInfo) => {
+			let updateOptions = {
+				"createIfNotExist": false
+			};
+			lib.updateServiceDeployment(deployer, recipe.service, recipe.deployment, options.namespace, updateOptions, (error, done, imageInfo) => {
 				if (done) {
 					lib.getServiceIPs(deployer, config.label, 1, options.namespace, (error, response) => {
 						let deployment = {
@@ -432,8 +404,10 @@ let driver = {
 			let serviceObj = recipies.serviceRecipe(options);
 			let config = serviceObj.config;
 			let recipe = serviceObj.recipe;
-			let createIfNotExist = true;
-			lib.updateServiceDeployment(deployer, recipe.service, recipe.deployment, options.namespace, createIfNotExist, (error, done, imageInfo) => {
+			let updateOptions = {
+				"createIfNotExist": true
+			};
+			lib.updateServiceDeployment(deployer, recipe.service, recipe.deployment, options.namespace, updateOptions, (error, done, imageInfo) => {
 				if (done) {
 					lib.getServiceIPs(deployer, config.label, 1, options.namespace, (error, response) => {
 						let deployment = {
@@ -462,8 +436,10 @@ let driver = {
 			let serviceObj = recipies.serviceRecipe(serviceOptions);
 			let serviceConfig = serviceObj.config;
 			let recipe = serviceObj.recipe;
-			let createIfNotExist = true;
-			lib.updateServiceDeployment(deployer, recipe.service, recipe.deployment, serviceOptions.namespace, createIfNotExist, (error, done, imageInfo) => {
+			let updateOptions = {
+				"createIfNotExist": true
+			};
+			lib.updateServiceDeployment(deployer, recipe.service, recipe.deployment, serviceOptions.namespace, updateOptions, (error, done, imageInfo) => {
 				if (done) {
 					lib.getServiceIPs(deployer, serviceConfig.label, 1, serviceOptions.namespace, (error, response) => {
 						let deployment = {
@@ -523,8 +499,10 @@ let driver = {
 	},
 	
 	"restoreServiceDeployment": (options, deployer, cb) => {
-		let createIfNotExist = true;
-		lib.updateServiceDeployment(deployer, options.oneService, options.oneDeployment, options.namespace, createIfNotExist, (error, done, imageInfo) => {
+		let updateOptions = {
+			"createIfNotExist": true
+		};
+		lib.updateServiceDeployment(deployer, options.oneService, options.oneDeployment, options.namespace, updateOptions, (error, done, imageInfo) => {
 			return cb(error, done, imageInfo);
 		});
 	},

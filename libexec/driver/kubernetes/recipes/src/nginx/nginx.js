@@ -152,7 +152,7 @@ function getrecipe(localConfig) {
 									
 									{
 										"name": "SOAJS_SSL_CONFIG",
-										"value": '{"email":"' + localConfig.email + '" ,"redirect":"false"}'
+										"value": '{"email":"' + localConfig.email + '" ,"redirect":"' + localConfig.sslRedirect + '"}'
 									}
 								],
 								"volumeMounts": []
@@ -195,7 +195,6 @@ function getrecipe(localConfig) {
 			}
 		);
 		components.deployment.spec.template.spec.volumes.push(
-			
 			{
 				"name": "private-key",
 				"secret": {
@@ -210,7 +209,6 @@ function getrecipe(localConfig) {
 			}
 		);
 		components.deployment.spec.template.spec.volumes.push(
-			
 			{
 				"name": "fullchain-crt",
 				"secret": {
@@ -250,7 +248,9 @@ module.exports = function (_config) {
 		"extKey": _config.extKey,
 		"email": _config.email,
 		"deployType": _config.deployType,
-		"sslSecret": _config.sslSecret,
+		"sslRedirect": _config.sslRedirect,
+		"pvcClaimName": _config.pvcClaimName,
+		"sslType": _config.sslType,
 		"gatewayIP": _config.gatewayIP,
 		"_labels": {
 			"service.image.ts": new Date().getTime().toString(),

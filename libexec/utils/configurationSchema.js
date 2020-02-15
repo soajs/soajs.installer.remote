@@ -264,6 +264,14 @@ let schema = {
 					"type": "string",
 					"enum": ['pvc', 'secret'],
 					"required": true
+				},
+				"pvcClaimName": {
+					"type": "string",
+					"required": false
+				},
+				"sslRedirect": {
+					"type": "boolean",
+					"required": false
 				}
 			}
 		},
