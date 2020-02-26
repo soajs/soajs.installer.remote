@@ -190,6 +190,9 @@ let doc = {
 							"apis": {
 								"/authorization": {
 									"access": false
+								},
+								"/available/login": {
+									"access": false
 								}
 							}
 						}]
