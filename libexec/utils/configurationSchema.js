@@ -105,17 +105,14 @@ let schema = {
 				}
 			}
 		},
-		
 		"installerVersion": {
 			"type": "object",
 			"required": true
 		},
-		
 		"cleanDataBefore": {
 			"type": "boolean",
 			"required": true
 		},
-		
 		"driverName": {
 			"type": "string",
 			"enum": ['kubernetes'],
@@ -262,7 +259,7 @@ let schema = {
 				},
 				"sslType": {
 					"type": "string",
-					"enum": ['pvc', 'secret'],
+					"enum": ['pvc', 'secret', 'demo'],
 					"required": true
 				},
 				"pvcClaimName": {

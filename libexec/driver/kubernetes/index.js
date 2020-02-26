@@ -50,8 +50,12 @@ let recipies = {
 				config.branch = "release/v" + options.repoVer;
 			}
 		}
-		let recipe = require("./recipes/" + type + "/nginx/nginx.js")(config);
-		
+		let recipe = null;
+		if (sslType === "demo") {
+			recipe = require("./recipes/" + type + "/nginx/nginx-demo.js")(config);
+		} else {
+			recipe = require("./recipes/" + type + "/nginx/nginx.js")(config);
+		}
 		return {"recipe": recipe, "config": config};
 	},
 	"gatewayRecipe": (options) => {
@@ -249,25 +253,6 @@ let driver = {
 				if (error) {
 					return cb(error);
 				}
-				/*
-				let type = options.type;
-				let config = {
-					"label": gConfig.label.gateway + options.serviceVer,
-					"catId": gConfig.catalog.gateway[type],
-					"image": gConfig.images.gateway[type] + options.semVer
-				};
-				if (options.style === "major") {
-					config.image = gConfig.images.gateway[type] + options.repoVer;
-				}
-				if (type === "src") {
-					config.image = gConfig.images.gateway[type];
-					config.branch = options.semVer;
-					if (options.style === "major") {
-						config.branch = "release/v" + options.repoVer;
-					}
-				}
-				let recipe = require("./recipes/" + type + "/gateway/controller.js")(config);
-				*/
 				let gatewayObj = recipies.gatewayRecipe(options);
 				let config = gatewayObj.config;
 				let recipe = gatewayObj.recipe;
@@ -307,27 +292,6 @@ let driver = {
 		 *
 		 */
 		"service": (options, deployer, cb) => {
-			/*
-			let service = options.serviceName;
-			let type = options.type;
-			let config = {
-				"label": gConfig.label[service] + options.serviceVer,
-				"catId": gConfig.catalog[service][type],
-				"image": gConfig.images[service][type] + options.semVer,
-				"registryAPI": options.gatewayIP + ":5000"
-			};
-			if (options.style === "major") {
-				config.image = gConfig.images[service][type] + options.repoVer;
-			}
-			if (type === "src") {
-				config.image = gConfig.images[service][type];
-				config.branch = options.semVer;
-				if (options.style === "major") {
-					config.branch = "release/v" + options.repoVer;
-				}
-			}
-			let recipe = require("./recipes/" + type + "/ms/" + service + ".js")(config);
-			*/
 			let serviceObj = recipies.serviceRecipe(options);
 			let config = serviceObj.config;
 			let recipe = serviceObj.recipe;

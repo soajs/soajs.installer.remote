@@ -48,6 +48,10 @@ const lib = {
 			"src": "5df3ec10fa3912534948f007"
 		},
 		"ui": {
+			"demo": {
+				"bin": "5df3ec10fa3912534948effe",
+				"src": "5df3ec10fa3912534948f00f"
+			},
 			"secret": {
 				"bin": "5df3ec10fa3912534948effe",
 				"src": "5df3ec10fa3912534948f00f"
