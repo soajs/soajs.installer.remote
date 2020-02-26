@@ -2394,6 +2394,12 @@ let services = [
 						group: "Guest"
 					},
 					{
+						l: "Get information about what third party login is available",
+						v: "/available/login",
+						m: "get",
+						group: "Guest"
+					},
+					{
 						l: "Login Through Passport",
 						v: "/passport/login/:strategy",
 						m: "get",
