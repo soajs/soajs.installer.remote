@@ -735,6 +735,12 @@ let services = [
 						group: "Guest join"
 					},
 					{
+						l: "Check if user (username or email) status if pendingJoin or pendingNew and send a new token email",
+						v: "/emailToken",
+						m: "get",
+						group: "My account guest"
+					},
+					{
 						l: "To validate change email",
 						v: "/validate/changeEmail",
 						m: "get",
