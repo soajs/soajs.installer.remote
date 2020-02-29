@@ -2394,10 +2394,10 @@ let services = [
 			"1": {
 				apis: [
 					{
-						l: "Get the authorization token",
-						v: "/authorization",
+						l: "Cross environment roaming, but requires IP whitelisting",
+						v: "/roaming",
 						m: "get",
-						group: "Guest"
+						group: "Tokenization user"
 					},
 					{
 						l: "Get information about what third party login is available",
@@ -2406,28 +2406,34 @@ let services = [
 						group: "Guest"
 					},
 					{
-						l: "Login Through Passport",
+						l: "Get the authorization token",
+						v: "/authorization",
+						m: "get",
+						group: "Guest"
+					},
+					{
+						l: "Passport login",
 						v: "/passport/login/:strategy",
 						m: "get",
-						group: "Guest Login(s)"
+						group: "Third party login"
 					},
 					{
-						l: "Login Through Passport Callback",
+						l: "Passport login validation",
 						v: "/passport/validate/:strategy",
 						m: "get",
-						group: "Guest Login(s)"
+						group: "Third party login"
 					},
 					{
-						l: "OpenAM Login",
+						l: "OpenAM login",
 						v: "/openam/login",
 						m: "post",
-						group: "Guest Login(s)"
+						group: "Third party login"
 					},
 					{
-						l: "Ldap Login",
+						l: "Ldap login",
 						v: "/ldap/login",
 						m: "post",
-						group: "Guest Login(s)"
+						group: "Third party login"
 					},
 					{
 						l: "Create an access token",
