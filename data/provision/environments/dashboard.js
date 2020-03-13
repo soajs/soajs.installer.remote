@@ -87,7 +87,7 @@ let doc = {
 				"password": '%keySecret%'
 			},
 			"logger": {
-				"src": true,
+				"src": false,
 				"level": "debug",
 				"formatter": {
 					"levelInString": true,

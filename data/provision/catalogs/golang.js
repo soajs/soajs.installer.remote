@@ -15,6 +15,7 @@ let doc = {
 	"recipe": {
 		"deployOptions": {
 			"image": {
+				"shell": "/bin/sh",
 				"prefix": "soajsorg",
 				"name": "go",
 				"tag": "3.x",
