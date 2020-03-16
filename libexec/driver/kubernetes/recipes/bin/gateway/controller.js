@@ -100,6 +100,10 @@ function getrecipe(localConfig) {
 										"value": "kubernetes"
 									},
 									{
+										"name": "SOAJS_MONGO_CON_KEEPALIVE",
+										"value": "true"
+									},
+									{
 										"name": "SOAJS_BCRYPT",
 										"value": "true"
 									}

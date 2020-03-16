@@ -78,6 +78,10 @@ let doc = {
 					"type": "computed",
 					"value": "$SOAJS_DEPLOY_HA"
 				},
+				"SOAJS_MONGO_CON_KEEPALIVE" : {
+					"type" : "static",
+					"value" : "true"
+				},
 				"SOAJS_BCRYPT" : {
 					"type" : "static",
 					"value" : "true"
