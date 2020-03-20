@@ -78,7 +78,7 @@ let doc = {
 			"awareness": {
 				"cacheTTL": 1000 * 60 * 60, // 1 hr
 				"healthCheckInterval": 1000 * 5, // 5 seconds
-				"autoRelaodRegistry": 1000 * 60 * 60, // 1 hr
+				"autoRelaodRegistry": 1000 * 60 * 60 * 24, // 24 hr
 				"maxLogCount": 5,
 				"autoRegisterService": true
 			},
