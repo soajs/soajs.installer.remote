@@ -354,9 +354,13 @@ function echoResult(options, obj) {
 	
 	logger.debug("The Services Information:");
 	
-	if (!options.mongo.external && obj.mongoIP) {
+	if (!options.mongo.external && obj.deployments.mongo) {
 		logger.debug("\tMongo: ");
-		logger.debug("\t\t IP: " + obj.mongoIP);
+		logger.debug("\t\t IP: " + obj.deployments.mongo.ip);
+		if (obj.deployments.mongo.extIp) {
+			logger.debug("\t\t extIp: " + obj.deployments.mongo.extIp);
+			logger.debug("\t\t please add to the configuration file under mongo [\"deployIP\": \"" + obj.deployments.mongo.extIp + "\"]");
+		}
 	}
 	
 	logger.debug("\tGateway: ");
@@ -371,6 +375,9 @@ function echoResult(options, obj) {
 	logger.debug("\t\t Image: " + obj.deployments.ui.image);
 	if (obj.deployments.ui.branch) {
 		logger.debug("\t\t Branch: " + obj.deployments.ui.branch);
+	}
+	if (obj.deployments.ui.extIp) {
+		logger.debug("\t\t extIp: " + obj.deployments.ui.extIp);
 	}
 	
 	for (let i = 0; i < soajsServicesArray.length; i++) {
@@ -494,6 +501,7 @@ let lib = {
 							} else {
 								let config = {
 									"port": options.mongo.port,
+									"deployType": options.mongo.deployType,
 									"namespace": options.kubernetes.namespace
 								};
 								obj.driver.deploy.mongo(config, obj.deployer, (error, response) => {
@@ -502,7 +510,11 @@ let lib = {
 									}
 									obj.mongoIP = null;
 									if (response) {
-										obj.mongoIP = response;
+										obj.mongoIP = response.ip;
+										obj.deployments.mongo = response;
+										if (response.extIp) {
+											obj.mongoExtIp = response.extIp;
+										}
 									}
 									return callback(null, obj);
 								})
@@ -516,6 +528,10 @@ let lib = {
 								profileImport = require("../data/soajs_profile.js");
 								profileSecret = JSON.parse(JSON.stringify(profileImport));
 								profileImport.servers[0].host = options.kubernetes.ip;
+								if (options.mongo.deployType === "LoadBalancer") {
+									profileImport.servers[0].port = 27017;
+									profileImport.servers[0].host = obj.mongoExtIp;
+								}
 								profileSecret.servers[0].host = obj.mongoIP;
 								profileSecret.servers[0].port = 27017;
 							} else {
@@ -584,7 +600,7 @@ let lib = {
 								}
 								obj.nginxIP = null;
 								if (response) {
-									obj.nginxIP = response;
+									obj.nginxIP = response.ip;
 									obj.deployments.ui = response;
 								}
 								return callback(null, obj);

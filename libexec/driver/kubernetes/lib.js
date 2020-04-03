@@ -114,16 +114,31 @@ let lib = {
 				lib.printProgress('Waiting for ' + serviceName + ' containers to become available', counter++);
 				setTimeout(() => {
 					return lib.getServiceIPs(deployer, serviceName, replicaCount, namespace, counter, cb);
-				}, 5000);
+				}, 10000);
 			} else {
 				wrapper.service.get(deployer, {
 					namespace: namespace,
 					name: serviceName + "-service"
 				}, (error, service) => {
 					if (service && service.spec && service.spec.clusterIP) {
-						return cb(null, service.spec.clusterIP);
+						if (service.spec.type === "LoadBalancer" && (!service.status || !service.status.loadBalancer || !service.status.loadBalancer.ingress || !Array.isArray(service.status.loadBalancer.ingress))) {
+							setTimeout(() => {
+								return lib.getServiceIPs(deployer, serviceName, replicaCount, namespace, counter, cb);
+							}, 10000);
+							
+						} else {
+							let response = {
+								"ip": service.spec.clusterIP,
+								"ports": service.spec.ports
+							};
+							if (service.spec.type === "LoadBalancer") {
+								response.extIp = service.status.loadBalancer.ingress[0].ip;
+							}
+							return cb(null, response);
+						}
+					} else {
+						return cb(error, null);
 					}
-					return cb(error, null);
 				});
 			}
 		});

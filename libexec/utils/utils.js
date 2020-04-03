@@ -23,7 +23,12 @@ module.exports = {
 			};
 		} else {
 			profileImport = require("../../data/soajs_profile.js");
-			profileImport.servers[0].host = options.kubernetes.ip;
+			if (options.mongo.deployType === "LoadBalancer") {
+				profileImport.servers[0].port = 27017;
+				profileImport.servers[0].host = options.mongo.deployIP;
+			} else {
+				profileImport.servers[0].host = options.kubernetes.ip;
+			}
 		}
 		return profileImport;
 	}

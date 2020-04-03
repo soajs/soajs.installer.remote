@@ -163,6 +163,7 @@ let driver = {
 			let config = {
 				"label": gConfig.label.mongo,
 				"catId": gConfig.catalog.mongo,
+				"deployType": options.deployType,
 				"mongoPort": options.port || gConfig.mongo.port
 			};
 			let recipe = require("./recipes/db/mongo.js")(config);
@@ -209,10 +210,14 @@ let driver = {
 						}
 						lib.getServiceIPs(deployer, config.label, 1, options.namespace, (error, response) => {
 							let deployment = {
-								ip: response,
+								ip: response.ip,
+								ports: response.ports,
 								image: config.image,
 								branch: config.branch || null
 							};
+							if (response.extIp) {
+								deployment.extIp = response.extIp;
+							}
 							return cb(error, deployment);
 						});
 					});
@@ -267,7 +272,8 @@ let driver = {
 						}
 						lib.getServiceIPs(deployer, config.label, 1, options.namespace, (error, response) => {
 							let deployment = {
-								ip: response,
+								ip: response.ip,
+								ports: response.ports,
 								image: config.image,
 								branch: config.branch || null
 							};
@@ -306,7 +312,8 @@ let driver = {
 					}
 					lib.getServiceIPs(deployer, config.label, 1, options.namespace, (error, response) => {
 						let deployment = {
-							ip: response,
+							ip: response.ip,
+							ports: response.ports,
 							image: config.image,
 							branch: config.branch || null
 						};
@@ -331,7 +338,8 @@ let driver = {
 				if (done) {
 					lib.getServiceIPs(deployer, config.label, 1, options.namespace, (error, response) => {
 						let deployment = {
-							ip: response,
+							ip: response.ip,
+							ports: response.ports,
 							image: config.image,
 							branch: config.branch || null
 						};
@@ -353,7 +361,8 @@ let driver = {
 				if (done) {
 					lib.getServiceIPs(deployer, config.label, 1, options.namespace, (error, response) => {
 						let deployment = {
-							ip: response,
+							ip: response.ip,
+							ports: response.ports,
 							image: config.image,
 							branch: config.branch || null
 						};
@@ -375,7 +384,8 @@ let driver = {
 				if (done) {
 					lib.getServiceIPs(deployer, config.label, 1, options.namespace, (error, response) => {
 						let deployment = {
-							ip: response,
+							ip: response.ip,
+							ports: response.ports,
 							image: config.image,
 							branch: config.branch || null
 						};
@@ -396,7 +406,7 @@ let driver = {
 			if (error) {
 				return cb(error);
 			}
-			serviceOptions.gatewayIP = response;
+			serviceOptions.gatewayIP = response.ip;
 			let serviceObj = recipies.serviceRecipe(serviceOptions);
 			let serviceConfig = serviceObj.config;
 			let recipe = serviceObj.recipe;
@@ -407,7 +417,8 @@ let driver = {
 				if (done) {
 					lib.getServiceIPs(deployer, serviceConfig.label, 1, serviceOptions.namespace, (error, response) => {
 						let deployment = {
-							ip: response,
+							ip: response.ip,
+							ports: response.ports,
 							image: serviceConfig.image,
 							branch: serviceConfig.branch || null
 						};

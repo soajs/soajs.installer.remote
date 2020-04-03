@@ -132,6 +132,16 @@ let schema = {
 			"required": true,
 			"additionalProperties": false,
 			"properties": {
+				"deployType": {
+					"type": "string",
+					"enum": ['NodePort', 'LoadBalancer'],
+					"default": "NodePort",
+					"required": false
+				},
+				"deployIP": {
+					"type": "string",
+					"required": false
+				},
 				"port": {
 					"type": "integer",
 					"required": false

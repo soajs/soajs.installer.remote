@@ -8,7 +8,7 @@
  * found in the LICENSE file at the root of this repository
  */
 function getrecipe(localConfig) {
-	return {
+	let components = {
 		service: {
 			"apiVersion": "v1",
 			"kind": "Service",
@@ -18,11 +18,13 @@ function getrecipe(localConfig) {
 			},
 			"spec": {
 				"type": "NodePort",
+				"externalTrafficPolicy": "Local",
 				"selector": {
 					"soajs.service.label": localConfig._label
 				},
 				"ports": [
 					{
+						"name": "mongo",
 						"protocol": "TCP",
 						"port": 27017,
 						"targetPort": 27017,
@@ -96,11 +98,21 @@ function getrecipe(localConfig) {
 			}
 		}
 	};
+	
+	if (localConfig.deployType === 'LoadBalancer') {
+		components.service.spec.ports.forEach((onePort) => {
+			delete onePort.nodePort;
+		});
+		components.service.spec.type = 'LoadBalancer';
+	}
+	
+	return components;
 }
 
 module.exports = function (_config) {
 	let localConfig = {
 		"_label": _config.label,
+		"deployType": _config.deployType,
 		"_mongoPort": _config.mongoPort,
 		"_labels": {
 			"service.image.ts": new Date().getTime().toString(),
