@@ -894,6 +894,12 @@ let services = [
 						group: "Group administration"
 					},
 					{
+						l: "Self Invite user by id or username as username or email",
+						v: "/admin/user/self/invite",
+						m: "put",
+						group: "User administration"
+					},
+					{
 						l: "Invite users by id, username or email",
 						v: "/admin/users/invite",
 						m: "put",
@@ -910,7 +916,7 @@ let services = [
 				"oauth": true,
 				"provision_ACL": false,
 				"tenant_Profile": false,
-				"urac": false,
+				"urac": true,
 				"urac_ACL": false,
 				"urac_Config": false,
 				"urac_GroupConfig": false,
