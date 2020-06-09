@@ -301,7 +301,7 @@ function validateOptions(options, cb) {
 			if (options.versions.services) {
 				for (let s in options.versions.services) {
 					if (options.versions.services.hasOwnProperty(s)) {
-						if (s !== "gateway" && s !== "ui"){
+						if (s !== "gateway" && s !== "ui") {
 							soajsServicesArray.push(s)
 						}
 					}
@@ -448,7 +448,11 @@ let lib = {
 	"install": (options, cb) => {
 		validateOptions(options, (error) => {
 			if (error) {
-				logger.error(error);
+				if (error.message) {
+					logger.error(error.message);
+				} else {
+					logger.error(error);
+				}
 				return cb(new Error("Unable to continue, please provide valid configuration!"));
 			}
 			if (drivers[options.driverName]) {
@@ -643,7 +647,11 @@ let lib = {
 	"getSettings": (options, cb) => {
 		validateOptions(options, (error) => {
 			if (error) {
-				logger.error(error.message);
+				if (error.message) {
+					logger.error(error.message);
+				} else {
+					logger.error(error);
+				}
 				return cb(new Error("Unable to continue, please provide valid configuration!"));
 			}
 			let profileImport = utils.getProfile(options);
@@ -658,7 +666,11 @@ let lib = {
 	"updateService": (options, serviceName, rollback, cb) => {
 		validateOptions(options, (error) => {
 			if (error) {
-				logger.error(error);
+				if (error.message) {
+					logger.error(error.message);
+				} else {
+					logger.error(error);
+				}
 				return cb(new Error("Unable to continue, please provide valid configuration!"));
 			}
 			if (drivers[options.driverName]) {
@@ -710,7 +722,11 @@ let lib = {
 	"backupService": (options, serviceName, backup, cb) => {
 		validateOptions(options, (error) => {
 			if (error) {
-				logger.error(error);
+				if (error.message) {
+					logger.error(error.message);
+				} else {
+					logger.error(error);
+				}
 				return cb(new Error("Unable to continue, please provide valid configuration!"));
 			}
 			if (drivers[options.driverName]) {
@@ -757,7 +773,11 @@ let lib = {
 	"restoreOne": (options, oneService, oneDeployment, cb) => {
 		validateOptions(options, (error) => {
 			if (error) {
-				logger.error(error);
+				if (error.message) {
+					logger.error(error.message);
+				} else {
+					logger.error(error);
+				}
 				return cb(new Error("Unable to continue, please provide valid configuration!"));
 			}
 			if (drivers[options.driverName]) {
@@ -818,7 +838,11 @@ let lib = {
 	"patch": (options, serviceName, cb) => {
 		validateOptions(options, (error) => {
 			if (error) {
-				logger.error(error);
+				if (error.message) {
+					logger.error(error.message);
+				} else {
+					logger.error(error);
+				}
 				return cb(new Error("Unable to continue, please provide valid configuration!"));
 			}
 			if (!soajsService[serviceName]) {
@@ -875,7 +899,11 @@ let lib = {
 	"getInfo": (options, cb) => {
 		validateOptions(options, (error) => {
 			if (error) {
-				logger.error(error);
+				if (error.message) {
+					logger.error(error.message);
+				} else {
+					logger.error(error);
+				}
 				return cb(new Error("Unable to continue, please provide valid configuration!"));
 			}
 			if (drivers[options.driverName]) {
@@ -922,7 +950,11 @@ let lib = {
 	"migrate": (options, strategy, cb) => {
 		validateOptions(options, (error) => {
 			if (error) {
-				logger.error(error.message);
+				if (error.message) {
+					logger.error(error.message);
+				} else {
+					logger.error(error);
+				}
 				return cb(new Error("Unable to continue, please provide valid configuration!"));
 			}
 			let profileImport = utils.getProfile(options);
@@ -936,7 +968,11 @@ let lib = {
 	"upgrade": (options, cb) => {
 		validateOptions(options, (error) => {
 			if (error) {
-				logger.error(error);
+				if (error.message) {
+					logger.error(error.message);
+				} else {
+					logger.error(error);
+				}
 				return cb(new Error("Unable to continue, please provide valid configuration!"));
 			}
 			if (drivers[options.driverName]) {

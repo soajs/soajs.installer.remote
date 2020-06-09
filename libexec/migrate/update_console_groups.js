@@ -35,7 +35,7 @@ module.exports = (profile, dataPath, callback) => {
 				let e = {$set: group};
 				mongoConnection.updateOne("groups", condition, e, {'upsert': false}, (error, record) => {
 					if (error) {
-						logger.error(group.code + ": " + error);
+						logger.error(group.code + ": " + error.message);
 					} else if (record) {
 						logger.info(group.code + ": " + record.nModified);
 					}

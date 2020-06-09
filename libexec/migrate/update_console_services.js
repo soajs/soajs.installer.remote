@@ -22,7 +22,11 @@ module.exports = (profile, dataPath, callback) => {
 					let extraOptions = {'upsert': false};
 					mongoConnection.updateOne("services", condition, s, extraOptions, (err, record) => {
 						if (err) {
-							logger.error(err);
+							if (err.message) {
+								logger.error(err.message);
+							} else {
+								logger.error(err);
+							}
 						} else if (record) {
 							logger.info(service.name + ": " + record.nModified);
 						}
