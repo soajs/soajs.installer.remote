@@ -9,9 +9,11 @@
  */
 
 const Client = require('kubernetes-client').Client;
+const Request = require('kubernetes-client/backends/request');
+const swagger = require('./swagger/swagger.json');
+
 const gConfig = require("./config.js");
 const lib = require("./lib.js");
-const swagger = require('./swagger/swagger.json');
 
 
 let recipies = {
@@ -122,6 +124,23 @@ let driver = {
 			return cb(new Error('No valid ip found for the kubernetes cluster'));
 		}
 		
+		try {
+			let client = new Client({
+				"backend": new Request({
+					"url": 'https://' + driverConfig.ip + ':' + (parseInt(driverConfig.port) || 8443),
+					"auth": {
+						"bearer": driverConfig.token || ""
+					},
+					"insecureSkipTlsVerify": true
+				}),
+				"spec": swagger
+			});
+			return cb(null, client);
+		} catch (e) {
+			return cb(e);
+		}
+		
+		/*
 		let config = {
 			"url": 'https://' + driverConfig.ip + ':' + (parseInt(driverConfig.port) || 8443),
 			"auth": {
@@ -142,6 +161,7 @@ let driver = {
 		} catch (e) {
 			return cb(e);
 		}
+		*/
 	},
 	"deploy": {
 		"assureNamespace": (options, deployer, createIfNotExist, cb) => {

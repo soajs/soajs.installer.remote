@@ -22,6 +22,10 @@ const lib = {
 		"oauth": "dashboard-oauth-v",
 		"urac": "dashboard-urac-v",
 		"multitenant": "dashboard-multitenant-v",
+		"console": "dashboard-console-v",
+		"infra": "dashboard-infra-v",
+		"marketplace": "dashboard-marketplace-v",
+		"repositories": "dashboard-repositories-v",
 		
 		"ui": "dashboard-nginx"
 	},
@@ -47,6 +51,22 @@ const lib = {
 			"bin": "5df3ec10fa3912534948f004",
 			"src": "5df3ec10fa3912534948f007"
 		},
+		"console": {
+			"bin": "5edf6bf536c77052b0a5e1f1",
+			"src": "5df3ec10fa3912534948f007"
+		},
+		"infra": {
+			"bin": "5edf69dc36c77052b0a5e1f0",
+			"src": "5df3ec10fa3912534948f007"
+		},
+		"marketplace": {
+			"bin": "5edf6c1136c77052b0a5e1f2",
+			"src": "5df3ec10fa3912534948f007"
+		},
+		"repositories": {
+			"bin": "5edf6c1836c77052b0a5e1f3",
+			"src": "5df3ec10fa3912534948f007"
+		},
 		"ui": {
 			"demo": {
 				"bin": "5df3ec10fa3912534948effe",
@@ -70,6 +90,10 @@ const lib = {
 		"oauth": {"src": "soajsorg/node:3.x", "bin": "soajsorg/oauth:"},
 		"dashboard": {"src": "soajsorg/node:3.x", "bin": "soajsorg/dashboard:"},
 		"multitenant": {"src": "soajsorg/node:3.x", "bin": "soajsorg/multitenant:"},
+		"console": {"src": "soajsorg/node:3.x", "bin": "soajsorg/console:"},
+		"infra": {"src": "soajsorg/node:3.x", "bin": "soajsorg/infra:"},
+		"marketplace": {"src": "soajsorg/node:3.x", "bin": "soajsorg/marketplace:"},
+		"repositories": {"src": "soajsorg/node:3.x", "bin": "soajsorg/repositories:"},
 		"ui": {"src": "soajsorg/fe:3.x", "bin": "soajsorg/consoleui:"}
 	},
 };

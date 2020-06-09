@@ -22,15 +22,12 @@ const drivers = {
 	"kubernetes": require("./driver/kubernetes/index.js")
 };
 
-const uuidv4 = require('uuid/v4');
+const {v4: uuidv4} = require('uuid');
 const async = require('async');
 const configurationSchema = require("./utils/configurationSchema");
 
-const soajsServicesArray = ["dashboard", "multitenant", "oauth", "urac"];
+let soajsServicesArray = [];
 let soajsService = {};
-for (let i = 0; i < soajsServicesArray.length; i++) {
-	soajsService[soajsServicesArray[i]] = require("./services/" + soajsServicesArray[i] + ".js");
-}
 
 function handleImageInfo(options, imageInfo, serviceName, cb) {
 	let profileImport = utils.getProfile(options);
@@ -265,7 +262,7 @@ function importData(options, data, profileImport, cb) {
 	};
 	options.importer.runProfile(profileImport, options.dataPath, options.cleanDataBefore, templates, (error, msg) => {
 		return cb(error, msg);
-	});
+	}, options.versions.name || null);
 }
 
 function validateOptions(options, cb) {
@@ -300,6 +297,21 @@ function validateOptions(options, cb) {
 			}
 			options.nginx.pvcClaimName = options.nginx.pvcClaimName || "nfs-pvc";
 			options.nginx.sslRedirect = options.nginx.sslRedirect || false;
+			
+			if (options.versions.services) {
+				for (let s in options.versions.services) {
+					if (options.versions.services.hasOwnProperty(s)) {
+						if (s !== "gateway" && s !== "ui"){
+							soajsServicesArray.push(s)
+						}
+					}
+				}
+			} else {
+				soajsServicesArray = ["dashboard", "multitenant", "oauth", "urac"];
+			}
+			for (let i = 0; i < soajsServicesArray.length; i++) {
+				soajsService[soajsServicesArray[i]] = require("./services/" + soajsServicesArray[i] + ".js");
+			}
 			
 			return cb(null);
 		}

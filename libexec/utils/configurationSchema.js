@@ -10,13 +10,16 @@
 
 let schema = {
 	"type": "object",
-	"required": true,
 	"additionalProperties": false,
 	"properties": {
 		"versions": {
 			"type": "object",
 			"required": true,
 			"properties": {
+				"name": {
+					"type": "string",
+					"required": true
+				},
 				"services": {
 					"type": "object",
 					"required": true,
@@ -135,16 +138,13 @@ let schema = {
 				"deployType": {
 					"type": "string",
 					"enum": ['NodePort', 'LoadBalancer'],
-					"default": "NodePort",
-					"required": false
+					"default": "NodePort"
 				},
 				"deployIP": {
-					"type": "string",
-					"required": false
+					"type": "string"
 				},
 				"port": {
-					"type": "integer",
-					"required": false
+					"type": "integer"
 				},
 				"external": {
 					"type": "boolean",
@@ -152,7 +152,6 @@ let schema = {
 				},
 				"profile": {
 					"type": "object",
-					"required": false,
 					"additionalProperties": false,
 					"properties": {
 						"servers": {
@@ -176,7 +175,6 @@ let schema = {
 						},
 						"credentials": {
 							"type": "object",
-							"required": false,
 							"additionalProperties": false,
 							"properties": {
 								"username": {
@@ -190,8 +188,7 @@ let schema = {
 							}
 						},
 						"URLParam": {
-							"type": "object",
-							"required": false
+							"type": "object"
 						}
 					}
 				}
@@ -215,8 +212,7 @@ let schema = {
 					"required": true
 				},
 				"namespace": {
-					"type": "string",
-					"required": false
+					"type": "string"
 				}
 			}
 		},
@@ -245,7 +241,6 @@ let schema = {
 				
 				"sslSecret": {
 					"type": "object",
-					"required": false,
 					"additionalProperties": false,
 					"properties": {
 						"private_key": {
@@ -273,12 +268,11 @@ let schema = {
 					"required": true
 				},
 				"pvcClaimName": {
-					"type": "string",
-					"required": false
+					"type": "string"
+					
 				},
 				"sslRedirect": {
-					"type": "boolean",
-					"required": false
+					"type": "boolean"
 				}
 			}
 		},
@@ -308,33 +302,27 @@ let schema = {
 		
 		"deployment": {
 			"type": "object",
-			"required": false,
 			"additionalProperties": false,
 			"properties": {
 				"type": {
 					"type": "string",
-					"enum": ['bin', 'src'],
-					"required": false
+					"enum": ['bin', 'src']
 				},
 				"style": {
 					"type": "string",
-					"enum": ['sem', 'major'],
-					"required": false
+					"enum": ['sem', 'major']
 				},
 				"config": {
 					"type": "object",
-					"required": false,
 					"additionalProperties": false,
 					"properties": {
 						"hashIterations": {
 							"type": "integer",
-							"required": false,
 							"minimum": 12,
 							"maximum": 32
 						},
 						"optionalAlgorithm": {
-							"type": "string",
-							"required": false
+							"type": "string"
 						}
 					}
 				}
