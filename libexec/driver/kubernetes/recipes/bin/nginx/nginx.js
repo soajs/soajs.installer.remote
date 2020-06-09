@@ -234,7 +234,7 @@ module.exports = function (_config) {
 			"soajs.content": "true",
 			"soajs.env.code": "dashboard",
 			"soajs.service.name": "nginx",
-			"soajs.service.group": "soajs-nginx",
+			"soajs.service.group": "Console",
 			"soajs.service.type": "server",
 			
 			"soajs.service.version": "1",

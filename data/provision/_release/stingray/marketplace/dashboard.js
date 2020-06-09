@@ -4,9 +4,9 @@ module.exports = {
 	type: "service",
 	name: "dashboard",
 	description: "This service handles the API of soajs console UI.",
-	subType: "soajs",
 	configuration: {
 		group: "Console",
+		subType: "soajs",
 		port: 4003,
 		requestTimeout: 60,
 		requestTimeoutRenewal: 5

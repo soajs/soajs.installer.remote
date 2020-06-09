@@ -4,9 +4,9 @@ module.exports = {
 	type: "service",
 	name: "repositories",
 	description: "This service handles soajs integration with git providers.",
-	subType: "soajs",
 	configuration: {
 		group: "Console",
+		subType: "soajs",
 		port: 4006,
 		requestTimeout: 180,
 		requestTimeoutRenewal: 5

@@ -4,9 +4,9 @@ module.exports = {
 	type: "service",
 	name: "urac",
 	description: "User Registration and Access Control ( URAC ), is a SOAJS multi-tenant service to manage users accounts, groups and access levels for all tenants.",
-	subType: "soajs",
 	configuration: {
 		group: "Gateway",
+		subType: "soajs",
 		port: 4001,
 		requestTimeout: 30,
 		requestTimeoutRenewal: 5

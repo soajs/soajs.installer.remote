@@ -135,7 +135,7 @@ module.exports = function (_config) {
 			"soajs.content": "true",
 			"soajs.env.code": "dashboard",
 			"soajs.service.name": "marketplace",
-			"soajs.service.group": "soajs-core-services",
+			"soajs.service.group": "Console",
 			"soajs.service.type": "service",
 			"soajs.service.subtype": "soajs",
 			

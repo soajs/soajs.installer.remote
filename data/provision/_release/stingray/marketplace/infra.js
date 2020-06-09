@@ -4,9 +4,9 @@ module.exports = {
 	type: "service",
 	name: "infra",
 	description: "This service handles everything related to soajs multi cloud Api and more",
-	subType: "soajs",
 	configuration: {
 		group: "Console",
+		subType: "soajs",
 		port: 4008,
 		requestTimeout: 30,
 		requestTimeoutRenewal: 5

@@ -135,7 +135,7 @@ module.exports = function (_config) {
 			"soajs.content": "true",
 			"soajs.env.code": "dashboard",
 			"soajs.service.name": "oauth",
-			"soajs.service.group": "soajs-core-services",
+			"soajs.service.group": "Gateway",
 			"soajs.service.type": "service",
 			"soajs.service.subtype": "soajs",
 			

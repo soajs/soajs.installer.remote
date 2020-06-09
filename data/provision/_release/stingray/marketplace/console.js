@@ -4,8 +4,8 @@ module.exports = {
 	type: "service",
 	name: "console",
 	description: "This service takes care of updates and upgrades as well as everything related to registry",
-	subType: "soajs",
 	configuration: {
+		subType: "soajs",
 		group: "Console",
 		port: 4009,
 		requestTimeout: 30,

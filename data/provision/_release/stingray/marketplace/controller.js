@@ -3,9 +3,9 @@
 module.exports = {
 	type: "service",
 	name: "controller",
-	subType: "soajs",
 	configuration: {
 		port: 4000,
+		subType: "soajs",
 		group: "Gateway"
 	},
 	versions: [

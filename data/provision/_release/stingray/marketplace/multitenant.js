@@ -4,9 +4,9 @@ module.exports = {
 	type: "service",
 	name: "multitenant",
 	description: "This microservice is handling everything related to multitenancy and productization.",
-	subType: "soajs",
 	configuration: {
 		group: "Console",
+		subType: "soajs",
 		port: 4004,
 		requestTimeout: 30,
 		requestTimeoutRenewal: 5

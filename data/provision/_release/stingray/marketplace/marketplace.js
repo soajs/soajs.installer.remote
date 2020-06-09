@@ -4,9 +4,9 @@ module.exports = {
 	type: "service",
 	name: "marketplace",
 	description: "This service provides the ability to create a heterogeneous catalog capable to automatically adapt and onboard all kind of different type of components is the way to go.",
-	subType: "soajs",
 	configuration: {
 		group: "Console",
+		subType: "soajs",
 		port: 4007,
 		requestTimeout: 30,
 		requestTimeoutRenewal: 5
