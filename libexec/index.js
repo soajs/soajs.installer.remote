@@ -8,23 +8,18 @@
  * found in the LICENSE file at the root of this repository
  */
 
-const crypto = require("crypto");
-
 const soajs = require('soajs');
-const randomString = require("randomstring");
-
 //set the logger
 const utils = require("./utils/utils.js");
 const logger = utils.getLogger();
-
 const CoreProvisionModel = require("./model/core_provision.js");
 const drivers = {
 	"kubernetes": require("./driver/kubernetes/index.js")
 };
-
 const {v4: uuidv4} = require('uuid');
 const async = require('async');
 const configurationSchema = require("./utils/configurationSchema");
+const importer = require("./importer/index.js");
 
 let soajsServicesArray = [];
 let soajsService = {};
@@ -156,6 +151,10 @@ function requireCatalog(options, serviceName) {
 }
 
 function importData(options, data, profileImport, cb) {
+	
+	let templates = importer(options, data, {"setImageTag": setImageTag});
+	
+	/*
 	let catalogs = (doc) => {
 		setImageTag(options, doc);
 	};
@@ -260,6 +259,8 @@ function importData(options, data, profileImport, cb) {
 		"tenants": tenants,
 		"users": users
 	};
+	*/
+	
 	options.importer.runProfile(profileImport, options.dataPath, options.cleanDataBefore, templates, (error, msg) => {
 		return cb(error, msg);
 	}, options.versions.name || null);

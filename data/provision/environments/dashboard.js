@@ -11,36 +11,8 @@ let doc = {
 	"deployer": {
 		"type": "container",
 		"selected": "%deployDriver%",
-		"manual": {
-			"nodes": "",
-		},
 		"container": {
-			"docker": {
-				"local": {
-					"nodes": "",
-					"socketPath": "/var/run/docker.sock",
-				},
-				"remote": {
-					"apiPort": "",
-					"nodes": "",
-					"apiProtocol": "",
-					"auth": {
-						"token": ""
-					}
-				}
-			},
 			"kubernetes": {
-				"local": {
-					"nodes": "",
-					"apiPort": "",
-					"namespace": {
-						"default": "",
-						"perService": false
-					},
-					"auth": {
-						"token": ""
-					}
-				},
 				"remote": {
 					"nodes": "%containerNode%",
 					"apiPort": "%kubernetesRemotePort%",
@@ -76,7 +48,7 @@ let doc = {
 		},
 		"config": {
 			"awareness": {
-				"cacheTTL": 1000 * 60 * 60, // 1 hr
+				"cacheTTL": 1000 * 60 * 60 * 2, // 2 hr
 				"healthCheckInterval": 1000 * 5, // 5 seconds
 				"autoRelaodRegistry": 1000 * 60 * 60 * 24, // 24 hr
 				"maxLogCount": 5,

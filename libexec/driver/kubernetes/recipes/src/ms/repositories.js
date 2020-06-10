@@ -95,10 +95,6 @@ function getrecipe(localConfig) {
 										"value": "dashboard"
 									},
 									{
-										"name": "SOAJS_PROFILE",
-										"value": "/opt/soajs/profile/soajsprofile"
-									},
-									{
 										"name": "SOAJS_DEPLOY_HA",
 										"value": "kubernetes"
 									},
