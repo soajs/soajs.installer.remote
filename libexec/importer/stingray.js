@@ -8,8 +8,20 @@
  * found in the LICENSE file at the root of this repository
  */
 
-module.exports = (options) => {
+const {v4: uuidv4} = require('uuid');
+
+module.exports = (options, data) => {
 	return {
+		"environment": (doc) => {
+			doc.domain = options.nginx.domain;
+			doc.sitePrefix = options.nginx.sitePrefix;
+			doc.apiPrefix = options.nginx.apiPrefix;
+			doc.deployer.selected = "container.kubernetes";
+			doc.deployer.container.kubernetes.namespace = options.kubernetes.namespace;
+			doc.services.config.key.password = data.keyPassword;
+			doc.services.config.cookie.secret = uuidv4();
+			doc.services.config.session.secret = uuidv4();
+		},
 		"infra": (doc) => {
 			doc.configuration.url = options.kubernetes.ip;
 			doc.configuration.token = options.kubernetes.token;

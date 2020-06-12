@@ -9,7 +9,6 @@
  */
 
 const crypto = require("crypto");
-const {v4: uuidv4} = require('uuid');
 const soajs = require('soajs');
 
 let release_specific = {
@@ -30,21 +29,9 @@ module.exports = (options, data, extra) => {
 			doc.value.link.join = doc.value.link.join.replace("%URL%", url);
 		}
 	};
-	let environment = (doc) => {
-		doc.domain = options.nginx.domain;
-		doc.sitePrefix = options.nginx.sitePrefix;
-		doc.apiPrefix = options.nginx.apiPrefix;
-		doc.deployer.selected = "container.kubernetes.remote";
-		doc.deployer.container.kubernetes.remote.namespace.default = options.kubernetes.namespace;
-		doc.deployer.container.kubernetes.remote.nodes = options.kubernetes.ip;
-		doc.deployer.container.kubernetes.remote.apiPort = options.kubernetes.port;
-		doc.deployer.container.kubernetes.remote.auth.token = options.kubernetes.token;
-		doc.services.config.key.password = data.keyPassword;
-		doc.services.config.cookie.secret = uuidv4();
-		doc.services.config.session.secret = uuidv4();
-	};
+	let environment = release_specific[options.versions.name](options, data).environment;
 	
-	let infra = release_specific[options.versions.name](options).infra;
+	let infra = release_specific[options.versions.name](options, data).infra;
 	
 	let resources = (doc) => {
 		if (doc.name === "dash_cluster") {

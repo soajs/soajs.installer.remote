@@ -742,6 +742,13 @@ let lib = {
 			if (oneDeployment.spec && oneDeployment.spec.template && oneDeployment.spec.template.spec && oneDeployment.spec.template.spec.containers && oneDeployment.spec.template.spec.containers[0] && oneDeployment.spec.template.spec.containers[0].image) {
 				item.image = oneDeployment.spec.template.spec.containers[0].image;
 			}
+			for (let i = 0; i < oneDeployment.spec.template.spec.containers[0].env.length; i++) {
+				let oneEnv = oneDeployment.spec.template.spec.containers[0].env[i];
+				if (oneEnv.name === "SOAJS_GIT_BRANCH") {
+					item.branch = oneDeployment.spec.template.spec.containers[0].env[i].value;
+					break;
+				}
+			}
 			return cb(null, item);
 		});
 	},
