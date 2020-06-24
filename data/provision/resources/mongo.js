@@ -7,7 +7,6 @@ module.exports = {
 	"category": "mongo",
 	"created": "DASHBOARD",
 	"author": "owner",
-	"locked": true,
 	"plugged": true,
 	"shared": false,
 	"config": "%clusters%"

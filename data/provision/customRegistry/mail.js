@@ -2,7 +2,6 @@
 let doc = {
 	"_id": "5d7f8e43edf21900fed08cf5",
 	"name": "mail",
-	"locked": false,
 	"plugged": true,
 	"shared": false,
 	"value": {
@@ -12,8 +11,7 @@ let doc = {
 			"options": {}
 		}
 	},
-	"created": "DASHBOARD",
-	"author": "owner"
+	"created": "DASHBOARD"
 };
 
 module.exports = doc;

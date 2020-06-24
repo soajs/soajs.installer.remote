@@ -2,7 +2,6 @@
 let doc = {
 	"_id": "5d7f8e8bedf21900fed08cf6",
 	"name": "urac",
-	"locked": false,
 	"plugged": true,
 	"shared": false,
 	"value": {
@@ -47,8 +46,7 @@ let doc = {
 			}
 		}
 	},
-	"created": "DASHBOARD",
-	"author": "owner"
+	"created": "DASHBOARD"
 };
 
 module.exports = doc;
