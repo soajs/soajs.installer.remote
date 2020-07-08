@@ -12,7 +12,8 @@ let doc = {
 	},
 	"deployments": [
 		{
-			"env": "dashboard"
+			"env": "dashboard",
+			"namespace": "soajs"
 		}
 	]
 };

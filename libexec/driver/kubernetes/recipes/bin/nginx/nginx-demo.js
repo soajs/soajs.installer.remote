@@ -116,10 +116,6 @@ function getrecipe(localConfig) {
 										"value": localConfig.sitePrefix + "." + localConfig.domain
 									},
 									{
-										"name": "SOAJS_NX_CONTROLLER_NB",
-										"value": "1"
-									},
-									{
 										"name": "SOAJS_NX_CONTROLLER_PORT",
 										"value": "4000"
 									}
@@ -137,7 +133,7 @@ function getrecipe(localConfig) {
 	
 	components.deployment.spec.template.spec.containers[0].env.push(
 		{
-			"name": "SOAJS_NX_CONTROLLER_IP_1",
+			"name": "SOAJS_NX_CONTROLLER_IP",
 			"value": localConfig.gatewayIP
 		}
 	);

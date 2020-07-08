@@ -3,15 +3,10 @@
 let doc = {
 	"_id": "5df3ec10fa3912534948f005",
 	"name": "Nodejs",
-	"type": "service",
+	"type": "api",
 	"subtype": "nodejs",
-	"locked" : true,
 	"description": "Deploy Node.js service",
-	"restriction": {
-		"deployment": [
-			"container"
-		]
-	},
+	"locked": true,
 	"recipe": {
 		"deployOptions": {
 			"image": {
@@ -23,7 +18,6 @@ let doc = {
 				"override": true
 			},
 			"sourceCode": {},
-			"certificates": "none",
 			"readinessProbe": {
 				"httpGet": {
 					"path": "/heartbeat",
@@ -44,8 +38,7 @@ let doc = {
 			"container": {
 				"network": "soajsnet",
 				"workingDir": "/opt/soajs/soajs.deployer/deployer/"
-			},
-			"allowExposeServicePort": false
+			}
 		},
 		"buildOptions": {
 			"env": {
@@ -57,22 +50,20 @@ let doc = {
 					"type": "computed",
 					"value": "$SOAJS_DEPLOY_HA"
 				},
-				"SOAJS_MONGO_CON_KEEPALIVE" : {
-					"type" : "static",
-					"value" : "true"
+				"SOAJS_MONGO_CON_KEEPALIVE": {
+					"type": "static",
+					"value": "true"
 				},
-				"SOAJS_BCRYPT" : {
-					"type" : "static",
-					"value" : "true"
+				"SOAJS_BCRYPT": {
+					"type": "static",
+					"value": "true"
 				},
 				"SOAJS_REGISTRY_API": {
 					"type": "computed",
 					"value": "$SOAJS_REGISTRY_API"
 				}
 			},
-			"settings": {
-				"accelerateDeployment": false
-			},
+			"settings": {},
 			"cmd": {
 				"deploy": {
 					"command": [

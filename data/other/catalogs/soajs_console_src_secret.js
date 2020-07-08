@@ -1,11 +1,11 @@
 'use strict';
 
 let doc = {
-	"_id": "5df3ec10fa3912534948f009",
-	"name": "Nginx and gateway with automated ssl as pvc",
+	"_id": "5df3ec10fa3912534948f00f",
+	"name": "SOAJS Console from src with manual ssl as secret",
 	"type": "soajs",
-	"subtype": "nginx",
-	"description": "Deploy Nginx in front of SOAJS Gateway with automated https certificate. This requires a ReadWriteMany pvc with claim name as nfs-pvc",
+	"subtype": "ui",
+	"description": "Deploy SOAJS console UI from source with manual https certificate as secret",
 	"locked": true,
 	"recipe": {
 		"deployOptions": {
@@ -47,14 +47,28 @@ let doc = {
 				{
 					"kubernetes": {
 						"volume": {
-							"name": "soajscert",
-							"persistentVolumeClaim": {
-								"claimName": "nfs-pvc"
+							"name": "private-key",
+							"secret": {
+								"secretName": "private-key"
 							}
 						},
 						"volumeMount": {
-							"mountPath": "/opt/soajs/certificates/",
-							"name": "soajscert"
+							"mountPath": "/opt/soajs/certificates/secret/private_key/",
+							"name": "private-key"
+						}
+					}
+				},
+				{
+					"kubernetes": {
+						"volume": {
+							"name": "fullchain-crt",
+							"secret": {
+								"secretName": "fullchain-crt"
+							}
+						},
+						"volumeMount": {
+							"mountPath": "/opt/soajs/certificates/secret/fullchain_crt/",
+							"name": "fullchain-crt"
 						}
 					}
 				}
@@ -74,19 +88,41 @@ let doc = {
 					"type": "computed",
 					"value": "$SOAJS_ENV"
 				},
+				
+				"SOAJS_EXTKEY": {
+					"type": "computed",
+					"value": "$SOAJS_EXTKEY"
+				},
+				
+				"SOAJS_NX_DOMAIN": {
+					"type": "computed",
+					"value": "$SOAJS_NX_DOMAIN"
+				},
 				"SOAJS_NX_API_DOMAIN": {
 					"type": "computed",
 					"value": "$SOAJS_NX_API_DOMAIN"
 				},
+				"SOAJS_NX_SITE_DOMAIN": {
+					"type": "computed",
+					"value": "$SOAJS_NX_SITE_DOMAIN"
+				},
+				"SOAJS_NX_CONTROLLER_NB": {
+					"type": "computed",
+					"value": "$SOAJS_NX_CONTROLLER_NB"
+				},
 				"SOAJS_NX_CONTROLLER_IP": {
 					"type": "computed",
-					"value": "$SOAJS_NX_CONTROLLER_IP"
+					"value": "$SOAJS_NX_CONTROLLER_IP_N"
 				},
 				"SOAJS_NX_CONTROLLER_PORT": {
 					"type": "computed",
 					"value": "$SOAJS_NX_CONTROLLER_PORT"
 				},
 				
+				"SOAJS_SSL_SECRET": {
+					"type": "static",
+					"value": "true"
+				},
 				"SOAJS_SSL_CONFIG": {
 					"type": "userInput",
 					"label": "SSL information",
@@ -113,5 +149,4 @@ let doc = {
 	"v": 1,
 	"ts": new Date().getTime()
 };
-
 module.exports = doc;

@@ -3,15 +3,10 @@
 let doc = {
 	"_id": "5df3ec10fa3912534948f00c",
 	"name": "Nginx with manual ssl as secret",
-	"type": "server",
+	"type": "frontend",
 	"subtype": "nginx",
-	"locked": true,
 	"description": "Deploy Nginx with manual https certificate as secret",
-	"restriction": {
-		"deployment": [
-			"container"
-		]
-	},
+	"locked": true,
 	"recipe": {
 		"deployOptions": {
 			"image": {
@@ -22,16 +17,7 @@ let doc = {
 				"repositoryType": "public",
 				"override": true
 			},
-			"sourceCode": {
-				"custom": {
-					"label": "Attach Custom UI",
-					"type": "static",
-					"repo": "",
-					"branch": "",
-					"required": false
-				}
-			},
-			"certificates": "none",
+			"sourceCode": {},
 			"readinessProbe": {
 				"httpGet": {
 					"path": "/",
@@ -59,7 +45,6 @@ let doc = {
 			],
 			"voluming": [
 				{
-					"docker": {},
 					"kubernetes": {
 						"volume": {
 							"name": "private-key",
@@ -74,7 +59,6 @@ let doc = {
 					}
 				},
 				{
-					"docker": {},
 					"kubernetes": {
 						"volume": {
 							"name": "fullchain-crt",
@@ -96,8 +80,7 @@ let doc = {
 			"container": {
 				"network": "soajsnet",
 				"workingDir": "/opt/soajs/soajs.deployer/deployer/"
-			},
-			"allowExposeServicePort": false
+			}
 		},
 		"buildOptions": {
 			"env": {
@@ -105,9 +88,11 @@ let doc = {
 					"type": "computed",
 					"value": "$SOAJS_ENV"
 				},
-				"SOAJS_NX_SITE_DOMAIN": {
-					"type": "computed",
-					"value": "$SOAJS_NX_SITE_DOMAIN"
+				"SOAJS_NX_SITE_DOMAINS": {
+					"type": "userInput",
+					"label": "Domains",
+					"default": '{"www.soajs.org" ,"soajs.org"}',
+					"fieldMsg": "Add all the domains in an array"
 				},
 				
 				"SOAJS_SSL_SECRET": {
@@ -121,9 +106,7 @@ let doc = {
 					"fieldMsg": "Add the SSL certificate email owner and set if you want to redirect http to https"
 				}
 			},
-			"settings": {
-				"accelerateDeployment": false
-			},
+			"settings": {},
 			"cmd": {
 				"deploy": {
 					"command": [

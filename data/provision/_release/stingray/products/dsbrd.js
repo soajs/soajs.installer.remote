@@ -30,6 +30,16 @@ let doc = {
 						"access": true
 					}
 				},
+				"dashboard": {
+					"1": {
+						"access": true
+					}
+				},
+				"multitenant": {
+					"1": {
+						"access": true
+					}
+				},
 				"urac": {
 					"3": {
 						"access": true,
@@ -148,19 +158,6 @@ let doc = {
 						}]
 					}
 				},
-				"dashboard": {
-					"1": {
-						"access": true,
-						"post": [{
-							"group": "Continuous Delivery Deployment",
-							"apis": {
-								"/cd/deploy": {
-									"access": false
-								}
-							}
-						}]
-					}
-				},
 				"oauth": {
 					"1": {
 						"access": true,
@@ -217,138 +214,6 @@ let doc = {
 							}
 						}]
 					}
-				},
-				"multitenant": {
-					"1": {
-						"access": false,
-						"apisPermission": "restricted",
-						"get": [
-							{
-								"group": "Product",
-								"apis": {
-									"/products": {},
-									"/product": {},
-									"/product/packages": {},
-									"/product/package": {}
-								}
-							},
-							{
-								"group": "Console product",
-								"apis": {
-									"/products/console": {}
-								}
-							},
-							{
-								"group": "Tenant",
-								"apis": {
-									"/tenants": {},
-									"/tenant": {},
-									"/tenant/application": {},
-									"/tenant/applications": {},
-									"/tenant/application/key/ext": {}
-								}
-							},
-							{
-								"group": "Admin Tenant",
-								"apis": {
-									"/admin/tenant": {},
-									"/admin/tenant/application": {},
-									"/admin/tenant/applications": {},
-									"/admin/tenant/application/key/ext": {}
-								}
-							}
-						],
-						"post": [
-							{
-								"group": "Product",
-								"apis": {
-									"/product": {},
-									"/product/package": {}
-								}
-							},
-							{
-								"group": "Tenant",
-								"apis": {
-									"/tenant": {},
-									"/tenant/application": {},
-									"/tenant/application/key": {}
-								}
-							},
-							{
-								"group": "Admin Tenant",
-								"apis": {
-									"/admin/tenant/application": {},
-									"/admin/tenant/application/key": {},
-									"/admin/tenant/application/key/ext": {}
-								}
-							},
-							{
-								"group": "Tenant Access",
-								"apis": {
-									"/tenant/application/key/ext": {}
-								}
-							}
-						],
-						"delete": [
-							{
-								"group": "Product",
-								"apis": {
-									"/product": {},
-									"/product/package": {}
-								}
-							},
-							{
-								"group": "Tenant",
-								"apis": {
-									"/tenant": {},
-									"/tenant/application": {},
-									"/tenant/application/key": {}
-								}
-							},
-							{
-								"group": "Tenant Access",
-								"apis": {
-									"/tenant/application/key/ext": {}
-								}
-							}
-						],
-						"put": [
-							{
-								"group": "Product",
-								"apis": {
-									"/product/purge": {},
-									"/product": {},
-									"/product/scope": {},
-									"/product/package": {}
-								}
-							},
-							{
-								"group": "Tenant",
-								"apis": {
-									"/tenant": {},
-									"/tenant/profile": {},
-									"/tenant/application": {},
-									"/tenant/application/key": {}
-								}
-							},
-							{
-								"group": "Admin Tenant",
-								"apis": {
-									"/admin/tenant": {},
-									"/admin/tenant/application/key/ext": {},
-									"/admin/tenant/application/key": {},
-									"/admin/tenant/application": {},
-									"/admin/tenant/profile": {}
-								}
-							},
-							{
-								"group": "Tenant Access",
-								"apis": {
-									"/tenant/application/key/ext": {}
-								}
-							}
-						]
-					}
 				}
 			}
 		},
@@ -371,10 +236,6 @@ let doc = {
 						"version": "3",
 						"put": ["My account guest"],
 						"get": ["My account guest"]
-					}],
-					"dashboard": [{
-						"version": "1",
-						"post": ["Private Tenant ACL"]
 					}]
 				}
 			},
@@ -387,18 +248,6 @@ let doc = {
 			"locked": true,
 			"acl": {
 				"dashboard": {
-					"console": [{
-						"version": "1"
-					}],
-					"repositories": [{
-						"version": "1"
-					}],
-					"marketplace": [{
-						"version": "1"
-					}],
-					"infra": [{
-						"version": "1"
-					}],
 					"oauth": [{
 						"version": "1",
 						"get": ["Guest"],
@@ -413,40 +262,22 @@ let doc = {
 						"delete": ["Group administration"]
 					}],
 					"dashboard": [{
-						"version": "1",
-						"get": ["Continuous Delivery", "Environment", "Templates", "Environment Databases", "Resources", "Custom Registry", "Environment Platforms", "Product", "Console Product", "Tenant", "Console Tenant", "Tenant oAuth", "Tenant Application", "Dashboard Tenants", "Tenant Settings", "Services", "Daemons", "Hosts", "HA Cloud", "Catalog", "Infra Providers", "API Builder", "Secrets", "Git Accounts", "Continuous Integration"],
-						"post": ["Continuous Delivery", "Environment", "Templates", "Environment Databases", "Resources", "Custom Registry", "Environment Platforms", "Product", "Tenant", "Tenant oAuth", "Tenant Application", "Tenant Settings", "Services", "Daemons", "Hosts", "HA Cloud", "Catalog", "Infra Providers", "API Builder", "Secrets", "Git Accounts", "Continuous Integration", "swagger", "Simulate", "Continuous Delivery Deployment", "Private Tenant ACL"],
-						"put": ["Continuous Delivery", "Environment", "Environment Databases", "Resources", "Custom Registry", "Environment Platforms", "Product", "Tenant", "Tenant oAuth", "Tenant Application", "Tenant Settings", "Services", "Daemons", "HA Cloud", "Catalog", "Infra Providers", "API Builder", "Git Accounts", "Continuous Integration", "Owner HA Cloud"],
-						"delete": ["Environment", "Templates", "Environment Databases", "Resources", "Custom Registry", "Environment Platforms", "Product", "Tenant", "Tenant oAuth", "Tenant Application", "Tenant Settings", "Daemons", "HA Cloud", "Catalog", "Infra Providers", "API Builder", "Secrets", "Git Accounts", "Continuous Integration"]
-					}]
-				}
-			},
-			"_TTL": 604800000
-		},
-		{
-			"code": "DSBRD_DEVOP",
-			"name": "DevOps",
-			"locked": true,
-			"description": "This package has the right privileges a DevOps user will need to be able to configure, control, and monitor what is happening across the board.",
-			"acl": {
-				"dashboard": {
-					"oauth": [{
-						"version": "1",
-						"delete": ["Tokenization", "User Tokenization", "Cient Tokenization"],
-						"post": ["Tokenization", "Guest"],
-						"get": ["Guest"]
+						"version": "1"
 					}],
-					"urac": [{
-						"version": "3",
-						"get": ["My account guest", "My account"],
-						"put": ["My account", "My account guest"]
+					"console": [{
+						"version": "1"
 					}],
-					"dashboard": [{
-						"version": "1",
-						"get": ["Continuous Delivery", "Environment", "Templates", "Environment Databases", "Resources", "Custom Registry", "Environment Platforms", "Tenant Settings", "Services", "Daemons", "Hosts", "HA Cloud", "Catalog", "Git Accounts", "API Builder", "Secrets", "Dashboard Tenants", "Product", "Tenant", "Tenant oAuth", "Tenant Application"],
-						"post": ["Continuous Delivery", "Environment", "Environment Databases", "Resources", "Custom Registry", "Environment Platforms", "Tenant Settings", "Services", "Daemons", "Hosts", "HA Cloud", "Catalog", "Git Accounts", "API Builder", "Secrets", "Product", "Tenant", "Tenant oAuth", "Tenant Application", "swagger", "Simulate", "Continuous Delivery Deployment", "Private Tenant ACL"],
-						"put": ["Continuous Delivery", "Environment", "Environment Databases", "Resources", "Custom Registry", "Environment Platforms", "Tenant Settings", "Services", "HA Cloud", "Catalog", "Git Accounts", "API Builder", "Product", "Tenant", "Tenant oAuth", "Tenant Application"],
-						"delete": ["Environment", "Environment Databases", "Resources", "Custom Registry", "Environment Platforms", "Tenant Settings", "Daemons", "HA Cloud", "Catalog", "Git Accounts", "API Builder", "Product", "Tenant", "Tenant oAuth", "Tenant Application"]
+					"repositories": [{
+						"version": "1"
+					}],
+					"marketplace": [{
+						"version": "1"
+					}],
+					"infra": [{
+						"version": "1"
+					}],
+					"multitenant": [{
+						"version": "1"
 					}]
 				}
 			},
@@ -471,12 +302,23 @@ let doc = {
 						"put": ["My account", "My account guest"]
 					}],
 					"dashboard": [{
-						"version": "1",
-						"get": ["Continuous Delivery", "Environment", "Templates", "Environment Databases", "Resources", "Custom Registry", "Environment Platforms", "Services", "Daemons", "Hosts", "HA Cloud", "Catalog", "Continuous Integration", "Git Accounts", "API Builder", "Secrets"],
-						"post": ["Continuous Delivery", "Environment", "Templates", "Environment Databases", "Resources", "Custom Registry", "Environment Platforms", "Services", "Daemons", "Hosts", "HA Cloud", "Continuous Integration", "Git Accounts", "API Builder", "Secrets", "Private Tenant ACL", "Continuous Delivery Deployment", "Simulate", "swagger"],
-						"put": ["Continuous Delivery", "Environment", "Environment Databases", "Resources", "Custom Registry", "Environment Platforms", "Services", "Daemons", "HA Cloud", "Continuous Integration", "Git Accounts", "API Builder"],
-						"delete": ["Environment", "Templates", "Environment Databases", "Resources", "Custom Registry", "Environment Platforms", "Daemons", "HA Cloud", "Continuous Integration", "Git Accounts", "API Builder", "Secrets"]
+						"version": "1"
 					}],
+					"console": [{
+						"version": "1"
+					}],
+					"repositories": [{
+						"version": "1"
+					}],
+					"marketplace": [{
+						"version": "1"
+					}],
+					"infra": [{
+						"version": "1"
+					}],
+					"multitenant": [{
+						"version": "1"
+					}]
 				}
 			},
 			"_TTL": 21600000
@@ -507,29 +349,7 @@ let doc = {
 					],
 					"multitenant": [
 						{
-							"version": "1",
-							"get": [
-								"Product",
-								"Tenant",
-								"Admin Tenant"
-							],
-							"post": [
-								"Product",
-								"Tenant",
-								"Admin Tenant",
-								"Tenant Access"
-							],
-							"delete": [
-								"Product",
-								"Tenant",
-								"Tenant Access"
-							],
-							"put": [
-								"Product",
-								"Tenant",
-								"Admin Tenant",
-								"Tenant Access"
-							]
+							"version": "1"
 						}
 					]
 				}

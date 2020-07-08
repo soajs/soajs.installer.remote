@@ -41,7 +41,6 @@ let doc = {
 	},
 	"services": {
 		"controller": {
-			"maxPoolSize": 100,
 			"authorization": true,
 			"requestTimeout": 30,
 			"requestTimeoutRenewal": 0

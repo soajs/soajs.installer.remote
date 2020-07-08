@@ -3,16 +3,10 @@
 let doc = {
 	"_id": "5df3ec10fa3912534948f001",
 	"name": "SOAJS Gateway from src",
-	"type": "service",
-	"subtype": "soajs",
-	"soajs": true,
-	"locked" : true,
+	"type": "soajs",
+	"subtype": "gateway",
 	"description": "Deploy SOAJS Gateway from source with soajsprofile as secret",
-	"restriction": {
-		"deployment": [
-			"container"
-		]
-	},
+	"locked": true,
 	"recipe": {
 		"deployOptions": {
 			"image": {
@@ -39,7 +33,6 @@ let doc = {
 			"ports": [],
 			"voluming": [
 				{
-					"docker": {},
 					"kubernetes": {
 						"volume": {
 							"name": "soajsprofile",
@@ -61,8 +54,7 @@ let doc = {
 			"container": {
 				"network": "soajsnet",
 				"workingDir": "/opt/soajs/soajs.deployer/deployer/"
-			},
-			"allowExposeServicePort": false
+			}
 		},
 		"buildOptions": {
 			"env": {
@@ -78,18 +70,16 @@ let doc = {
 					"type": "computed",
 					"value": "$SOAJS_DEPLOY_HA"
 				},
-				"SOAJS_MONGO_CON_KEEPALIVE" : {
-					"type" : "static",
-					"value" : "true"
+				"SOAJS_MONGO_CON_KEEPALIVE": {
+					"type": "static",
+					"value": "true"
 				},
 				"SOAJS_BCRYPT": {
 					"type": "static",
 					"value": "true"
 				}
 			},
-			"settings": {
-				"accelerateDeployment": false
-			},
+			"settings": {},
 			"cmd": {
 				"deploy": {
 					"command": [

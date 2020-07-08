@@ -3,16 +3,10 @@
 let doc = {
 	"_id": "5df3ec10fa3912534948f00e",
 	"name": "SOAJS Console from src with automated ssl as pvc",
-	"type": "server",
-	"subtype": "nginx",
-	"soajs": true,
-	"locked": true,
+	"type": "soajs",
+	"subtype": "ui",
 	"description": "Deploy SOAJS console UI from source with automated https certificate. This requires a ReadWriteMany pvc with claim name as nfs-pvc",
-	"restriction": {
-		"deployment": [
-			"container"
-		]
-	},
+	"locked": true,
 	"recipe": {
 		"deployOptions": {
 			"image": {
@@ -23,16 +17,7 @@ let doc = {
 				"repositoryType": "public",
 				"override": true
 			},
-			"sourceCode": {
-				"custom": {
-					"label": "Attach Custom UI",
-					"type": "static",
-					"repo": "",
-					"branch": "",
-					"required": false
-				}
-			},
-			"certificates": "none",
+			"sourceCode": {},
 			"readinessProbe": {
 				"httpGet": {
 					"path": "/",
@@ -60,7 +45,6 @@ let doc = {
 			],
 			"voluming": [
 				{
-					"docker": {},
 					"kubernetes": {
 						"volume": {
 							"name": "soajscert",
@@ -82,8 +66,7 @@ let doc = {
 			"container": {
 				"network": "soajsnet",
 				"workingDir": "/opt/soajs/soajs.deployer/deployer/"
-			},
-			"allowExposeServicePort": false
+			}
 		},
 		"buildOptions": {
 			"env": {
@@ -109,13 +92,9 @@ let doc = {
 					"type": "computed",
 					"value": "$SOAJS_NX_SITE_DOMAIN"
 				},
-				"SOAJS_NX_CONTROLLER_NB": {
-					"type": "computed",
-					"value": "$SOAJS_NX_CONTROLLER_NB"
-				},
 				"SOAJS_NX_CONTROLLER_IP": {
 					"type": "computed",
-					"value": "$SOAJS_NX_CONTROLLER_IP_N"
+					"value": "$SOAJS_NX_CONTROLLER_IP"
 				},
 				"SOAJS_NX_CONTROLLER_PORT": {
 					"type": "computed",
@@ -128,9 +107,7 @@ let doc = {
 					"fieldMsg": "Add the SSL certificate email owner and set if you want to redirect http to https"
 				}
 			},
-			"settings": {
-				"accelerateDeployment": false
-			},
+			"settings": {},
 			"cmd": {
 				"deploy": {
 					"command": [
@@ -138,7 +115,6 @@ let doc = {
 					],
 					"args": [
 						"-c",
-						"node index.js -T nginx -S deploy",
 						"node index.js -T nginx -S install",
 						"/opt/soajs/soajs.deployer/deployer/bin/nginx.sh"
 					]

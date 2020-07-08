@@ -3,15 +3,10 @@
 let doc = {
 	"_id": "5df3ec10fa3912534948f003",
 	"name": "Mongo DB",
-	"type": "cluster",
+	"type": "resource",
 	"subtype": "mongo",
 	"description": "Deploy single instance of Mongo DB",
 	"locked": true,
-	"restriction": {
-		"deployment": [
-			"container"
-		]
-	},
 	"recipe": {
 		"deployOptions": {
 			"image": {
@@ -20,6 +15,7 @@ let doc = {
 				"tag": "4.2.1",
 				"pullPolicy": "Always",
 				"repositoryType": "public",
+				"binary": true,
 				"override": true
 			},
 			"sourceCode": {},
@@ -44,21 +40,14 @@ let doc = {
 			},
 			"voluming": [
 				{
-					docker: {
-						volume: {
-							"Type": "volume",
-							"Source": "dashboard-soajsdata",
-							"Target": "/data/db/"
-						}
-					},
-					kubernetes: {
-						volume: {
+					"kubernetes": {
+						"volume": {
 							"name": "dashboard-soajsdata",
 							"hostPath": {
 								"path": "/var/data/db/"
 							}
 						},
-						volumeMount: {
+						"volumeMount": {
 							"mountPath": "/var/data/db/",
 							"name": "dashboard-soajsdata"
 						}
@@ -70,8 +59,7 @@ let doc = {
 					"name": "mongoport",
 					"containerPort": 27017
 				}
-			],
-			"certificates": "none"
+			]
 		},
 		"buildOptions": {
 			"env": {},

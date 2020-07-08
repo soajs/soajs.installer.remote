@@ -3,15 +3,10 @@
 let doc = {
 	"_id": "5df3ec10fa3912534948f002",
 	"name": "GoLang",
-	"type": "service",
+	"type": "api",
 	"subtype": "golang",
-	"locked" : true,
 	"description": "Deploy GoLang service",
-	"restriction": {
-		"deployment": [
-			"container"
-		]
-	},
+	"locked": true,
 	"recipe": {
 		"deployOptions": {
 			"image": {
@@ -24,7 +19,6 @@ let doc = {
 				"override": true
 			},
 			"sourceCode": {},
-			"certificates": "none",
 			"readinessProbe": {
 				"httpGet": {
 					"path": "/heartbeat",
@@ -45,10 +39,8 @@ let doc = {
 			"container": {
 				"network": "soajsnet",
 				"workingDir": "/opt/soajs/soajs.deployer/deployer/"
-			},
-			"allowExposeServicePort": false
+			}
 		},
-		
 		"buildOptions": {
 			"env": {
 				"SOAJS_ENV": {
@@ -59,18 +51,16 @@ let doc = {
 					"type": "computed",
 					"value": "$SOAJS_DEPLOY_HA"
 				},
-				"SOAJS_DEPLOY_MANUAL" : {
-					"type" : "static",
-					"value" : "false"
+				"SOAJS_DEPLOY_MANUAL": {
+					"type": "static",
+					"value": "false"
 				},
 				"SOAJS_REGISTRY_API": {
 					"type": "computed",
 					"value": "$SOAJS_REGISTRY_API"
 				}
 			},
-			"settings": {
-				"accelerateDeployment": false
-			},
+			"settings": {},
 			"cmd": {
 				"deploy": {
 					"command": [

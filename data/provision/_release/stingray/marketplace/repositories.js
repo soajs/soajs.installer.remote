@@ -1,186 +1,209 @@
 "use strict";
 
 module.exports = {
-	type: "service",
-	name: "repositories",
-	description: "This service handles soajs integration with git providers.",
-	configuration: {
-		group: "Console",
-		subType: "soajs",
-		port: 4006,
-		requestTimeout: 180,
-		requestTimeoutRenewal: 5
+	"type": "service",
+	"name": "repositories",
+	"configuration": {
+		"group": "Console",
+		"subType": "soajs",
+		"port": 4006,
+		"requestTimeout": 180,
+		"requestTimeoutRenewal": 5
 	},
-	versions: [
+	"versions": [
 		{
-			version: "1",
-			extKeyRequired: true,
-			urac: false,
-			urac_Profile: false,
-			urac_ACL: false,
-			urac_Config: false,
-			urac_GroupConfig: false,
-			tenant_Profile: false,
-			provision_ACL: false,
-			oauth: true,
-			interConnect: [
+			"version": "1",
+			"extKeyRequired": true,
+			"urac": false,
+			"urac_Profile": false,
+			"urac_ACL": false,
+			"urac_Config": false,
+			"urac_GroupConfig": false,
+			"tenant_Profile": false,
+			"provision_ACL": false,
+			"oauth": true,
+			"interConnect": [
 				{
-					name: "marketplace",
-					version: "1"
+					"name": "marketplace",
+					"version": "1"
 				}
 			],
-			maintenance: {
-				readiness: "/heartbeat",
-				port: {
-					type: "maintenance"
+			"maintenance": {
+				"readiness": "/heartbeat",
+				"port": {
+					"type": "maintenance"
 				},
-				commands: [
+				"commands": [
 					{
-						label: "Reload Registry",
-						path: "/reloadRegistry",
-						icon: "fas fa-undo"
+						"label": "Reload Registry",
+						"path": "/reloadRegistry",
+						"icon": "fas fa-undo"
 					},
 					{
-						label: "Resource Info",
-						path: "/resourceInfo",
-						icon: "fas fa-info"
+						"label": "Resource Info",
+						"path": "/resourceInfo",
+						"icon": "fas fa-info"
 					}
 				]
 			},
-			apis: [
+			"apis": [
 				{
-					l: "Get accounts information and their organization(s)",
-					v: "/git/accounts",
-					m: "get",
-					group: "Account information"
+					"l": "Get accounts information and their organization(s)",
+					"v": "/git/accounts",
+					"m": "get",
+					"group": "Account information"
 				},
 				{
-					l: "Get account information and its organization(s)",
-					v: "/git/account",
-					m: "get",
-					group: "Account information"
+					"l": "Get account information and its organization(s)",
+					"v": "/git/account",
+					"m": "get",
+					"group": "Account information"
 				},
 				{
-					l: "Get repository information",
-					v: "/git/repo",
-					m: "get",
-					group: "Repository information"
+					"l": "Get account information and its organization(s)",
+					"v": "/git/account/owner",
+					"m": "get",
+					"group": "Internal"
 				},
 				{
-					l: "Get repository branches",
-					v: "/git/branches",
-					m: "get",
-					group: "Repository information"
+					"l": "Get repository information",
+					"v": "/git/repo",
+					"m": "get",
+					"group": "Repository information"
 				},
 				{
-					l: "Get repository tags",
-					v: "/git/tags",
-					m: "get",
-					group: "Repository information"
+					"l": "Get repository and account information",
+					"v": "/git/repo/info",
+					"m": "get",
+					"group": "Internal"
 				},
 				{
-					l: "Get repository tags",
-					v: "/git/tag",
-					m: "get",
-					group: "Repository information"
+					"l": "Get repository branch information",
+					"v": "/git/branch",
+					"m": "get",
+					"group": "Repository information"
 				},
 				{
-					l: "Get a file from repository",
-					v: "/git/repo/file",
-					m: "get",
-					group: "Repository management"
+					"l": "Get repository branches",
+					"v": "/git/branches",
+					"m": "get",
+					"group": "Repository information"
 				},
 				{
-					l: "Login and add account",
-					v: "/git/account",
-					m: "post",
-					group: "Git Accounts"
+					"l": "Get repository tags",
+					"v": "/git/tags",
+					"m": "get",
+					"group": "Repository information"
 				},
 				{
-					l: "Search and filter repository",
-					v: "/git/repos",
-					m: "post",
-					group: "Repository information"
+					"l": "Get repository tag",
+					"v": "/git/tag",
+					"m": "get",
+					"group": "Repository information"
 				},
 				{
-					l: "Sync account and all its repositories",
-					v: "/git/sync/account",
-					m: "put",
-					group: "Git Accounts"
+					"l": "Get a file from repository",
+					"v": "/git/repo/file",
+					"m": "get",
+					"group": "Repository management"
 				},
 				{
-					l: "Upgrade account",
-					v: "/git/account",
-					m: "put",
-					group: "Account management"
+					"l": "Login and add account",
+					"v": "/git/account",
+					"m": "post",
+					"group": "Git Accounts"
 				},
 				{
-					l: "Activate repository and sync branches",
-					v: "/git/repo/activate",
-					m: "put",
-					group: "Repository management"
+					"l": "Search and filter repository",
+					"v": "/git/repos",
+					"m": "post",
+					"group": "Repository information"
 				},
 				{
-					l: "Deactivate repository",
-					v: "/git/repo/deactivate",
-					m: "put",
-					group: "Repository management"
+					"l": "Sync account and all its repositories",
+					"v": "/git/sync/account",
+					"m": "put",
+					"group": "Git Accounts"
 				},
 				{
-					l: "Activate branch",
-					v: "/git/branch/activate",
-					m: "put",
-					group: "Repository management"
+					"l": "Upgrade account",
+					"v": "/git/account",
+					"m": "put",
+					"group": "Account management"
 				},
 				{
-					l: "Deactivate branch",
-					v: "/git/branch/deactivate",
-					m: "put",
-					group: "Repository management"
+					"l": "Activate repository and sync branches",
+					"v": "/git/repo/activate",
+					"m": "put",
+					"group": "Repository management"
 				},
 				{
-					l: "Activate tag",
-					v: "/git/tag/activate",
-					m: "put",
-					group: "Repository management"
+					"l": "Deactivate repository",
+					"v": "/git/repo/deactivate",
+					"m": "put",
+					"group": "Repository management"
 				},
 				{
-					l: "Deactivate tag",
-					v: "/git/tag/deactivate",
-					m: "put",
-					group: "Repository management"
+					"l": "Activate branch",
+					"v": "/git/branch/activate",
+					"m": "put",
+					"group": "Repository management"
 				},
 				{
-					l: "Sync repository and all its branches",
-					v: "/git/sync/repository",
-					m: "put",
-					group: "Repository management"
+					"l": "Deactivate branch",
+					"v": "/git/branch/deactivate",
+					"m": "put",
+					"group": "Repository management"
 				},
 				{
-					l: "Sync branch and update the corresponding catalog",
-					v: "/git/sync/branch",
-					m: "put",
-					group: "Repository management"
+					"l": "Activate tag",
+					"v": "/git/tag/activate",
+					"m": "put",
+					"group": "Repository management"
 				},
 				{
-					l: "Logout and delete account",
-					v: "/git/account",
-					m: "delete",
-					group: "Account management"
+					"l": "Deactivate tag",
+					"v": "/git/tag/deactivate",
+					"m": "put",
+					"group": "Repository management"
 				},
 				{
-					l: "Delete Repository",
-					v: "/git/repo",
-					m: "delete",
-					group: "Account management"
+					"l": "Sync repository and all its branches",
+					"v": "/git/sync/repository",
+					"m": "put",
+					"group": "Repository management"
 				},
 				{
-					l: "Delete Orphan Repositories",
-					v: "/git/repositories",
-					m: "delete",
-					group: "Account management"
+					"l": "Sync branch and update the corresponding catalog",
+					"v": "/git/sync/branch",
+					"m": "put",
+					"group": "Repository management"
+				},
+				{
+					"l": "Logout and delete account",
+					"v": "/git/account",
+					"m": "delete",
+					"group": "Account management"
+				},
+				{
+					"l": "Delete Repository",
+					"v": "/git/repo",
+					"m": "delete",
+					"group": "Account management"
+				},
+				{
+					"l": "Delete Orphan Repositories",
+					"v": "/git/repositories",
+					"m": "delete",
+					"group": "Account management"
 				}
 			]
 		}
-	]
+	],
+	"description": "This service handles soajs integration with git providers.",
+	"settings": {
+		"recipes": [
+			"5edf6c1836c77052b0a5e1f3"
+		]
+	}
 };
