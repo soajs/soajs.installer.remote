@@ -4,7 +4,7 @@ let doc = {
 	"_id": "5edf6bf536c77052b0a5e1f1",
 	"name": "SOAJS Console from bin",
 	"type": "soajs",
-	"subtype": "ui",
+	"subtype": "microservice",
 	"description": "Deploy SOAJS Console from binary",
 	"locked": true,
 	"recipe": {
