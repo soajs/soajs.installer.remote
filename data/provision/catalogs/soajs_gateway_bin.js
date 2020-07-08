@@ -12,7 +12,7 @@ let doc = {
 			"image": {
 				"prefix": "soajsorg",
 				"name": "gateway",
-				"tag": "3.x",
+				"tag": "4.x",
 				"pullPolicy": "Always",
 				"repositoryType": "public",
 				"binary": true,

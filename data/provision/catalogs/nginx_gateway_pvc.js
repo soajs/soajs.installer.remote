@@ -4,7 +4,7 @@ let doc = {
 	"_id": "5df3ec10fa3912534948f009",
 	"name": "Nginx and gateway with automated ssl as pvc",
 	"type": "soajs",
-	"subtype": "nginx",
+	"subtype": "gateway",
 	"description": "Deploy Nginx in front of SOAJS Gateway with automated https certificate. This requires a ReadWriteMany pvc with claim name as nfs-pvc",
 	"locked": true,
 	"recipe": {

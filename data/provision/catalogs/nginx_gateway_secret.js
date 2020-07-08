@@ -4,7 +4,7 @@ let doc = {
 	"_id": "5df3ec10fa3912534948f00a",
 	"name": "Nginx and gateway with manual ssl as secret",
 	"type": "soajs",
-	"subtype": "nginx",
+	"subtype": "gateway",
 	"description": "Deploy Nginx in front of SOAJS Gateway with manual https certificate as secret",
 	"locked": true,
 	"recipe": {

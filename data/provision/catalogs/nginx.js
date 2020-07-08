@@ -1,28 +1,27 @@
 'use strict';
 
 let doc = {
-	"_id": "5df3ec10fa3912534948efff",
-	"name": "SOAJS Dashboard from bin",
-	"type": "soajs",
-	"subtype": "microservice",
-	"description": "Deploy SOAJS Dashboard from binary",
+	"_id": "5f05df1f52b19b0a86f9daf2",
+	"name": "Nginx without ssl",
+	"type": "frontend",
+	"subtype": "nginx",
+	"description": "Deploy Nginx without certificate",
 	"locked": true,
 	"recipe": {
 		"deployOptions": {
 			"image": {
 				"prefix": "soajsorg",
-				"name": "dashboard",
+				"name": "fe",
 				"tag": "3.x",
 				"pullPolicy": "Always",
 				"repositoryType": "public",
-				"binary": true,
 				"override": true
 			},
 			"sourceCode": {},
 			"readinessProbe": {
 				"httpGet": {
-					"path": "/heartbeat",
-					"port": "maintenance"
+					"path": "/",
+					"port": "http"
 				},
 				"initialDelaySeconds": 5,
 				"timeoutSeconds": 2,
@@ -30,7 +29,14 @@ let doc = {
 				"successThreshold": 1,
 				"failureThreshold": 3
 			},
-			"ports": [],
+			"ports": [
+				{
+					"name": "http",
+					"target": 80,
+					"isPublished": true,
+					"preserveClientIP": true
+				}
+			],
 			"voluming": [],
 			"restartPolicy": {
 				"condition": "any",
@@ -38,7 +44,7 @@ let doc = {
 			},
 			"container": {
 				"network": "soajsnet",
-				"workingDir": "/opt/soajs/soajs.dashboard/"
+				"workingDir": "/opt/soajs/soajs.deployer/deployer/"
 			}
 		},
 		"buildOptions": {
@@ -47,21 +53,11 @@ let doc = {
 					"type": "computed",
 					"value": "$SOAJS_ENV"
 				},
-				"SOAJS_DEPLOY_HA": {
-					"type": "computed",
-					"value": "$SOAJS_DEPLOY_HA"
-				},
-				"SOAJS_MONGO_CON_KEEPALIVE": {
-					"type": "static",
-					"value": "true"
-				},
-				"SOAJS_BCRYPT": {
-					"type": "static",
-					"value": "true"
-				},
-				"SOAJS_REGISTRY_API": {
-					"type": "computed",
-					"value": "$SOAJS_REGISTRY_API"
+				"SOAJS_NX_SITE_DOMAINS": {
+					"type": "userInput",
+					"label": "Domains",
+					"default": '{"www.soajs.org" ,"soajs.org"}',
+					"fieldMsg": "Add all the domains in an array"
 				}
 			},
 			"settings": {},
@@ -72,7 +68,9 @@ let doc = {
 					],
 					"args": [
 						"-c",
-						"node ."
+						"node index.js -T nginx -S deploy",
+						"node index.js -T nginx -S install",
+						"/opt/soajs/soajs.deployer/deployer/bin/nginx.sh"
 					]
 				}
 			}
@@ -81,4 +79,5 @@ let doc = {
 	"v": 1,
 	"ts": new Date().getTime()
 };
+
 module.exports = doc;
