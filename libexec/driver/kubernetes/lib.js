@@ -670,9 +670,6 @@ let lib = {
 	 * @param cb
 	 */
 	"getService": (deployer, serviceName, namespace, cb) => {
-		// if (serviceName === 'ui') {
-		// 	serviceName = 'nginx';
-		// }
 		if (serviceName === 'gateway') {
 			serviceName = 'controller';
 		}
@@ -682,9 +679,16 @@ let lib = {
 				return cb(error);
 			}
 			if (!serviceList || !serviceList.items || serviceList.items.length === 0) {
-				return cb(new Error("Unable to find service: " + serviceName));
+				//NOTE: backward compatibility
+				if (serviceName === 'ui') {
+					serviceName = 'nginx';
+					return lib.getService(deployer, serviceName, namespace, cb);
+				} else {
+					return cb(new Error("Unable to find service: " + serviceName));
+				}
+			} else {
+				return cb(null, serviceList.items[0]);
 			}
-			return cb(null, serviceList.items[0]);
 		});
 	},
 	/**
@@ -726,9 +730,9 @@ let lib = {
 			"mode": oneService.metadata.labels['soajs.service.mode'],
 			"label": oneService.spec.selector['soajs.service.label']
 		};
-		// if (item.serviceName === 'nginx') {
-		// 	item.serviceName = 'ui';
-		// }
+		if (item.serviceName === 'nginx') {
+			item.serviceName = 'ui';
+		}
 		if (item.serviceName === 'controller') {
 			item.serviceName = 'gateway';
 		}
