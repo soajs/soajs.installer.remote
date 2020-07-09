@@ -21,6 +21,14 @@ module.exports = (options, data) => {
 			doc.services.config.key.password = data.keyPassword;
 			doc.services.config.cookie.secret = uuidv4();
 			doc.services.config.session.secret = uuidv4();
+			
+			if (options.nginx.sslType === "demo") {
+				doc.port = options.nginx.httpPort;
+				doc.protocol = "http";
+			} else {
+				doc.port = options.nginx.httpsPort;
+				doc.protocol = "https";
+			}
 		},
 		"infra": (doc) => {
 			doc.configuration.url = options.kubernetes.ip;

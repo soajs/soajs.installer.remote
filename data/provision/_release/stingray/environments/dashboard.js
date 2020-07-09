@@ -6,8 +6,8 @@ let doc = {
 	"sitePrefix": "%site%",
 	"apiPrefix": "%api%",
 	"locked": true,
-	"port": 80,
-	"protocol": "http",
+	"port": "%port%",
+	"protocol": "%protocol%",
 	"deployer": {
 		"type": "container",
 		"selected": "%deployDriver%",
