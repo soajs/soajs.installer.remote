@@ -230,6 +230,7 @@ let getConfig = {
 		return {
 			"type": options.deployment.type,
 			"style": options.deployment.style,
+			"serviceVer": options.versions.services.ui.msVer || 1,
 			"repoVer": options.versions.services.ui.ver,
 			"semVer": options.versions.services.ui.semVer,
 			

@@ -229,12 +229,12 @@ module.exports = function (_config) {
 			
 			"soajs.content": "true",
 			"soajs.env.code": "dashboard",
-			"soajs.service.name": "nginx",
+			"soajs.service.name": "ui",
 			"soajs.service.group": "Console",
-			"soajs.service.type": "server",
+			"soajs.service.type": "static",
 			
 			"soajs.service.version": "1",
-			"soajs.service.subtype": "nginx",
+			"soajs.service.subtype": "soajs",
 			"soajs.service.label": _config.label,
 			"soajs.service.mode": "daemonset"
 		}

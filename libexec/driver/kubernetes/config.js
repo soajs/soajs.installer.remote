@@ -27,7 +27,7 @@ const lib = {
 		"marketplace": "dashboard-marketplace-v",
 		"repositories": "dashboard-repositories-v",
 		
-		"ui": "dashboard-nginx"
+		"ui": "dashboard-ui-v"
 	},
 	
 	"catalog": {

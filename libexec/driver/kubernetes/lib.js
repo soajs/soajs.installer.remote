@@ -670,9 +670,9 @@ let lib = {
 	 * @param cb
 	 */
 	"getService": (deployer, serviceName, namespace, cb) => {
-		if (serviceName === 'ui') {
-			serviceName = 'nginx';
-		}
+		// if (serviceName === 'ui') {
+		// 	serviceName = 'nginx';
+		// }
 		if (serviceName === 'gateway') {
 			serviceName = 'controller';
 		}
@@ -726,9 +726,9 @@ let lib = {
 			"mode": oneService.metadata.labels['soajs.service.mode'],
 			"label": oneService.spec.selector['soajs.service.label']
 		};
-		if (item.serviceName === 'nginx') {
-			item.serviceName = 'ui';
-		}
+		// if (item.serviceName === 'nginx') {
+		// 	item.serviceName = 'ui';
+		// }
 		if (item.serviceName === 'controller') {
 			item.serviceName = 'gateway';
 		}
@@ -760,7 +760,7 @@ let lib = {
 	 * @param cb
 	 */
 	"getServicesInfo": (deployer, options, namespace, cb) => {
-		let filter = {labelSelector: 'soajs.content=true', gracePeriodSeconds: 0};
+		let filter = {labelSelector: 'soajs.content=true, soajs.service.name!=soajsdata', gracePeriodSeconds: 0};
 		wrapper.service.get(deployer, {namespace: namespace, qs: filter}, (error, serviceList) => {
 			if (error) {
 				return cb(error);

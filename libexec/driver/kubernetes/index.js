@@ -21,7 +21,7 @@ let recipies = {
 		let type = options.type;
 		let sslType = options.sslType;
 		let config = {
-			"label": gConfig.label.ui,
+			"label": gConfig.label.ui + options.serviceVer,
 			"catId": gConfig.catalog.ui[sslType][type],
 			"image": gConfig.images.ui[type] + options.semVer,
 			
