@@ -25,7 +25,7 @@ module.exports = (profile, dataPath, release, callback) => {
 			records,
 			(group, cb) => {
 				if (tCode !== group.tenant.code) {
-					logger.warn(e.code + ": skipped tenant code [" + group.tenant.code + "] does not match!");
+					logger.warn(group.code + ": skipped tenant code [" + group.tenant.code + "] does not match!");
 					return cb();
 				}
 				let condition = {"code": group.code};
@@ -45,7 +45,7 @@ module.exports = (profile, dataPath, release, callback) => {
 			() => {
 				//close mongo connection
 				mongoConnection.closeDb();
-				return callback(null, "MongoDb Soajs Data migrate!")
+				return callback(null, "MongoDb Soajs Data migrate!");
 			});
 	} else {
 		return callback(null, "Nothing to migrate");

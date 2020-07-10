@@ -1,3 +1,13 @@
+"use strict";
+
+/**
+ * @license
+ * Copyright SOAJS All Rights Reserved.
+ *
+ * Use of this source code is governed by an Apache license that can be
+ * found in the LICENSE file at the root of this repository
+ */
+
 let Mongo = require("soajs").mongo;
 
 function CoreProvision(profile) {
@@ -15,6 +25,25 @@ CoreProvision.prototype.getSettings = function (cb) {
 	});
 };
 
+CoreProvision.prototype.updateSettings = function (obj, cb) {
+	let __self = this;
+	let condition = {"type": "installer"};
+	
+	__self.mongoCore.findOne("settings", condition, (error, response) => {
+		if (response) {
+			if (!obj.semVer) {
+				return cb(new Error("Version was not provided to update."), null);
+			}
+			let e = {$set: {["releaseInfo.services." + obj.serviceName + ".semVer"]: obj.semVer}};
+			__self.mongoCore.updateOne("settings", condition, e, (error, response) => {
+				return cb(error, response);
+			});
+		} else {
+			return cb(new Error("Unable to find release information."));
+		}
+	});
+};
+
 CoreProvision.prototype.getExtKey = function (cb) {
 	let __self = this;
 	let condition = {"code": "DBTN"};
@@ -26,7 +55,7 @@ CoreProvision.prototype.getExtKey = function (cb) {
 				let key = app.keys[0];
 				if (key.extKeys) {
 					let oneKey = key.extKeys[0];
-					extKey = oneKey.extKey
+					extKey = oneKey.extKey;
 				}
 			}
 		}
@@ -54,7 +83,7 @@ CoreProvision.prototype.updateCatalog = function (obj, cb) {
 				} else {
 					__self.mongoCore.insertOne("catalogs", obj, (error, response) => {
 						return cb(error, response);
-					})
+					});
 				}
 			});
 		} else {

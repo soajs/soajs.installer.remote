@@ -34,6 +34,6 @@ module.exports = (profile, dataPath, release, callback) => {
 		} else if (record && record.ok && record.upserted && Array.isArray(record.upserted)) {
 			logger.info("DSBRD inserted: " + record.upserted.length);
 		}
-		return callback(err, "MongoDb Soajs Data migrate!")
+		return callback(err, "MongoDb Soajs Data migrate!");
 	});
 };

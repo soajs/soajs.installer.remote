@@ -1,5 +1,4 @@
 'use strict';
-const fs = require("fs");
 const async = require("async");
 let Mongo = require("soajs").mongo;
 
@@ -41,7 +40,7 @@ module.exports = (profile, dataPath, release, callback) => {
 			() => {
 				//close mongo connection
 				mongoConnection.closeDb();
-				return callback(null, "MongoDb Soajs Data migrate!")
+				return callback(null, "MongoDb Soajs Data migrate!");
 			}
 		);
 	} else {

@@ -5,6 +5,13 @@ node_js: 10
 jobs:
   include:
 
+  - stage: Check code quality
+    before_script:
+    - npm install -g grunt-cli
+    - sleep 10
+    script:
+    - grunt
+
   - stage: Publish to npm
     if: branch = master
     script:

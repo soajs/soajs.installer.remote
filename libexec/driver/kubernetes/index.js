@@ -490,7 +490,7 @@ let driver = {
 				return cb(error);
 			}
 			return cb(null, servicesInfo);
-		})
+		});
 	},
 	
 	"restoreServiceDeployment": (options, deployer, cb) => {

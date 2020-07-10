@@ -25,6 +25,6 @@ module.exports = (profile, dataPath, release, callback) => {
 		if (record) {
 			logger.info(record.nModified);
 		}
-		return callback(err, "MongoDb Soajs Data migrate!")
+		return callback(err, "MongoDb Soajs Data migrate!");
 	});
 };

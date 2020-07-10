@@ -30,27 +30,37 @@ function handleImageInfo(options, imageInfo, serviceName, cb) {
 	if (imageInfo && imageInfo.style) {
 		options.deployment.style = imageInfo.style;
 	}
-	let catObjs = requireCatalog(options, serviceName);
-	if (catObjs.length > 0) {
-		async.each(catObjs, (oneCatObj, callback) => {
-			if (imageInfo && imageInfo.tag) {
-				oneCatObj.recipe.deployOptions.image.tag = imageInfo.tag;
-			}
-			cpModelObj.updateCatalog(oneCatObj, (error, response) => {
-				if (error) {
-					logger.info("Unable to update Catalog [" + oneCatObj.name + "] image tag, error: " + error);
-				}
-				if (response) {
-					logger.info("Catalog [" + oneCatObj.name + "] image tag was updated successfully");
-				}
-				return callback();
-			});
-		}, (error) => {
-			return cb(error);
-		});
-	} else {
-		return cb();
+	let semVer = null;
+	if (imageInfo && imageInfo.tag) {
+		semVer = imageInfo.tag;
 	}
+	cpModelObj.updateSettings({"semVer": semVer, "serviceName": serviceName}, (error) => {
+		if (error) {
+			logger.warn("Unable to update release info for [" + serviceName + "] under Settings: " + error.message);
+		}
+		let catObjs = requireCatalog(options, serviceName);
+		if (catObjs.length > 0) {
+			async.each(catObjs, (oneCatObj, callback) => {
+				if (imageInfo && imageInfo.tag) {
+					oneCatObj.recipe.deployOptions.image.tag = imageInfo.tag;
+				}
+				cpModelObj.updateCatalog(oneCatObj, (error, response) => {
+					if (error) {
+						logger.warn("Unable to update Catalog [" + oneCatObj.name + "] image tag, error: " + error.message);
+					}
+					if (response) {
+						logger.info("Catalog [" + oneCatObj.name + "] image tag was updated successfully");
+					}
+					return callback();
+				});
+			}, (error) => {
+				return cb(error);
+			});
+		} else {
+			return cb();
+		}
+		
+	});
 }
 
 function generateKey(opts, cb) {
@@ -80,7 +90,7 @@ function generateKey(opts, cb) {
 			if (response.key === key) {
 				return cb(null, extKey);
 			} else {
-				return cb(new Error("Generated Key is invalid."))
+				return cb(new Error("Generated Key is invalid."));
 			}
 		});
 	});
@@ -193,10 +203,11 @@ function validateOptions(options, cb) {
 			options.nginx.sslRedirect = options.nginx.sslRedirect || false;
 			
 			if (options.versions.services) {
+				soajsServicesArray = [];
 				for (let s in options.versions.services) {
 					if (options.versions.services.hasOwnProperty(s)) {
 						if (s !== "gateway" && s !== "ui") {
-							soajsServicesArray.push(s)
+							soajsServicesArray.push(s);
 						}
 					}
 				}
@@ -428,7 +439,7 @@ let lib = {
 										}
 									}
 									return callback(null, obj);
-								})
+								});
 							}
 						},
 						//Patch data

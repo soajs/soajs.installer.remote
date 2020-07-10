@@ -42,18 +42,24 @@ let lib = {
 	"assureNamespace": (deployer, namespace, createIfNotExist, verbose, cb) => {
 		//1. check if namespace already exists. if it does, return true
 		//2. if namespace does not exist create it and return true
-		if (verbose) {
-			logger.info('Checking for namespace: ' + namespace + ' and creating if not there is [' + createIfNotExist + '] ...');
+		if (verbose && createIfNotExist) {
+			logger.info('Checking for namespace: ' + namespace + ' and creating if not there ...');
 		}
 		wrapper.namespace.get(deployer, {}, (error, namespacesList) => {
 			if (error) {
 				return cb(error, null);
 			}
+			let foundNamespace = null;
 			async.detect(namespacesList.items, (oneNamespace, callback) => {
-				return callback(null, oneNamespace.metadata.name === namespace);
-			}, (error, foundNamespace) => {
+				if (oneNamespace.metadata.name === namespace) {
+					foundNamespace = oneNamespace;
+					return callback(null, true);
+				} else {
+					return callback(null, false);
+				}
+			}, () => {
 				if (foundNamespace) {
-					if (verbose) {
+					if (verbose && foundNamespace.metadata) {
 						logger.info('Found namespace: ' + foundNamespace.metadata.name + ' ...');
 					}
 					return cb(null, true);
@@ -246,7 +252,9 @@ let lib = {
 					name: oneDeployment.metadata.name,
 					body: oneDeployment
 				}, (error) => {
-					if (error) return callback(error);
+					if (error) {
+						return callback(error);
+					}
 					
 					setTimeout(() => {
 						wrapper.deployment.delete(deployer, {
@@ -347,7 +355,7 @@ let lib = {
 			namespace: namespace,
 			name: 'soajsprofile',
 			qs: {gracePeriodSeconds: 0}
-		}, cb)
+		}, cb);
 	},
 	"ensurePods": (deployer, options, namespace, counter, cb) => {
 		if (typeof (counter) === 'function') {
@@ -450,10 +458,10 @@ let lib = {
 							if (image.indexOf(":") !== -1) {
 								imageInfo.tag = image.substr(image.indexOf(":") + 1);
 							}
-							imageInfo.changed = true
+							imageInfo.changed = true;
 						}
 						return cb(null, true, imageInfo);
-					})
+					});
 				});
 			});
 		};
