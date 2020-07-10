@@ -842,7 +842,7 @@ let lib = {
 		});
 	},
 	
-	"migrate": (options, strategy, cb) => {
+	"migrate": (options, strategy, release, cb) => {
 		validateOptions(options, (error) => {
 			if (error) {
 				if (error.message) {
@@ -856,7 +856,7 @@ let lib = {
 			
 			let strategyFunction = require("./migrate/" + strategy + ".js");
 			
-			return strategyFunction(profileImport, options.dataPath, cb);
+			return strategyFunction(profileImport, options.dataPath, release, cb);
 		});
 	},
 	

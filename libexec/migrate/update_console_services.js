@@ -7,10 +7,14 @@ let Mongo = require("soajs").mongo;
 const utils = require("../utils/utils.js");
 const logger = utils.getLogger();
 
-module.exports = (profile, dataPath, callback) => {
+module.exports = (profile, dataPath, release, callback) => {
 	
 	//update product services
-	let records = require(dataPath + "services/index.js");
+	let path = dataPath;
+	if (release) {
+		path += release + "/";
+	}
+	let records = require(path + "services/index.js");
 	if (records && Array.isArray(records) && records.length > 0) {
 		//use soajs.core.modules to create a connection to core_provision database
 		let mongoConnection = new Mongo(profile);

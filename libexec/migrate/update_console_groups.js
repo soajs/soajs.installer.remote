@@ -7,7 +7,7 @@ let Mongo = require("soajs").mongo;
 const utils = require("../utils/utils.js");
 const logger = utils.getLogger();
 
-module.exports = (profile, dataPath, callback) => {
+module.exports = (profile, dataPath, release, callback) => {
 	let records = [];
 	fs.readdirSync(dataPath + "urac/groups/").forEach(function (file) {
 		let rec = require(dataPath + "urac/groups/" + file);

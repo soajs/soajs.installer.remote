@@ -5,12 +5,16 @@ let Mongo = require("soajs").mongo;
 const utils = require("../utils/utils.js");
 const logger = utils.getLogger();
 
-module.exports = (profile, dataPath, callback) => {
+module.exports = (profile, dataPath, release, callback) => {
 	//use soajs.core.modules to create a connection to core_provision database
 	let mongoConnectionTenant = new Mongo(profile);
 	
 	//update product DSBRD
-	let record = require(dataPath + "products/dsbrd.js");
+	let path = dataPath;
+	if (release) {
+		path += release + "/";
+	}
+	let record = require(path + "products/dsbrd.js");
 	delete (record._id);
 	let condition = {"code": "DSBRD"};
 	
