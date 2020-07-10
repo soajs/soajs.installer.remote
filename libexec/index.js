@@ -40,7 +40,7 @@ function handleImageInfo(options, imageInfo, serviceName, cb) {
 		}
 		let catObjs = requireCatalog(options, serviceName);
 		if (catObjs.length > 0) {
-			async.each(catObjs, (oneCatObj, callback) => {
+			async.eachSeries(catObjs, (oneCatObj, callback) => {
 				if (imageInfo && imageInfo.tag) {
 					oneCatObj.recipe.deployOptions.image.tag = imageInfo.tag;
 				}
