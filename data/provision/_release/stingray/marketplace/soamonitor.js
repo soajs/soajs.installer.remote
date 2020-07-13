@@ -6,7 +6,7 @@ module.exports = {
 	"configuration": {
 		"group": "Reporting",
 		"subType": "soajs",
-		"port": 4052,
+		"port": 4050,
 		"requestTimeout": 30,
 		"requestTimeoutRenewal": 5
 	},
