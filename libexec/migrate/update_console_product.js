@@ -12,7 +12,7 @@ module.exports = (profile, dataPath, release, callback) => {
 	//update product DSBRD
 	let path = dataPath;
 	if (release) {
-		path += release + "/";
+		path += "_release/" + release + "/";
 	}
 	let record = require(path + "products/dsbrd.js");
 	delete (record._id);

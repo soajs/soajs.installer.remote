@@ -1,4 +1,5 @@
 'use strict';
+const fs = require("fs");
 const async = require("async");
 let Mongo = require("soajs").mongo;
 
@@ -7,23 +8,28 @@ const utils = require("../utils/utils.js");
 const logger = utils.getLogger();
 
 module.exports = (profile, dataPath, release, callback) => {
-	
-	//update product services
 	let path = dataPath;
-	if (release) {
-		path += "_release/" + release + "/";
-	}
-	let records = require(path + "services/index.js");
+	let records = [];
+	fs.readdirSync(path + "catalogs/").forEach(function (file) {
+		let rec = require(path + "catalogs/" + file);
+		if (Array.isArray(rec)) {
+			records = records.concat(rec);
+		} else {
+			records.push(rec);
+		}
+	});
+	
 	if (records && Array.isArray(records) && records.length > 0) {
 		//use soajs.core.modules to create a connection to core_provision database
 		let mongoConnection = new Mongo(profile);
-		async.eachSeries(records, (service, cb) => {
-				if (service.name) {
-					delete (service._id);
-					let condition = {"name": service.name};
-					let s = {'$set': service};
-					let extraOptions = {'upsert': false};
-					mongoConnection.updateOne("services", condition, s, extraOptions, (err, record) => {
+		async.eachSeries(records, (item, cb) => {
+				if (item.name) {
+					//delete (item._id);
+					item._id = mongoConnection.ObjectId(item._id);
+					let condition = {"name": item.name};
+					let s = {'$set': item};
+					let extraOptions = {'upsert': true};
+					mongoConnection.updateOne("catalogs", condition, s, extraOptions, (err, record) => {
 						if (err) {
 							if (err.message) {
 								logger.error(err.message);
@@ -31,7 +37,7 @@ module.exports = (profile, dataPath, release, callback) => {
 								logger.error(err);
 							}
 						} else if (record) {
-							logger.info(service.name + ": " + record.nModified);
+							logger.info(item.name + ": " + record.nModified);
 						}
 						cb();
 					});

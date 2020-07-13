@@ -6,6 +6,7 @@ jobs:
   include:
 
   - stage: Check code quality
+    if: tag IS blank
     before_script:
     - npm install -g grunt-cli
     - sleep 10

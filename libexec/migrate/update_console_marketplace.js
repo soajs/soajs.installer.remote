@@ -1,4 +1,5 @@
 'use strict';
+const fs = require("fs");
 const async = require("async");
 let Mongo = require("soajs").mongo;
 
@@ -13,17 +14,26 @@ module.exports = (profile, dataPath, release, callback) => {
 	if (release) {
 		path += "_release/" + release + "/";
 	}
-	let records = require(path + "services/index.js");
+	let records = [];
+	fs.readdirSync(path + "marketplace/").forEach(function (file) {
+		let rec = require(path + "marketplace/" + file);
+		if (Array.isArray(rec)) {
+			records = records.concat(rec);
+		} else {
+			records.push(rec);
+		}
+	});
+	
 	if (records && Array.isArray(records) && records.length > 0) {
 		//use soajs.core.modules to create a connection to core_provision database
 		let mongoConnection = new Mongo(profile);
-		async.eachSeries(records, (service, cb) => {
-				if (service.name) {
-					delete (service._id);
-					let condition = {"name": service.name};
-					let s = {'$set': service};
-					let extraOptions = {'upsert': false};
-					mongoConnection.updateOne("services", condition, s, extraOptions, (err, record) => {
+		async.eachSeries(records, (item, cb) => {
+				if (item.name) {
+					delete (item._id);
+					let condition = {"name": item.name};
+					let s = {'$set': item};
+					let extraOptions = {'upsert': true};
+					mongoConnection.updateOne("marketplace", condition, s, extraOptions, (err, record) => {
 						if (err) {
 							if (err.message) {
 								logger.error(err.message);
@@ -31,7 +41,7 @@ module.exports = (profile, dataPath, release, callback) => {
 								logger.error(err);
 							}
 						} else if (record) {
-							logger.info(service.name + ": " + record.nModified);
+							logger.info(item.name + ": " + record.nModified);
 						}
 						cb();
 					});
