@@ -12,7 +12,7 @@ let doc = {
 			"image": {
 				"prefix": "soajsorg",
 				"name": "soaconsoleui",
-				"tag": "3.x",
+				"tag": "1.x",
 				"pullPolicy": "Always",
 				"repositoryType": "public",
 				"binary": true,
