@@ -80,6 +80,9 @@ let doc = {
 			"container": {
 				"network": "soajsnet",
 				"workingDir": "/opt/soajs/soajs.deployer/deployer/"
+			},
+			"execCommands": {
+				"reconfigure": "nginx -s reload"
 			}
 		},
 		"buildOptions": {

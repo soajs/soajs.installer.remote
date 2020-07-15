@@ -238,6 +238,9 @@ let driver = {
 							if (response.extIp) {
 								deployment.extIp = response.extIp;
 							}
+							if (response.hostname) {
+								deployment.hostname = response.hostname;
+							}
 							return cb(error, deployment);
 						});
 					});

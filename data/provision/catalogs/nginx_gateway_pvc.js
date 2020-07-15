@@ -66,6 +66,12 @@ let doc = {
 			"container": {
 				"network": "soajsnet",
 				"workingDir": "/opt/soajs/soajs.deployer/deployer/"
+			},
+			"execCommands": {
+				"reconfigure": "nginx -s reload",
+				"sslrenew": "node . -T nginx -S certrenew",
+				"ssldryrun": "node . -T nginx -S certdryrun",
+				"sslinstall": "node . -T nginx -S certinstall"
 			}
 		},
 		"buildOptions": {

@@ -297,6 +297,9 @@ function echoResult(options, obj) {
 	if (obj.deployments.ui.extIp) {
 		logger.debug("\t\t extIp: " + obj.deployments.ui.extIp);
 	}
+	if (obj.deployments.ui.hostanme) {
+		logger.debug("\t\t hostanme: " + obj.deployments.ui.hostanme);
+	}
 	
 	for (let i = 0; i < soajsServicesArray.length; i++) {
 		soajsService[soajsServicesArray[i]].echoResult(obj, logger);

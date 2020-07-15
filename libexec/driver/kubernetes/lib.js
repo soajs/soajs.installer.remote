@@ -139,6 +139,7 @@ let lib = {
 							};
 							if (service.spec.type === "LoadBalancer") {
 								response.extIp = service.status.loadBalancer.ingress[0].ip;
+								response.hostname = service.status.loadBalancer.ingress[0].hostname;
 							}
 							return cb(null, response);
 						}
