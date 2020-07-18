@@ -56,7 +56,7 @@ let doc = {
 				"SOAJS_NX_SITE_DOMAINS": {
 					"type": "userInput",
 					"label": "Domains",
-					"default": '{"www.soajs.org" ,"soajs.org"}',
+					"default": '["www.soajs.org" ,"soajs.org"]',
 					"fieldMsg": "Add all the domains in an array"
 				}
 			},
