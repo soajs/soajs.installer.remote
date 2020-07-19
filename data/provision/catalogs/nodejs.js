@@ -21,7 +21,7 @@ let doc = {
 			"readinessProbe": {
 				"httpGet": {
 					"path": "/heartbeat",
-					"port": "inherit"
+					"port": "service"
 				},
 				"initialDelaySeconds": 5,
 				"timeoutSeconds": 2,
