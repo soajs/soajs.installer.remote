@@ -3,13 +3,24 @@
 module.exports = {
 	"type": "static",
 	"name": "proxy",
+	"metadata": {
+		"tags": ["proxy", "gateway", "nginx", "custom domain"],
+		"attributes": {
+			"ssl": ["automated", "certbot", "manual", "secrets"]
+		},
+		"program": ["soajs"]
+	},
 	"configuration": {
 		"subType": "soajs",
 		"group": "Gateway"
 	},
 	"versions": [
 		{
-			"version": "1"
+			"version": "1",
+			"documentation": {
+				"readme": "# soajs proxy\n\nThis is the SOAJS Gateway nginx to add custom domain and ssl to your API.\n",
+				"release": "# soajs release\n\nSOAJS follows the fish names as release names\n\nWe also push patches per release that are numbered like Kanuy 4, Kanuy 5, …\n\nEach release or patch might affect several repositories and each source code has its own semantic version and each microservice has its own version.\n\n### Complete Documentation\nMore information is available on SOAJS website under the section for [Release](https://soajsorg.atlassian.net/wiki/x/QYCmbw).\n\n### License\n*Copyright SOAJS All Rights Reserved.*\n\nUse of this source code is governed by an Apache license that can be found in the LICENSE file at the root of this repository.\n"
+			}
 		}
 	],
 	"description": "This is the Gateway proxy",

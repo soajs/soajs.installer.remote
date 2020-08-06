@@ -3,6 +3,14 @@
 module.exports = {
 	"type": "service",
 	"name": "infra",
+	"metadata": {
+		"tags": ["infrastructure", "kubernetes", "deployment"],
+		"attributes": {
+			"orchestration": ["restart", "deploy", "redeploy"],
+			"resources": ["native", "item from catalog"]
+		},
+		"program": ["soajs"]
+	},
 	"configuration": {
 		"group": "Console",
 		"subType": "soajs",
@@ -45,6 +53,10 @@ module.exports = {
 						"icon": "fas fa-info"
 					}
 				]
+			},
+			"documentation": {
+				"readme": "# soajs.infra\n\nSOAJS infra is a service that manages everything related to multi cloud orchestration.\n\n### Complete Documentation\nMore information is available on SOAJS website under the section for [Infrastructure](https://soajsorg.atlassian.net/wiki/x/MQBJZw).\n\n### License\n*Copyright SOAJS All Rights Reserved.*\n\nUse of this source code is governed by an Apache license that can be found in the LICENSE file at the root of this repository.\n",
+				"release": "# soajs release\n\nSOAJS follows the fish names as release names\n\nWe also push patches per release that are numbered like Kanuy 4, Kanuy 5, …\n\nEach release or patch might affect several repositories and each source code has its own semantic version and each microservice has its own version.\n\n### Complete Documentation\nMore information is available on SOAJS website under the section for [Release](https://soajsorg.atlassian.net/wiki/x/QYCmbw).\n\n### License\n*Copyright SOAJS All Rights Reserved.*\n\nUse of this source code is governed by an Apache license that can be found in the LICENSE file at the root of this repository.\n"
 			},
 			"apis": [
 				{
@@ -398,6 +410,12 @@ module.exports = {
 				{
 					"l": "This API deletes a kubernetes account.",
 					"v": "/account/kubernetes",
+					"m": "delete",
+					"group": "Account"
+				},
+				{
+					"l": "This API deletes kubernetes account acl",
+					"v": "/account/kubernetes/acl",
 					"m": "delete",
 					"group": "Account"
 				},

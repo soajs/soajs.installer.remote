@@ -3,6 +3,14 @@
 module.exports = {
 	"type": "service",
 	"name": "console",
+	"metadata": {
+		"tags": ["console", "environment", "registry", "ledger", "notification"],
+		"attributes": {
+			"environment": ["manual", "container"],
+			"registry": ["throttling", "custom", "database", "resource configuration"]
+		},
+		"program": ["soajs"]
+	},
 	"configuration": {
 		"subType": "soajs",
 		"group": "Console",
@@ -46,10 +54,14 @@ module.exports = {
 					}
 				]
 			},
+			"documentation": {
+				"readme": "# soajs.console\n\nSOAJS console is a service that manages everything related to soajs registry, api builder, dashboard, and api builder.\n\n### Complete Documentation\nMore information is available on SOAJS website under the section for [Console](https://soajsorg.atlassian.net/wiki/x/QYCmbw).\n\n### License\n*Copyright SOAJS All Rights Reserved.*\n\nUse of this source code is governed by an Apache license that can be found in the LICENSE file at the root of this repository.\n",
+				"release": "# soajs release\n\nSOAJS follows the fish names as release names\n\nWe also push patches per release that are numbered like Kanuy 4, Kanuy 5, …\n\nEach release or patch might affect several repositories and each source code has its own semantic version and each microservice has its own version.\n\n### Complete Documentation\nMore information is available on SOAJS website under the section for [Release](https://soajsorg.atlassian.net/wiki/x/QYCmbw).\n\n### License\n*Copyright SOAJS All Rights Reserved.*\n\nUse of this source code is governed by an Apache license that can be found in the LICENSE file at the root of this repository.\n"
+			},
 			"apis": [
 				{
-					"l": "This API returns the ledger entries of a specific type",
-					"v": "/ledger/:type",
+					"l": "This API returns all the ledger entries with the ability to filter entries by env, type and section",
+					"v": "/ledger",
 					"m": "get",
 					"group": "Ledger"
 				},
@@ -57,7 +69,19 @@ module.exports = {
 					"l": "This API returns the environment(s).",
 					"v": "/environment",
 					"m": "get",
-					"group": "Account"
+					"group": "Environment"
+				},
+				{
+					"l": "This API returns the environment settings.",
+					"v": "/environment/settings",
+					"m": "get",
+					"group": "Environment"
+				},
+				{
+					"l": "This API returns the release information.",
+					"v": "/release",
+					"m": "get",
+					"group": "Settings"
 				},
 				{
 					"l": "This API gets a registry",
@@ -96,6 +120,12 @@ module.exports = {
 					"group": "Environment"
 				},
 				{
+					"l": "This API deletes the environment acl",
+					"v": "/environment/acl",
+					"m": "delete",
+					"group": "Environment"
+				},
+				{
 					"l": "This API deletes a custom DB",
 					"v": "/registry/db/custom",
 					"m": "delete",
@@ -114,10 +144,22 @@ module.exports = {
 					"group": "Registry"
 				},
 				{
+					"l": "This API deletes the custom registry acl",
+					"v": "/registry/custom/acl",
+					"m": "delete",
+					"group": "Account"
+				},
+				{
 					"l": "This API deletes a resource configuration",
 					"v": "/registry/resource",
 					"m": "delete",
 					"group": "Registry"
+				},
+				{
+					"l": "This API deletes the resource configuration acl",
+					"v": "/registry/resource/acl",
+					"m": "delete",
+					"group": "Account"
 				},
 				{
 					"l": "This API adds an entry to the ledger of a specific type",

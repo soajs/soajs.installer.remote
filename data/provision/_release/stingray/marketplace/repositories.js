@@ -3,6 +3,14 @@
 module.exports = {
 	"type": "service",
 	"name": "repositories",
+	"metadata": {
+		"tags": ["github", "bitbucket", "private", "public"],
+		"attributes": {
+			"github": ["personal", "organization", "twitter", "github"],
+			"bitbucket": ["saas", "enterprise", "projects"]
+		},
+		"program": ["soajs"]
+	},
 	"configuration": {
 		"group": "Console",
 		"subType": "soajs",
@@ -45,6 +53,10 @@ module.exports = {
 						"icon": "fas fa-info"
 					}
 				]
+			},
+			"documentation": {
+				"readme": "# soajs.repositories\n\nSOAJS repositories is a service that manages everything related to GIT.\n\n### Complete Documentation\nMore information is available on SOAJS website under the section for [Repositories](https://soajsorg.atlassian.net/wiki/x/AoBNWg).\n\n### License\n*Copyright SOAJS All Rights Reserved.*\n\nUse of this source code is governed by an Apache license that can be found in the LICENSE file at the root of this repository.\n",
+				"release": "# soajs release\n\nSOAJS follows the fish names as release names\n\nWe also push patches per release that are numbered like Kanuy 4, Kanuy 5, …\n\nEach release or patch might affect several repositories and each source code has its own semantic version and each microservice has its own version.\n\n### Complete Documentation\nMore information is available on SOAJS website under the section for [Release](https://soajsorg.atlassian.net/wiki/x/QYCmbw).\n\n### License\n*Copyright SOAJS All Rights Reserved.*\n\nUse of this source code is governed by an Apache license that can be found in the LICENSE file at the root of this repository.\n"
 			},
 			"apis": [
 				{

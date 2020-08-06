@@ -3,6 +3,14 @@
 module.exports = {
 	"type": "service",
 	"name": "urac",
+	"metadata": {
+		"tags": ["users", "registration", "groups", "membership", "join"],
+		"attributes": {
+			"authentication": ["multitenant", "roaming", "invitation"],
+			"role": ["management", "acl"]
+		},
+		"program": ["soajs"]
+	},
 	"configuration": {
 		"group": "Gateway",
 		"subType": "soajs",
@@ -40,6 +48,10 @@ module.exports = {
 						"icon": "fas fa-info"
 					}
 				]
+			},
+			"documentation": {
+				"readme": "# soajs.urac\n[![Build Status](https://travis-ci.org/soajs/soajs.urac.svg?branch=master)](https://travis-ci.org/soajs/soajs.urac)\n[![Coverage Status](https://coveralls.io/repos/soajs/soajs.urac/badge.png)](https://coveralls.io/r/soajs/soajs.urac)\n[![Known Vulnerabilities](https://snyk.io/test/github/soajs/soajs.urac/badge.svg)](https://snyk.io/test/github/soajs/soajs.urac)\n\nSOAJS URAC is a service that manages all users accounts for all tenants.\n\nThis service is also equipped with an optional mail notification system that is configurable.\n\nThe URAC offers the ability to override the service access level as well as configuration for specific users.\n\nThe service is Multitenant and provides the:\n\n* ability for administrators to control user accounts, groups and access levels.\n* ability to update profile and preferences for logged in members.\n* ability to register and login for anonymous users.\n\n### Complete Documentation\nMore information is available on SOAJS website under the section for [URAC](https://soajsorg.atlassian.net/wiki/x/AQArVQ).\n\n\n### License\n*Copyright SOAJS All Rights Reserved.*\n\nUse of this source code is governed by an Apache license that can be found in the LICENSE file at the root of this repository.\n",
+				"release": "# soajs release\n\nSOAJS follows the fish names as release names\n\nWe also push patches per release that are numbered like Kanuy 4, Kanuy 5, …\n\nEach release or patch might affect several repositories and each source code has its own semantic version and each microservice has its own version.\n\n### Complete Documentation\nMore information is available on SOAJS website under the section for [Release](https://soajsorg.atlassian.net/wiki/x/QYCmbw).\n\n### License\n*Copyright SOAJS All Rights Reserved.*\n\nUse of this source code is governed by an Apache license that can be found in the LICENSE file at the root of this repository.\n"
 			},
 			"apis": [
 				{
@@ -152,6 +164,12 @@ module.exports = {
 					"v": "/admin/group",
 					"m": "delete",
 					"group": "Group administration"
+				},
+				{
+					"l": "Delete user",
+					"v": "/admin/user",
+					"m": "delete",
+					"group": "User administration"
 				},
 				{
 					"l": "Reset password",
