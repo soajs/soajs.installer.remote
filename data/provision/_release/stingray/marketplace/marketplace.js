@@ -126,6 +126,30 @@ module.exports = {
 					"group": "Item deploy"
 				},
 				{
+					"l": "List catalog recipes",
+					"v": "/recipes",
+					"m": "get",
+					"group": "Catalog"
+				},
+				{
+					"l": "List catalog recipes by selected ids",
+					"v": "/recipes/ids",
+					"m": "get",
+					"group": "Catalog"
+				},
+				{
+					"l": "Get catalog recipe by id",
+					"v": "/recipe",
+					"m": "get",
+					"group": "Catalog"
+				},
+				{
+					"l": "Add new catalog",
+					"v": "/recipe",
+					"m": "post",
+					"group": "Catalog"
+				},
+				{
 					"l": "This API deletes an item",
 					"v": "/item",
 					"m": "delete",
@@ -142,6 +166,12 @@ module.exports = {
 					"v": "/item/configure/deploy",
 					"m": "delete",
 					"group": "Item deploy"
+				},
+				{
+					"l": "Delete a catalog recipe by id",
+					"v": "/recipe",
+					"m": "delete",
+					"group": "Catalog"
 				},
 				{
 					"l": "This API updates the item environments from soajs catalog only",
@@ -270,10 +300,16 @@ module.exports = {
 					"group": "Item management"
 				},
 				{
-					"l": "This API trigger maintenance operation on a deployed item.",
+					"l": "This API triggers maintenance operation on a deployed item.",
 					"v": "/item/maintenance",
 					"m": "put",
 					"group": "Item deploy"
+				},
+				{
+					"l": "Update catalog recipe",
+					"v": "/recipe",
+					"m": "put",
+					"group": "Catalog"
 				}
 			]
 		}

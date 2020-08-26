@@ -84,6 +84,12 @@ module.exports = {
 					"group": "Settings"
 				},
 				{
+					"l": "This API returns the ui setting.",
+					"v": "/ui/setting",
+					"m": "get",
+					"group": "Settings"
+				},
+				{
 					"l": "This API gets a registry",
 					"v": "/registry",
 					"m": "get",
