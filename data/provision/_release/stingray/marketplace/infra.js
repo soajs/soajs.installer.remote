@@ -15,8 +15,8 @@ module.exports = {
 		"group": "Console",
 		"subType": "soajs",
 		"port": 4008,
-		"requestTimeout": 30,
-		"requestTimeoutRenewal": 5
+		"requestTimeout": 90,
+		"requestTimeoutRenewal": 10
 	},
 	"versions": [
 		{
