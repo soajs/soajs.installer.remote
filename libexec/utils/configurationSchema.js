@@ -167,8 +167,7 @@ let schema = {
 										"required": true
 									},
 									"port": {
-										"type": "integer",
-										"required": true
+										"type": "integer"
 									}
 								}
 							}
@@ -189,6 +188,10 @@ let schema = {
 						},
 						"URLParam": {
 							"type": "object"
+						},
+						"protocol": {
+							"type": "string",
+							"enum": ['mongodb+srv://', 'mongodb://']
 						}
 					}
 				}

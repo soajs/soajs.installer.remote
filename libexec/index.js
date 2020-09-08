@@ -469,6 +469,9 @@ let lib = {
 									"extraParam": {},
 									"URLParam": options.mongo.profile.URLParam,
 								};
+								if (options.mongo.profile.protocol) {
+									profileImport.protocol = options.mongo.profile.protocol;
+								}
 								profileSecret = JSON.parse(JSON.stringify(profileImport));
 							}
 							if (profileImport && profileImport.servers && Array.isArray(profileImport.servers) && profileImport.servers[0] && profileImport.servers[0].host) {

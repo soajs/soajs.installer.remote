@@ -21,6 +21,9 @@ module.exports = {
 				"extraParam": {},
 				"URLParam": options.mongo.profile.URLParam,
 			};
+			if (options.mongo.profile.protocol) {
+				profileImport.protocol = options.mongo.profile.protocol;
+			}
 		} else {
 			profileImport = require("../../data/soajs_profile.js");
 			if (options.mongo.deployType === "LoadBalancer") {
