@@ -108,6 +108,12 @@ module.exports = {
 					"group": "Item"
 				},
 				{
+					"l": "This API lists all item names matching certain names",
+					"v": "/items/type/names",
+					"m": "get",
+					"group": "Item"
+				},
+				{
 					"l": "This API gets the items by source.",
 					"v": "/items/src",
 					"m": "get",

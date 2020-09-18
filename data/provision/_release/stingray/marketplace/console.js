@@ -96,6 +96,12 @@ module.exports = {
 					"group": "Registry"
 				},
 				{
+					"l": "This API gets a registry key",
+					"v": "/registry/key",
+					"m": "get",
+					"group": "Registry"
+				},
+				{
 					"l": "This API gets the throttling configuration",
 					"v": "/registry/throttling",
 					"m": "get",
@@ -118,6 +124,12 @@ module.exports = {
 					"v": "/registry/deployer",
 					"m": "get",
 					"group": "Registry"
+				},
+				{
+					"l": "List tenant oauth users",
+					"v": "/tenant/oauth/users",
+					"m": "get",
+					"group": "Oauth"
 				},
 				{
 					"l": "This API deletes an environment",
@@ -168,6 +180,12 @@ module.exports = {
 					"group": "Account"
 				},
 				{
+					"l": "Delete tenant oauth user",
+					"v": "/tenant/oauth/user",
+					"m": "delete",
+					"group": "Oauth"
+				},
+				{
 					"l": "This API adds an entry to the ledger of a specific type",
 					"v": "/ledger",
 					"m": "post",
@@ -196,6 +214,12 @@ module.exports = {
 					"v": "/registry/resource",
 					"m": "post",
 					"group": "Registry"
+				},
+				{
+					"l": "Add tenant oauth user",
+					"v": "/tenant/oauth/user",
+					"m": "post",
+					"group": "Oauth"
 				},
 				{
 					"l": "This API updates the environment acl",
@@ -256,6 +280,12 @@ module.exports = {
 					"v": "/registry/resource/acl",
 					"m": "put",
 					"group": "Account"
+				},
+				{
+					"l": "Update tenant oauth user",
+					"v": "/tenant/oauth/user",
+					"m": "put",
+					"group": "Oauth"
 				}
 			]
 		}
