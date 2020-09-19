@@ -150,10 +150,22 @@ module.exports = {
 					"group": "Catalog"
 				},
 				{
+					"l": "List Favorites",
+					"v": "/favorite",
+					"m": "get",
+					"group": "Favorite"
+				},
+				{
 					"l": "Add new catalog",
 					"v": "/recipe",
 					"m": "post",
 					"group": "Catalog"
+				},
+				{
+					"l": "Add to Favorites",
+					"v": "/favorite",
+					"m": "post",
+					"group": "Favorite"
 				},
 				{
 					"l": "This API deletes an item",
@@ -178,6 +190,12 @@ module.exports = {
 					"v": "/recipe",
 					"m": "delete",
 					"group": "Catalog"
+				},
+				{
+					"l": "Delete from Favorites",
+					"v": "/favorite",
+					"m": "delete",
+					"group": "Favorite"
 				},
 				{
 					"l": "This API updates the item environments from soajs catalog only",
