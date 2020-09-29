@@ -10,7 +10,7 @@ let doc = {
 	"recipe": {
 		"deployOptions": {
 			"image": {
-				"prefix": "soajsorg",
+				"prefix": "herrontech",
 				"name": "soaanalytics",
 				"tag": "1.x",
 				"pullPolicy": "Always",
