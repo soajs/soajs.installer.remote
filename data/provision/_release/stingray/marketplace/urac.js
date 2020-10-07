@@ -88,8 +88,13 @@ module.exports = {
 					"l": "Get user account information by username as (username or email)",
 					"v": "/user",
 					"m": "get",
-					"group": "My account",
-					"groupMain": true
+					"group": "My account"
+				},
+				{
+					"l": "Get logged in user tenants",
+					"v": "/user/tenants",
+					"m": "get",
+					"group": "User"
 				},
 				{
 					"l": "Get user by id",
@@ -101,8 +106,7 @@ module.exports = {
 					"l": "List users matching certain keywords",
 					"v": "/admin/users",
 					"m": "get",
-					"group": "User administration",
-					"groupMain": true
+					"group": "User administration"
 				},
 				{
 					"l": "Get users count matching certain keywords",
@@ -150,8 +154,7 @@ module.exports = {
 					"l": "List users by Id",
 					"v": "/admin/users/ids",
 					"m": "post",
-					"group": "User administration",
-					"groupMain": true
+					"group": "User administration"
 				},
 				{
 					"l": "Add group",

@@ -220,6 +220,12 @@ module.exports = {
 					"group": "Product"
 				},
 				{
+					"l": "Get ext keys of a product for certain tenants in a specific environment.",
+					"v": "/tenants/product/keys/ext",
+					"m": "get",
+					"group": "Product"
+				},
+				{
 					"l": "List tenants",
 					"v": "/tenants",
 					"m": "get",
