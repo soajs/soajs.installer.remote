@@ -223,13 +223,19 @@ module.exports = {
 					"l": "Get ext keys of a product for certain tenants in a specific environment.",
 					"v": "/tenants/product/keys/ext",
 					"m": "get",
-					"group": "Product"
+					"group": "Tenant"
 				},
 				{
 					"l": "List tenants",
 					"v": "/tenants",
 					"m": "get",
 					"group": "Tenant"
+				},
+				{
+					"l": "Get ext keys of a product for certain console tenants in a specific environment.",
+					"v": "/tenants/console/product/keys/ext",
+					"m": "get",
+					"group": "Console tenant"
 				},
 				{
 					"l": "List console tenants",
