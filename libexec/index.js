@@ -792,7 +792,7 @@ let lib = {
 								let obj = {"deployments": {[serviceName]: deployment}};
 								soajsService[serviceName].echoResult(obj, logger);
 							}
-							if (!error && done && imageInfo.changed) {
+							if (!error && done && imageInfo && imageInfo.changed) {
 								handleImageInfo(options, imageInfo, serviceName, (newError) => {
 									return cb(newError, done);
 								});
