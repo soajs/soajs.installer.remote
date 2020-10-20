@@ -57,7 +57,7 @@ let doc = {
 			"ports": [
 				{
 					"name": "mongoport",
-					"containerPort": 27017
+					"target": 27017
 				}
 			]
 		},
