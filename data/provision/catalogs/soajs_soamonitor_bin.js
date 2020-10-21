@@ -6,7 +6,6 @@ let doc = {
 	"type": "soajs",
 	"subtype": "addon",
 	"description": "Deploy SOA Monitor from binary",
-	"locked": true,
 	"recipe": {
 		"deployOptions": {
 			"image": {
@@ -51,6 +50,10 @@ let doc = {
 					"value": "$SOAJS_DEPLOY_HA"
 				},
 				"SOAJS_MONGO_CON_KEEPALIVE": {
+					"type": "static",
+					"value": "true"
+				},
+				"SOAJS_BCRYPT": {
 					"type": "static",
 					"value": "true"
 				},
