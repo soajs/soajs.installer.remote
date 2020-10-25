@@ -226,6 +226,12 @@ module.exports = {
 					"group": "Tenant"
 				},
 				{
+					"l": "List of the tenant sub tenants",
+					"v": "/tenant/tenants",
+					"m": "get",
+					"group": "Tenant"
+				},
+				{
 					"l": "List tenants",
 					"v": "/tenants",
 					"m": "get",
