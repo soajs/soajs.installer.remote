@@ -163,6 +163,12 @@ module.exports = {
 					"group": "Group administration"
 				},
 				{
+					"l": "Add groups",
+					"v": "/admin/groups",
+					"m": "post",
+					"group": "Group administration"
+				},
+				{
 					"l": "Delete group",
 					"v": "/admin/group",
 					"m": "delete",
