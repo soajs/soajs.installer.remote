@@ -80,20 +80,6 @@ let schema = {
 								}
 							}
 						},
-						"dashboard": {
-							"type": "object",
-							"required": true,
-							"properties": {
-								"ver": {
-									"type": "string",
-									"required": true
-								},
-								"msVer": {
-									"type": "integer",
-									"required": true
-								}
-							}
-						},
 						"ui": {
 							"type": "object",
 							"required": true,

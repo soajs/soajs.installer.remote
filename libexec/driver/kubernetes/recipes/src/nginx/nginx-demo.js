@@ -121,6 +121,10 @@ function getrecipe(localConfig) {
 										"value": localConfig.sitePrefix + "." + localConfig.domain
 									},
 									{
+										"name": "SOAJS_NX_SITE_FOLDER",
+										"value": "/build/"
+									},
+									{
 										"name": "SOAJS_NX_CONTROLLER_PORT",
 										"value": "4000"
 									},

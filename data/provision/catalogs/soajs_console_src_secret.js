@@ -109,6 +109,10 @@ let doc = {
 					"type": "computed",
 					"value": "$SOAJS_NX_SITE_DOMAIN"
 				},
+				"SOAJS_NX_SITE_FOLDER": {
+					"type": "static",
+					"value": "/build/"
+				},
 				"SOAJS_NX_CONTROLLER_IP": {
 					"type": "computed",
 					"value": "$SOAJS_NX_CONTROLLER_IP"
