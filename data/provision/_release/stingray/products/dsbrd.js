@@ -387,8 +387,10 @@ let doc = {
 									"/kubernetes/clusters/Namespace": {"access": true},
 									"/account/kubernetes": {"access": true},
 									"/manual/awareness": {"access": true},
-									"/kubernetes/workload/:mode": {"access": true},
-									"/kubernetes/cluster/:mode": {"access": true},
+									"/kubernetes/workloads/:mode": {"access": true},
+									"/kubernetes/clusters/:mode": {"access": true},
+									"/kubernetes/configurations/:mode": {"access": true},
+									"/kubernetes/services/:mode": {"access": true},
 									"/kubernetes/pod/log": {"access": true}
 								}
 							},
