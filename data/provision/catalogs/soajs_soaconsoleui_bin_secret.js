@@ -11,7 +11,7 @@ let doc = {
 			"image": {
 				"prefix": "herrontech",
 				"name": "soaconsoleui",
-				"tag": "1.x",
+				"tag": "2.x",
 				"pullPolicy": "Always",
 				"repositoryType": "public",
 				"binary": true,

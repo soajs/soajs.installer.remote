@@ -61,7 +61,7 @@ let doc = {
 				"origin": '*',
 				"credentials": 'true',
 				"methods": 'GET,HEAD,PUT,PATCH,POST,DELETE',
-				"headers": 'key,soajsauth,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization,__env',
+				"headers": 'key,soajsauth,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization,__env,access_token',
 				"maxage": 1728000
 			},
 			"oauth": {
