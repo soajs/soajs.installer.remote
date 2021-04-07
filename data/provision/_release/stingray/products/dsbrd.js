@@ -423,7 +423,8 @@ let doc = {
 									"/kubernetes/service/:mode": {"access": true},
 									"/kubernetes/item": {"access": true},
 									"/account/kubernetes": {"access": true},
-									"/account/kubernetes/acl": {"access": true}
+									"/account/kubernetes/acl": {"access": true},
+									"/kubernetes/pods": {"access": true}
 								}
 							}
 						}
