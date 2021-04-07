@@ -297,6 +297,10 @@ let doc = {
 							},
 							"get": {
 								"apis": {
+									"/api/acl/usage": {"access": true},
+									"/dashboard/services": {"access": true},
+									"/dashboard/apis/v2": {"access": true},
+									"/apis/v2": {"access": true},
 									"/ledger": {"access": true},
 									"/registry/throttling": {"access": true},
 									"/registry/custom": {"access": true},
