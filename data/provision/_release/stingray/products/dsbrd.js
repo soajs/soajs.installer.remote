@@ -297,6 +297,7 @@ let doc = {
 							},
 							"get": {
 								"apis": {
+									"/api/acl/usage/tenants": {"access": true},
 									"/api/acl/usage": {"access": true},
 									"/dashboard/services": {"access": true},
 									"/dashboard/apis/v2": {"access": true},
