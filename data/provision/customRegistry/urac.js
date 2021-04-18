@@ -6,10 +6,10 @@ let doc = {
 	"shared": false,
 	"value": {
 		"link": {
-			"addUser": "https://%URL%/#/setNewPassword",
-			"changeEmail": "https://%URL%/#/changeEmail/validate",
-			"forgotPassword": "https://%URL%/#/resetPassword",
-			"join": "https://%URL%/#/join/validate"
+			"addUser": "https://%URL%/reset-password",
+			"changeEmail": "https://%URL%/validate-change-email",
+			"forgotPassword": "https://%URL%/reset-password",
+			"join": "https://%URL%/validate-signup"
 		},
 		"mail": {
 			"join": {
