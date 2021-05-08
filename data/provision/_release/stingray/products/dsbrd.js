@@ -72,15 +72,18 @@ let doc = {
 						"1": {
 							"access": true,
 							"apisPermission": "restricted",
-							"put": {"apis": {}},
+							"put": {
+								"apis": {
+									"/item/maintenance": {"access": true}
+								}
+							},
 							"get": {
 								"apis": {
 									"/recipes/ids": {"access": true},
 									"/recipes": {"access": true},
 									"/soajs/items": {"access": true},
 									"/items": {"access": true},
-									"/item/type": {"access": true},
-									"/item/maintenance": {"access": true}
+									"/item/type": {"access": true}
 								}
 							}
 						}
@@ -447,7 +450,10 @@ let doc = {
 									"/admin/tenant/application/key/ext": {"access": true},
 									"/admin/tenant/oauth": {"access": true},
 									"/admin/tenant": {"access": true},
-									"/admin/tenant/application": {"access": true}
+									"/admin/tenant/application": {"access": true},
+									"/tenant/console/application/key/config": {"access": true},
+									"/tenant/console/application": {"access": true},
+									"/tenant/console/application/key/ext": {"access": true}
 								}
 							},
 							"post": {
@@ -458,7 +464,10 @@ let doc = {
 									"/admin/tenant/application/key": {"access": true},
 									"/tenant": {"access": true},
 									"/admin/tenant/application": {"access": true},
-									"/admin/tenant/application/key/ext": {"access": true}
+									"/admin/tenant/application/key/ext": {"access": true},
+									"/tenant/console/application": {"access": true},
+									"/tenant/console/application/key": {"access": true},
+									"/tenant/console/application/key/ext": {"access": true}
 								}
 							},
 							"delete": {
@@ -469,7 +478,10 @@ let doc = {
 									"/tenant": {"access": true},
 									"/tenant/application": {"access": true},
 									"/tenant/application/key": {"access": true},
-									"/tenant/application/key/ext": {"access": true}
+									"/tenant/application/key/ext": {"access": true},
+									"/tenant/console/application": {"access": true},
+									"/tenant/console/application/key": {"access": true},
+									"/tenant/console/application/key/ext": {"access": true}
 								}
 							},
 							"get": {
@@ -478,7 +490,9 @@ let doc = {
 									"/products": {"access": true},
 									"/product": {"access": true},
 									"/tenants": {"access": true},
-									"/tenant/tenants": {"access": true}
+									"/tenant/tenants": {"access": true},
+									"/tenants/console": {"access": true},
+									"/products/console": {"access": true}
 								}
 							}
 						}

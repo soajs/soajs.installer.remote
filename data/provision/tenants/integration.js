@@ -9,11 +9,6 @@ let doc = {
 	"description": "This is an Integration Tenant to help you change SOAJS Configuration Programmatically via API",
 	"oauth": {
 		"secret": "this is a secret",
-		"redirectURI": "http://domain.com",
-		"grants": [
-			"password",
-			"refresh_token"
-		],
 		"disabled": 0,
 		"type": 2,
 		"loginMode": "oauth"
