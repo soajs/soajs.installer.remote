@@ -42,6 +42,10 @@ module.exports = (options, data, extra) => {
 				"extraParam": data.profileSecret.extraParam,
 				"URLParam": data.profileSecret.URLParam,
 			};
+			
+			if (data.profileSecret.protocol) {
+				doc.config.protocol = data.profileSecret.protocol;
+			}
 		}
 	};
 	let settings = (doc) => {
