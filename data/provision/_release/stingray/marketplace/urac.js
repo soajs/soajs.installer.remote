@@ -55,10 +55,22 @@ module.exports = {
 			},
 			"apis": [
 				{
+					"l": "Forgot password by username as (username or email) - a code will be emailed",
+					"v": "/password/forgot/code",
+					"m": "get",
+					"group": "My account guest"
+				},
+				{
 					"l": "Forgot password by username as (username or email) - an email will be sent with a link to reset the password",
 					"v": "/password/forgot",
 					"m": "get",
 					"group": "My account guest"
+				},
+				{
+					"l": "To validate user account after joining",
+					"v": "/validate/join/code",
+					"m": "get",
+					"group": "Guest join"
 				},
 				{
 					"l": "To validate user account after joining",
@@ -79,6 +91,12 @@ module.exports = {
 					"group": "My account guest"
 				},
 				{
+					"l": "Check if user (username or email) status if pendingJoin and send a new token and new code",
+					"v": "/resend/code",
+					"m": "get",
+					"group": "My account guest"
+				},
+				{
 					"l": "To validate change email",
 					"v": "/validate/changeEmail",
 					"m": "get",
@@ -93,6 +111,18 @@ module.exports = {
 				{
 					"l": "Get logged in user tenants",
 					"v": "/user/tenants",
+					"m": "get",
+					"group": "User administration"
+				},
+				{
+					"l": "Get logged in user account information ",
+					"v": "/user/me",
+					"m": "get",
+					"group": "My account"
+				},
+				{
+					"l": "List users matching certain keywords",
+					"v": "/users",
 					"m": "get",
 					"group": "User"
 				},
@@ -115,8 +145,20 @@ module.exports = {
 					"group": "User administration"
 				},
 				{
+					"l": "List users matching certain keywords",
+					"v": "/v2/admin/users",
+					"m": "get",
+					"group": "User administration"
+				},
+				{
 					"l": "List all groups",
 					"v": "/admin/groups",
+					"m": "get",
+					"group": "Group administration"
+				},
+				{
+					"l": "List all groups",
+					"v": "/admin/groups/tenant",
 					"m": "get",
 					"group": "Group administration"
 				},
@@ -133,10 +175,28 @@ module.exports = {
 					"group": "Administration"
 				},
 				{
+					"l": "Get tokens for a specific service",
+					"v": "/admin/tokens",
+					"m": "get",
+					"group": "Administration"
+				},
+				{
 					"l": "Send custom email",
 					"v": "/email",
 					"m": "post",
 					"group": "Custom email"
+				},
+				{
+					"l": "Invite to join - a link to join will be sent by email and a code will be sent by sms or email.",
+					"v": "/invite",
+					"m": "post",
+					"group": "User administration"
+				},
+				{
+					"l": "Join and create an account by invitation",
+					"v": "/join/invite",
+					"m": "post",
+					"group": "Guest join"
 				},
 				{
 					"l": "Join and create an account",
@@ -145,8 +205,20 @@ module.exports = {
 					"group": "Guest join"
 				},
 				{
+					"l": "Join and create an account",
+					"v": "/join/code",
+					"m": "post",
+					"group": "Guest join"
+				},
+				{
 					"l": "Add user",
 					"v": "/admin/user",
+					"m": "post",
+					"group": "User administration"
+				},
+				{
+					"l": "Add user",
+					"v": "/admin/user/tenant",
 					"m": "post",
 					"group": "User administration"
 				},
@@ -195,6 +267,12 @@ module.exports = {
 				{
 					"l": "Change account's email by id",
 					"v": "/account/email",
+					"m": "put",
+					"group": "My account"
+				},
+				{
+					"l": "Change account's email by id - a code will be emailed",
+					"v": "/account/email/code",
 					"m": "put",
 					"group": "My account"
 				},
@@ -259,8 +337,20 @@ module.exports = {
 					"group": "User administration"
 				},
 				{
+					"l": "Invite users by id, username or email",
+					"v": "/admin/users/invite/tenant",
+					"m": "put",
+					"group": "User administration"
+				},
+				{
 					"l": "un-Invite users by id, username or email",
 					"v": "/admin/users/uninvite",
+					"m": "put",
+					"group": "User administration"
+				},
+				{
+					"l": "un-Invite users by id, username or email",
+					"v": "/admin/users/uninvite/tenant",
 					"m": "put",
 					"group": "User administration"
 				}
