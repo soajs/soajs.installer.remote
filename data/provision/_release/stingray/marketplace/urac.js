@@ -146,7 +146,7 @@ module.exports = {
 				},
 				{
 					"l": "List users matching certain keywords",
-					"v": "/v2/admin/users",
+					"v": "/api-v2/admin/users",
 					"m": "get",
 					"group": "User administration"
 				},
@@ -191,6 +191,12 @@ module.exports = {
 					"v": "/invite",
 					"m": "post",
 					"group": "User administration"
+				},
+				{
+					"l": "Join and create an account by invitation",
+					"v": "/join/invite/phone",
+					"m": "post",
+					"group": "Guest join"
 				},
 				{
 					"l": "Join and create an account by invitation",
@@ -285,6 +291,12 @@ module.exports = {
 				{
 					"l": "Edit user by id",
 					"v": "/admin/user",
+					"m": "put",
+					"group": "User administration"
+				},
+				{
+					"l": "Edit user's groups by id, username, or email for an invited tenant",
+					"v": "/admin/user/invited/groups",
 					"m": "put",
 					"group": "User administration"
 				},

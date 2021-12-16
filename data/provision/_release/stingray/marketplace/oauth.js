@@ -102,6 +102,18 @@ module.exports = {
 					"group": "Third party login"
 				},
 				{
+					"l": "Create a verification code for that phone",
+					"v": "/token/phone",
+					"m": "post",
+					"group": "Guest"
+				},
+				{
+					"l": "Create an access token for that phone",
+					"v": "/token/phone/code",
+					"m": "post",
+					"group": "Guest"
+				},
+				{
 					"l": "Create an access token",
 					"v": "/token",
 					"m": "post",
