@@ -30,7 +30,12 @@ module.exports = {
 			"tenant_Profile": false,
 			"provision_ACL": false,
 			"oauth": true,
-			"interConnect": null,
+			"interConnect": [
+				{
+					"name": "oauth",
+					"version": "1"
+				}
+			],
 			"maintenance": {
 				"readiness": "/heartbeat",
 				"port": {
