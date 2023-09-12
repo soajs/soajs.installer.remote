@@ -23,18 +23,18 @@ let recipies = {
 		let config = {
 			"label": gConfig.label.ui + options.serviceVer,
 			"catId": gConfig.catalog.ui[sslType][type],
-			"image": gConfig.images.ui[type] + options.semVer,
-			
+			"image": null,
+
 			"httpPort": options.httpPort,
 			"httpsPort": options.httpsPort,
 			"domain": options.domain,
 			"sitePrefix": options.sitePrefix,
 			"apiPrefix": options.apiPrefix,
-			
+
 			"extKey": options.extKey,
-			
+
 			"email": options.email,
-			
+
 			"deployType": options.deployType,
 			"pvcClaimName": options.pvcClaimName,
 			"sslRedirect": options.sslRedirect,
@@ -42,11 +42,16 @@ let recipies = {
 			"sslType": sslType,
 			"gatewayIP": options.gatewayIP
 		};
+		if (sslType === "demo") {
+			config.image = gConfig.images.uiDemo[type] + options.semVer;
+		} else {
+			config.image = gConfig.images.ui[type] + options.semVer;
+		}
+
 		if (options.style === "major") {
-			config.image = gConfig.images.ui[type] + options.repoVer;
+			config.image = config.image + options.repoVer;
 		}
 		if (type === "src") {
-			config.image = gConfig.images.ui[type];
 			config.branch = options.semVer;
 			if (options.style === "major") {
 				config.branch = "release/v" + options.repoVer;
@@ -58,7 +63,7 @@ let recipies = {
 		} else {
 			recipe = require("./recipes/" + type + "/nginx/nginx.js")(config);
 		}
-		return {"recipe": recipe, "config": config};
+		return { "recipe": recipe, "config": config };
 	},
 	"gatewayRecipe": (options) => {
 		let type = options.type;
@@ -78,8 +83,8 @@ let recipies = {
 			}
 		}
 		let recipe = require("./recipes/" + type + "/gateway/controller.js")(config);
-		
-		return {"recipe": recipe, "config": config};
+
+		return { "recipe": recipe, "config": config };
 	},
 	"serviceRecipe": (options) => {
 		let service = options.serviceName;
@@ -101,8 +106,8 @@ let recipies = {
 			}
 		}
 		let recipe = require("./recipes/" + type + "/ms/" + service + ".js")(config);
-		
-		return {"recipe": recipe, "config": config};
+
+		return { "recipe": recipe, "config": config };
 	}
 };
 
@@ -123,7 +128,7 @@ let driver = {
 		if (!driverConfig.ip) {
 			return cb(new Error('No valid ip found for the kubernetes cluster'));
 		}
-		
+
 		try {
 			let client = new Client({
 				"backend": new Request({
@@ -139,7 +144,7 @@ let driver = {
 		} catch (e) {
 			return cb(e);
 		}
-		
+
 		/*
 		let config = {
 			"url": 'https://' + driverConfig.ip + ':' + (parseInt(driverConfig.port) || 8443),
@@ -187,7 +192,7 @@ let driver = {
 				"mongoPort": options.port || gConfig.mongo.port
 			};
 			let recipe = require("./recipes/db/mongo.js")(config);
-			
+
 			lib.createService(deployer, recipe.service, options.namespace, (error) => {
 				if (error) {
 					return cb(error);
@@ -218,7 +223,7 @@ let driver = {
 			let nginxObj = recipies.nginxRecipe(options);
 			let config = nginxObj.config;
 			let recipe = nginxObj.recipe;
-			
+
 			let createService = () => {
 				lib.createService(deployer, recipe.service, options.namespace, (error) => {
 					if (error) {
@@ -246,7 +251,7 @@ let driver = {
 					});
 				});
 			};
-			
+
 			if (sslType === "secret") {
 				lib.createSecret(deployer, options.sslSecret.private_key, "private-key", options.namespace, (error) => {
 					if (error) {
@@ -284,7 +289,7 @@ let driver = {
 				let gatewayObj = recipies.gatewayRecipe(options);
 				let config = gatewayObj.config;
 				let recipe = gatewayObj.recipe;
-				
+
 				lib.createService(deployer, recipe.service, options.namespace, (error) => {
 					if (error) {
 						return cb(error);
@@ -324,7 +329,7 @@ let driver = {
 			let serviceObj = recipies.serviceRecipe(options);
 			let config = serviceObj.config;
 			let recipe = serviceObj.recipe;
-			
+
 			lib.createService(deployer, recipe.service, options.namespace, (error) => {
 				if (error) {
 					return cb(error);
@@ -346,7 +351,7 @@ let driver = {
 			});
 		}
 	},
-	
+
 	"upgrade": {
 		"nginx": (options, deployer, cb) => {
 			//TODO: (sslType might have been changed) get nginx service and check if pvc or secret then set options.sslType - resolved by changing configuration
@@ -420,11 +425,11 @@ let driver = {
 			});
 		}
 	},
-	
+
 	"patch": (serviceOptions, gatewayOptions, deployer, cb) => {
 		let gatewayObj = recipies.gatewayRecipe(gatewayOptions);
 		let gatewayConfig = gatewayObj.config;
-		
+
 		lib.getServiceIPs(deployer, gatewayConfig.label, 1, gatewayOptions.namespace, (error, response) => {
 			if (error) {
 				return cb(error);
@@ -453,7 +458,7 @@ let driver = {
 			});
 		});
 	},
-	
+
 	/**
 	 * To update a service within the same release and patch number
 	 * @param options
@@ -462,21 +467,28 @@ let driver = {
 	 */
 	"updateService": (options, deployer, cb) => {
 		options.label = gConfig.label[options.serviceName] + (options.version.msVer || "");
-		options.image = {
-			"bin": gConfig.images[options.serviceName].bin,
-			"src": gConfig.images[options.serviceName].src
-		};
+		if (options.serviceName === "ui" && options.nginx.sslType === "demo") {
+			options.image = {
+				"bin": gConfig.images.uiDemo.bin,
+				"src": gConfig.images.uiDemo.src
+			};
+		} else {
+			options.image = {
+				"bin": gConfig.images[options.serviceName].bin,
+				"src": gConfig.images[options.serviceName].src
+			};
+		}
 		lib.updateService(deployer, options, options.namespace, (error, done, imageInfo) => {
 			return cb(error, done, imageInfo);
 		});
 	},
-	
+
 	"backupService": (options, deployer, cb) => {
 		lib.backupService(deployer, options, options.namespace, (error, done) => {
 			return cb(error, done);
 		});
 	},
-	
+
 	/**
 	 * Get the deployed version information
 	 * @param options
@@ -495,7 +507,7 @@ let driver = {
 			return cb(null, servicesInfo);
 		});
 	},
-	
+
 	"restoreServiceDeployment": (options, deployer, cb) => {
 		let updateOptions = {
 			"createIfNotExist": true
@@ -504,7 +516,7 @@ let driver = {
 			return cb(error, done, imageInfo);
 		});
 	},
-	
+
 	"cleanUp": (options, deployer, cb) => {
 		lib.deleteDeployments(deployer, {}, options.namespace, () => {
 			lib.deleteDaemonsets(deployer, {}, options.namespace, () => {

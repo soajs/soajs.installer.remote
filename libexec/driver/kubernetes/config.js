@@ -69,8 +69,8 @@ const lib = {
 		},
 		"ui": {
 			"demo": {
-				"bin": "5df3ec10fa3912534948effe",
-				"src": "5df3ec10fa3912534948f00f"
+				"bin": "64fef9c3389f76ed71d3f59f",
+				"src": "64fef9cd389f76ed71d3f5a0"
 			},
 			"secret": {
 				"bin": "5df3ec10fa3912534948effe",
@@ -94,7 +94,8 @@ const lib = {
 		"infra": {"src": "soajsorg/node:3.x", "bin": "soajsorg/infra:"},
 		"marketplace": {"src": "soajsorg/node:3.x", "bin": "soajsorg/marketplace:"},
 		"repositories": {"src": "soajsorg/node:3.x", "bin": "soajsorg/repositories:"},
-		"ui": {"src": "soajsorg/fe:3.x", "bin": "soajsorg/consoleui:"}
+		"ui": {"src": "soajsorg/fe:3.x", "bin": "soajsorg/consoleui:"},
+		"uiDemo": {"src": "soajsorg/fe-nossl:3.x", "bin": "soajsorg/consoleui-nossl:"}
 	},
 };
 

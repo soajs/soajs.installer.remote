@@ -612,7 +612,10 @@ let lib = {
 							"namespace": options.kubernetes.namespace,
 							"serviceName": serviceName,
 							"version": options.versions.services[serviceName],
-							"rollback": rollback
+							"rollback": rollback,
+							"nginx": {
+								"sslType": options.nginx.sslType
+							}
 						};
 						driver.updateService(config2, deployer, (error, done, imageInfo) => {
 							if (!error && done && imageInfo.changed) {

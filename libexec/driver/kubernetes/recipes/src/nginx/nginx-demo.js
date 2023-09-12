@@ -34,13 +34,6 @@ function getrecipe(localConfig) {
 						"port": 80,
 						"targetPort": 80,
 						"nodePort": localConfig._httpPort
-					},
-					{
-						"name": "https",
-						"protocol": "TCP",
-						"port": 443,
-						"targetPort": 443,
-						"nodePort": localConfig._httpsPort
 					}
 				]
 			}
@@ -81,10 +74,6 @@ function getrecipe(localConfig) {
 									{
 										"name": "http",
 										"containerPort": 80
-									},
-									{
-										"name": "https",
-										"containerPort": 443
 									}
 								],
 								"readinessProbe": {
@@ -183,15 +172,12 @@ module.exports = function (_config) {
 		"_image": _config.image,
 		"_branch": _config.branch,
 		"_httpPort": _config.httpPort,
-		"_httpsPort": _config.httpsPort,
 		"domain": _config.domain,
 		"sitePrefix": _config.sitePrefix,
 		"apiPrefix": _config.apiPrefix,
 		"extKey": _config.extKey,
 		"email": _config.email,
 		"deployType": _config.deployType,
-		"sslRedirect": _config.sslRedirect,
-		"pvcClaimName": _config.pvcClaimName,
 		"sslType": _config.sslType,
 		"gatewayIP": _config.gatewayIP,
 		"_labels": {
