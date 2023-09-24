@@ -2,7 +2,7 @@
 
 let doc = {
 	"_id": "5df3ec10fa3912534948effe",
-	"name": "SOAJS Console from bin with manual ssl as secret",
+	"name": "SOAJS UI Console from bin with manual ssl as secret",
 	"type": "soajs",
 	"subtype": "ui",
 	"description": "Deploy SOAJS console UI from binary with manual https certificate as secret",

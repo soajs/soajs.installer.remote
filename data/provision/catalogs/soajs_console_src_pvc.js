@@ -2,7 +2,7 @@
 
 let doc = {
 	"_id": "5df3ec10fa3912534948f00e",
-	"name": "SOAJS Console from src with automated ssl as pvc",
+	"name": "SOAJS UI Console from src with automated ssl as pvc",
 	"type": "soajs",
 	"subtype": "ui",
 	"description": "Deploy SOAJS console UI from source with automated https certificate. This requires a ReadWriteMany pvc with claim name as nfs-pvc",

@@ -16,7 +16,7 @@ const CoreProvisionModel = require("./model/core_provision.js");
 const drivers = {
 	"kubernetes": require("./driver/kubernetes/index.js")
 };
-const {v4: uuidv4} = require('uuid');
+const { v4: uuidv4 } = require('uuid');
 const async = require('async');
 const configurationSchema = require("./utils/configurationSchema");
 const importer = require("./importer/index.js");
@@ -34,7 +34,7 @@ function handleImageInfo(options, imageInfo, serviceName, cb) {
 	if (imageInfo && imageInfo.tag) {
 		semVer = imageInfo.tag;
 	}
-	cpModelObj.updateSettings({"semVer": semVer, "serviceName": serviceName}, (error) => {
+	cpModelObj.updateSettings({ "semVer": semVer, "serviceName": serviceName }, (error) => {
 		if (error) {
 			logger.warn("Unable to update release info for [" + serviceName + "] under Settings: " + error.message);
 		}
@@ -59,7 +59,7 @@ function handleImageInfo(options, imageInfo, serviceName, cb) {
 		} else {
 			return cb();
 		}
-		
+
 	});
 }
 
@@ -67,7 +67,7 @@ function generateKey(opts, cb) {
 	//soajs encryption engine
 	let module = soajs.core.key;
 	let key = opts.key;
-	
+
 	let tenant = {
 		id: opts.tenantId
 	};
@@ -78,7 +78,7 @@ function generateKey(opts, cb) {
 		algorithm: "aes256",
 		password: opts.secret
 	};
-	
+
 	module.generateExternalKey(key, tenant, application, config, (error, extKey) => {
 		if (error) {
 			return cb(error);
@@ -97,7 +97,7 @@ function generateKey(opts, cb) {
 }
 
 function setImageTag(options, doc) {
-	
+
 	//console bin pvc
 	if (doc._id === "5df3ec10fa3912534948f00d") {
 		if (options.deployment.style === "sem") {
@@ -118,14 +118,14 @@ function setImageTag(options, doc) {
 			doc.recipe.deployOptions.image.tag = options.versions.services.ui.ver;
 		}
 	}
-	
+
 	//gateway bin
 	if (doc._id === "5df3ec10fa3912534948f000") {
 		if (options.versions.services.gateway.semVer) {
 			doc.recipe.deployOptions.image.tag = options.versions.services.gateway.semVer;
 		}
 	}
-	
+
 	for (let i = 0; i < soajsServicesArray.length; i++) {
 		soajsService[soajsServicesArray[i]].setImageTag(options, doc);
 	}
@@ -134,36 +134,42 @@ function setImageTag(options, doc) {
 function requireCatalog(options, serviceName) {
 	let catObjs = [];
 	let dataPath = "../data/provision/catalogs/";
-	
+
 	if (serviceName === 'ui') {
-		let doc = require(dataPath + "soajs_console_bin_pvc.js");
-		setImageTag(options, doc);
-		catObjs.push(doc);
-		let doc2 = require(dataPath + "soajs_console_bin_secret.js");
-		setImageTag(options, doc2);
-		catObjs.push(doc2);
+		if (options.nginx.sslType === "demo") {
+			let doc = require(dataPath + "soajs_console_bin_nossl.js");
+			setImageTag(options, doc);
+			catObjs.push(doc);
+		} else {
+			let doc = require(dataPath + "soajs_console_bin_pvc.js");
+			setImageTag(options, doc);
+			catObjs.push(doc);
+			let doc2 = require(dataPath + "soajs_console_bin_secret.js");
+			setImageTag(options, doc2);
+			catObjs.push(doc2);
+		}
 	}
-	
+
 	if (serviceName === 'gateway') {
 		let doc = require(dataPath + "soajs_gateway_bin.js");
 		setImageTag(options, doc);
 		catObjs.push(doc);
 	}
-	
+
 	for (let i = 0; i < soajsServicesArray.length; i++) {
 		let doc = soajsService[soajsServicesArray[i]].requireCatalog(options, serviceName, "../" + dataPath);
 		if (doc) {
 			catObjs.push(doc);
 		}
 	}
-	
+
 	return catObjs;
 }
 
 function importData(options, data, profileImport, cb) {
-	
-	let templates = importer(options, data, {"setImageTag": setImageTag});
-	
+
+	let templates = importer(options, data, { "setImageTag": setImageTag });
+
 	options.importer.runProfile(profileImport, options.dataPath, options.cleanDataBefore, templates, (error, msg) => {
 		return cb(error, msg);
 	}, options.versions.name || null);
@@ -173,7 +179,7 @@ function validateOptions(options, cb) {
 	if (options) {
 		let core = soajs.core;
 		let validator = new core.validator.Validator();
-		
+
 		let check = validator.validate(options, configurationSchema);
 		if (check && check.errors && Array.isArray(check.errors) && check.errors.length > 0) {
 			logger.error("Configuration schema errors: ");
@@ -201,7 +207,7 @@ function validateOptions(options, cb) {
 			}
 			options.nginx.pvcClaimName = options.nginx.pvcClaimName || "nfs-pvc";
 			options.nginx.sslRedirect = options.nginx.sslRedirect || false;
-			
+
 			if (options.versions.services) {
 				soajsServicesArray = [];
 				for (let s in options.versions.services) {
@@ -217,7 +223,7 @@ function validateOptions(options, cb) {
 			for (let i = 0; i < soajsServicesArray.length; i++) {
 				soajsService[soajsServicesArray[i]] = require("./services/" + soajsServicesArray[i] + ".js");
 			}
-			
+
 			return cb(null);
 		}
 		return cb(new Error("The provided configuration is not healthy"));
@@ -244,10 +250,10 @@ let getConfig = {
 			"serviceVer": options.versions.services.ui.msVer || 1,
 			"repoVer": options.versions.services.ui.ver,
 			"semVer": options.versions.services.ui.semVer,
-			
+
 			"httpPort": options.nginx.httpPort,
 			"httpsPort": options.nginx.httpsPort,
-			
+
 			"domain": options.nginx.domain,
 			"sitePrefix": options.nginx.sitePrefix,
 			"apiPrefix": options.nginx.apiPrefix,
@@ -256,10 +262,10 @@ let getConfig = {
 			"sslRedirect": options.nginx.sslRedirect,
 			"sslSecret": options.nginx.sslSecret,
 			"sslType": options.nginx.sslType,
-			
+
 			"email": options.owner.email,
 			"extKey": obj.extKey,
-			
+
 			"gatewayIP": obj.gatewayIP,
 			"namespace": options.kubernetes.namespace
 		};
@@ -269,9 +275,9 @@ let getConfig = {
 function echoResult(options, obj) {
 	logger.debug("The extKey: " + obj.extKey);
 	logger.debug("The namespace: " + options.kubernetes.namespace);
-	
+
 	logger.debug("The Services Information:");
-	
+
 	if (!options.mongo.external && obj.deployments.mongo) {
 		logger.debug("\tMongo: ");
 		logger.debug("\t\t IP: " + obj.deployments.mongo.ip);
@@ -280,14 +286,14 @@ function echoResult(options, obj) {
 			logger.debug("\t\t please add to the configuration file under mongo [\"deployIP\": \"" + obj.deployments.mongo.extIp + "\"]");
 		}
 	}
-	
+
 	logger.debug("\tGateway: ");
 	logger.debug("\t\t IP: " + obj.deployments.gateway.ip);
 	logger.debug("\t\t Image: " + obj.deployments.gateway.image);
 	if (obj.deployments.gateway.branch) {
 		logger.debug("\t\t Branch: " + obj.deployments.gateway.branch);
 	}
-	
+
 	logger.debug("\tUI: ");
 	logger.debug("\t\t IP: " + obj.deployments.ui.ip);
 	logger.debug("\t\t Image: " + obj.deployments.ui.image);
@@ -300,7 +306,7 @@ function echoResult(options, obj) {
 	if (obj.deployments.ui.hostanme) {
 		logger.debug("\t\t hostanme: " + obj.deployments.ui.hostanme);
 	}
-	
+
 	for (let i = 0; i < soajsServicesArray.length; i++) {
 		soajsService[soajsServicesArray[i]].echoResult(obj, logger);
 	}
@@ -384,7 +390,7 @@ let lib = {
 								"options": options
 							});
 						},
-						
+
 						//clean up if namespace is there
 						(obj, callback) => {
 							let config = {
@@ -550,7 +556,7 @@ let lib = {
 			}
 		});
 	},
-	
+
 	/**
 	 * Get saved setting in settings collection
 	 * @param options
@@ -568,13 +574,13 @@ let lib = {
 			}
 			let profileImport = utils.getProfile(options);
 			let cpModelObj = new CoreProvisionModel(profileImport);
-			
+
 			cpModelObj.getSettings((error, settings) => {
 				return cb(error, settings);
 			});
 		});
 	},
-	
+
 	"updateService": (options, serviceName, rollback, cb) => {
 		validateOptions(options, (error) => {
 			if (error) {
@@ -633,7 +639,7 @@ let lib = {
 			}
 		});
 	},
-	
+
 	"backupService": (options, serviceName, backup, cb) => {
 		validateOptions(options, (error) => {
 			if (error) {
@@ -655,7 +661,7 @@ let lib = {
 					if (error) {
 						return cb(error);
 					}
-					
+
 					let config = {
 						"namespace": options.kubernetes.namespace,
 						"verbose": false
@@ -668,7 +674,7 @@ let lib = {
 							let error = new Error("Unable to find namespace: " + config.namespace);
 							return cb(error);
 						}
-						
+
 						let config2 = {
 							"namespace": options.kubernetes.namespace,
 							"serviceName": serviceName,
@@ -684,7 +690,7 @@ let lib = {
 			}
 		});
 	},
-	
+
 	"restoreOne": (options, oneService, oneDeployment, cb) => {
 		validateOptions(options, (error) => {
 			if (error) {
@@ -706,7 +712,7 @@ let lib = {
 					if (error) {
 						return cb(error);
 					}
-					
+
 					let config = {
 						"namespace": options.kubernetes.namespace,
 						"verbose": false
@@ -719,7 +725,7 @@ let lib = {
 							let error = new Error("Unable to find namespace: " + config.namespace);
 							return cb(error);
 						}
-						
+
 						let config2 = {
 							"namespace": options.kubernetes.namespace,
 							"oneService": oneService,
@@ -727,7 +733,7 @@ let lib = {
 						};
 						driver.restoreServiceDeployment(config2, deployer, (error, done, imageInfo) => {
 							if (!error && done && imageInfo.changed) {
-								
+
 								let serviceName = oneService.metadata.labels['soajs.service.name'];
 								if (serviceName === "nginx") {
 									serviceName = 'ui';
@@ -749,7 +755,7 @@ let lib = {
 			}
 		});
 	},
-	
+
 	"patch": (options, serviceName, cb) => {
 		validateOptions(options, (error) => {
 			if (error) {
@@ -774,7 +780,7 @@ let lib = {
 					if (error) {
 						return cb(error);
 					}
-					
+
 					let config = {
 						"namespace": options.kubernetes.namespace,
 						"verbose": false
@@ -792,7 +798,7 @@ let lib = {
 						driver.patch(serviceOptions, gatewayOptions, deployer, (error, done, imageInfo, deployment) => {
 							if (deployment) {
 								logger.debug("Service " + serviceName + ": patched");
-								let obj = {"deployments": {[serviceName]: deployment}};
+								let obj = { "deployments": { [serviceName]: deployment } };
 								soajsService[serviceName].echoResult(obj, logger);
 							}
 							if (!error && done && imageInfo && imageInfo.changed) {
@@ -810,7 +816,7 @@ let lib = {
 			}
 		});
 	},
-	
+
 	"getInfo": (options, cb) => {
 		validateOptions(options, (error) => {
 			if (error) {
@@ -861,7 +867,7 @@ let lib = {
 			}
 		});
 	},
-	
+
 	"migrate": (options, strategy, release, cb) => {
 		validateOptions(options, (error) => {
 			if (error) {
@@ -873,13 +879,13 @@ let lib = {
 				return cb(new Error("Unable to continue, please provide valid configuration!"));
 			}
 			let profileImport = utils.getProfile(options);
-			
+
 			let strategyFunction = require("./migrate/" + strategy + ".js");
-			
+
 			return strategyFunction(profileImport, options.dataPath, release, cb);
 		});
 	},
-	
+
 	"upgrade": (options, cb) => {
 		validateOptions(options, (error) => {
 			if (error) {
@@ -910,7 +916,7 @@ let lib = {
 								"options": options
 							});
 						},
-						
+
 						//Assure namespace
 						(obj, callback) => {
 							let config = {
@@ -930,10 +936,10 @@ let lib = {
 						},
 						//get extKey
 						(obj, callback) => {
-							
+
 							let profileImport = utils.getProfile(options);
 							let cpModelObj = new CoreProvisionModel(profileImport);
-							
+
 							cpModelObj.getExtKey((error, extKey) => {
 								obj.profileImport = profileImport;
 								if (extKey) {
@@ -973,11 +979,11 @@ let lib = {
 							});
 						}
 					];
-					
+
 					for (let i = 0; i < soajsServicesArray.length; i++) {
 						waterfallArray.push(soajsService[soajsServicesArray[i]].upgrade);
 					}
-					
+
 					waterfallArray.push(
 						//update data (catalogs & settings
 						(obj, callback) => {
@@ -998,13 +1004,13 @@ let lib = {
 									"settings": settings
 								};
 								options.importer.runFor.settings(obj.profileImport, options.dataPath, false, templates, () => {
-									
+
 									return callback(null, obj);
 								});
 							});
 						}
 					);
-					
+
 					async.waterfall(waterfallArray, (error, obj) => {
 						if (!error) {
 							echoResult(options, obj);
