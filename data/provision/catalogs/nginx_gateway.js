@@ -11,7 +11,7 @@ let doc = {
 		"deployOptions": {
 			"image": {
 				"prefix": "soajsorg",
-				"name": "fe",
+				"name": "fe-nossl",
 				"tag": "3.x",
 				"pullPolicy": "Always",
 				"repositoryType": "public",

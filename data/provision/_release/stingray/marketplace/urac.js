@@ -4,12 +4,27 @@ module.exports = {
 	"type": "service",
 	"name": "urac",
 	"metadata": {
-		"tags": ["users", "registration", "groups", "membership", "join"],
+		"tags": [
+			"users",
+			"registration",
+			"groups",
+			"membership",
+			"join"
+		],
 		"attributes": {
-			"authentication": ["multitenant", "roaming", "invitation"],
-			"role": ["management", "acl"]
+			"authentication": [
+				"multitenant",
+				"roaming",
+				"invitation"
+			],
+			"role": [
+				"management",
+				"acl"
+			]
 		},
-		"program": ["soajs"]
+		"program": [
+			"soajs"
+		]
 	},
 	"configuration": {
 		"group": "Gateway",
@@ -106,6 +121,12 @@ module.exports = {
 					"v": "/validate/changeEmail",
 					"m": "get",
 					"group": "My account guest"
+				},
+				{
+					"l": "To validate change phone",
+					"v": "/validate/changePhone",
+					"m": "get",
+					"group": "My account"
 				},
 				{
 					"l": "Get user account information by username as (username or email)",
@@ -282,6 +303,12 @@ module.exports = {
 					"group": "My account"
 				},
 				{
+					"l": "Change account's phone by id",
+					"v": "/account/phone",
+					"m": "put",
+					"group": "My account"
+				},
+				{
 					"l": "Change account's email by id - a code will be emailed",
 					"v": "/account/email/code",
 					"m": "put",
@@ -290,6 +317,12 @@ module.exports = {
 				{
 					"l": "Edit account's information by id",
 					"v": "/account",
+					"m": "put",
+					"group": "My account"
+				},
+				{
+					"l": "Change account's password by id",
+					"v": "/admin/account/password",
 					"m": "put",
 					"group": "My account"
 				},

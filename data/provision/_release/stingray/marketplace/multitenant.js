@@ -4,12 +4,24 @@ module.exports = {
 	"type": "service",
 	"name": "multitenant",
 	"metadata": {
-		"tags": ["productization", "packaging"],
+		"tags": [
+			"productization",
+			"packaging"
+		],
 		"attributes": {
-			"multitenant": ["main tenant", "sub tenant"],
-			"acl": ["by environment", "by tenant", "by key"]
+			"multitenant": [
+				"main tenant",
+				"sub tenant"
+			],
+			"acl": [
+				"by environment",
+				"by tenant",
+				"by key"
+			]
 		},
-		"program": ["soajs"]
+		"program": [
+			"soajs"
+		]
 	},
 	"configuration": {
 		"group": "Console",
@@ -67,41 +79,13 @@ module.exports = {
 					"l": "List products",
 					"v": "/products",
 					"m": "get",
-					"group": "Product",
-					"groupMain": true
-				},
-				{
-					"l": "List console products",
-					"v": "/products/console",
-					"m": "get",
-					"group": "Console product",
-					"groupMain": true
+					"group": "Product"
 				},
 				{
 					"l": "Get product",
 					"v": "/product",
 					"m": "get",
-					"group": "Product",
-					"groupMain": true
-				},
-				{
-					"l": "Get console product",
-					"v": "/product/console",
-					"m": "get",
-					"group": "Console product",
-					"groupMain": true
-				},
-				{
-					"l": "List product packages",
-					"v": "/product/packages",
-					"m": "get",
 					"group": "Product"
-				},
-				{
-					"l": "List console product packages",
-					"v": "/product/console/packages",
-					"m": "get",
-					"group": "Console product"
 				},
 				{
 					"l": "Get product package",
@@ -110,66 +94,34 @@ module.exports = {
 					"group": "Product"
 				},
 				{
-					"l": "Get console product package",
-					"v": "/product/console/package",
+					"l": "List product packages",
+					"v": "/product/packages",
 					"m": "get",
-					"group": "Console product"
+					"group": "Product"
 				},
 				{
 					"l": "Get product ACL in raw form",
 					"v": "/product/acl/scope/raw",
 					"m": "get",
-					"group": "Product",
-					"groupMain": true
-				},
-				{
-					"l": "Get console product Acl in raw form",
-					"v": "/product/console/acl/scope/raw",
-					"m": "get",
-					"group": "Console product",
-					"groupMain": true
+					"group": "Product"
 				},
 				{
 					"l": "Get product package ACL in raw form",
 					"v": "/product/package/acl/raw",
 					"m": "get",
-					"group": "Product",
-					"groupMain": true
-				},
-				{
-					"l": "Get console product package ACL in raw form",
-					"v": "/product/console/package/acl/raw",
-					"m": "get",
-					"group": "Console product",
-					"groupMain": true
+					"group": "Product"
 				},
 				{
 					"l": "Get product Acl in UI form",
 					"v": "/product/acl/ui",
 					"m": "get",
-					"group": "Product",
-					"groupMain": true
-				},
-				{
-					"l": "Get console product Acl in UI form",
-					"v": "/product/console/acl/ui",
-					"m": "get",
-					"group": "Console product",
-					"groupMain": true
+					"group": "Product"
 				},
 				{
 					"l": "Get product package ACL in UI form",
 					"v": "/product/package/acl/ui",
 					"m": "get",
-					"group": "Product",
-					"groupMain": true
-				},
-				{
-					"l": "Get console product package ACL in UI form",
-					"v": "/product/console/package/acl/ui",
-					"m": "get",
-					"group": "Console product",
-					"groupMain": true
+					"group": "Product"
 				},
 				{
 					"l": "Get the ACL of a specific service in the product package",
@@ -194,6 +146,54 @@ module.exports = {
 					"v": "/product/acl/scope/api",
 					"m": "get",
 					"group": "Product"
+				},
+				{
+					"l": "List console products",
+					"v": "/products/console",
+					"m": "get",
+					"group": "Console product"
+				},
+				{
+					"l": "Get console product",
+					"v": "/product/console",
+					"m": "get",
+					"group": "Console product"
+				},
+				{
+					"l": "List console product packages",
+					"v": "/product/console/packages",
+					"m": "get",
+					"group": "Console product"
+				},
+				{
+					"l": "Get console product package",
+					"v": "/product/console/package",
+					"m": "get",
+					"group": "Console product"
+				},
+				{
+					"l": "Get console product Acl in raw form",
+					"v": "/product/console/acl/scope/raw",
+					"m": "get",
+					"group": "Console product"
+				},
+				{
+					"l": "Get console product package ACL in raw form",
+					"v": "/product/console/package/acl/raw",
+					"m": "get",
+					"group": "Console product"
+				},
+				{
+					"l": "Get console product Acl in UI form",
+					"v": "/product/console/acl/ui",
+					"m": "get",
+					"group": "Console product"
+				},
+				{
+					"l": "Get console product package ACL in UI form",
+					"v": "/product/console/package/acl/ui",
+					"m": "get",
+					"group": "Console product"
 				},
 				{
 					"l": "Get the ACL of a specific service in the product package",
@@ -238,35 +238,10 @@ module.exports = {
 					"group": "Tenant"
 				},
 				{
-					"l": "Get ext keys of a product for certain console tenants in a specific environment.",
-					"v": "/tenants/console/product/keys/ext",
-					"m": "get",
-					"group": "Console tenant"
-				},
-				{
-					"l": "List console tenants",
-					"v": "/tenants/console",
-					"m": "get",
-					"group": "Console tenant",
-					"groupMain": true
-				},
-				{
 					"l": "Get tenant",
 					"v": "/tenant",
 					"m": "get",
 					"group": "Tenant"
-				},
-				{
-					"l": "Get admin tenant",
-					"v": "/admin/tenant",
-					"m": "get",
-					"group": "Admin Tenant"
-				},
-				{
-					"l": "Get console tenant",
-					"v": "/tenant/console",
-					"m": "get",
-					"group": "Console Tenant"
 				},
 				{
 					"l": "Get tenant application",
@@ -275,50 +250,14 @@ module.exports = {
 					"group": "Tenant"
 				},
 				{
-					"l": "Get console tenant application",
-					"v": "/tenant/console/application",
-					"m": "get",
-					"group": "Console tenant"
-				},
-				{
-					"l": "Get tenant application",
-					"v": "/admin/tenant/application",
-					"m": "get",
-					"group": "Admin Tenant"
-				},
-				{
 					"l": "List tenant applications",
 					"v": "/tenant/applications",
 					"m": "get",
 					"group": "Tenant"
 				},
 				{
-					"l": "List console tenant applications",
-					"v": "/tenant/console/applications",
-					"m": "get",
-					"group": "Console tenant"
-				},
-				{
-					"l": "List tenant applications",
-					"v": "/admin/tenant/applications",
-					"m": "get",
-					"group": "Admin Tenant"
-				},
-				{
 					"l": "List tenant application keys",
 					"v": "/tenant/application/key",
-					"m": "get",
-					"group": "Tenant"
-				},
-				{
-					"l": "List console tenant application keys",
-					"v": "/tenant/console/application/key",
-					"m": "get",
-					"group": "Console tenant"
-				},
-				{
-					"l": "List tenant application keys",
-					"v": "/admin/tenant/application/key",
 					"m": "get",
 					"group": "Tenant"
 				},
@@ -329,10 +268,40 @@ module.exports = {
 					"group": "Tenant"
 				},
 				{
-					"l": "List console tenant application ext keys",
-					"v": "/tenant/console/application/key/ext",
+					"l": "List tenant application key configuration",
+					"v": "/tenant/application/key/config",
 					"m": "get",
-					"group": "Console Tenant"
+					"group": "Tenant"
+				},
+				{
+					"l": "Get admin tenant",
+					"v": "/admin/tenant",
+					"m": "get",
+					"group": "Admin Tenant"
+				},
+				{
+					"l": "Get admin tenant by name",
+					"v": "/admin/tenant/name",
+					"m": "get",
+					"group": "Admin Tenant"
+				},
+				{
+					"l": "Get tenant application",
+					"v": "/admin/tenant/application",
+					"m": "get",
+					"group": "Admin Tenant"
+				},
+				{
+					"l": "List tenant applications",
+					"v": "/admin/tenant/applications",
+					"m": "get",
+					"group": "Admin Tenant"
+				},
+				{
+					"l": "List tenant application keys",
+					"v": "/admin/tenant/application/key",
+					"m": "get",
+					"group": "Tenant"
 				},
 				{
 					"l": "List tenant application ext keys",
@@ -342,9 +311,51 @@ module.exports = {
 				},
 				{
 					"l": "List tenant application key configuration",
-					"v": "/tenant/application/key/config",
+					"v": "/admin/tenant/application/key/config",
 					"m": "get",
 					"group": "Tenant"
+				},
+				{
+					"l": "Get ext keys of a product for certain console tenants in a specific environment.",
+					"v": "/tenants/console/product/keys/ext",
+					"m": "get",
+					"group": "Console tenant"
+				},
+				{
+					"l": "List console tenants",
+					"v": "/tenants/console",
+					"m": "get",
+					"group": "Console tenant"
+				},
+				{
+					"l": "Get console tenant",
+					"v": "/tenant/console",
+					"m": "get",
+					"group": "Console Tenant"
+				},
+				{
+					"l": "Get console tenant application",
+					"v": "/tenant/console/application",
+					"m": "get",
+					"group": "Console tenant"
+				},
+				{
+					"l": "List console tenant applications",
+					"v": "/tenant/console/applications",
+					"m": "get",
+					"group": "Console tenant"
+				},
+				{
+					"l": "List console tenant application keys",
+					"v": "/tenant/console/application/key",
+					"m": "get",
+					"group": "Console tenant"
+				},
+				{
+					"l": "List console tenant application ext keys",
+					"v": "/tenant/console/application/key/ext",
+					"m": "get",
+					"group": "Console Tenant"
 				},
 				{
 					"l": "List tenant application key configuration",
@@ -353,30 +364,22 @@ module.exports = {
 					"group": "Tenant Application"
 				},
 				{
-					"l": "List tenant application key configuration",
-					"v": "/admin/tenant/application/key/config",
-					"m": "get",
-					"group": "Tenant"
-				},
-				{
 					"l": "Add product",
 					"v": "/product",
 					"m": "post",
-					"group": "Product",
-					"groupMain": true
-				},
-				{
-					"l": "Add console product",
-					"v": "/product/console",
-					"m": "post",
-					"group": "Console product",
-					"groupMain": true
+					"group": "Product"
 				},
 				{
 					"l": "Add a package to product",
 					"v": "/product/package",
 					"m": "post",
 					"group": "Product"
+				},
+				{
+					"l": "Add console product",
+					"v": "/product/console",
+					"m": "post",
+					"group": "Console product"
 				},
 				{
 					"l": "Add a package to console product",
@@ -391,14 +394,20 @@ module.exports = {
 					"group": "Tenant"
 				},
 				{
-					"l": "Add console tenant with optional application, key, and ext key",
-					"v": "/tenant/console",
-					"m": "post",
-					"group": "Console tenant"
-				},
-				{
 					"l": "Add application to tenant with optional key and ext key",
 					"v": "/tenant/application",
+					"m": "post",
+					"group": "Tenant"
+				},
+				{
+					"l": "Add key to a tenant application with optional ext key",
+					"v": "/tenant/application/key",
+					"m": "post",
+					"group": "Tenant"
+				},
+				{
+					"l": "Add external key to tenant application",
+					"v": "/tenant/application/key/ext",
 					"m": "post",
 					"group": "Tenant"
 				},
@@ -409,40 +418,34 @@ module.exports = {
 					"group": "Admin Tenant"
 				},
 				{
-					"l": "Add application to console tenant with optional key and ext key",
-					"v": "/tenant/console/application",
-					"m": "post",
-					"group": "Console tenant"
-				},
-				{
-					"l": "Add key to a tenant application with optional ext key",
-					"v": "/tenant/application/key",
-					"m": "post",
-					"group": "Tenant"
-				},
-				{
 					"l": "Add key to a tenant application with optional ext key",
 					"v": "/admin/tenant/application/key",
 					"m": "post",
 					"group": "Admin Tenant"
 				},
 				{
-					"l": "Add key to a console tenant application with optional ext key",
-					"v": "/tenant/console/application/key",
-					"m": "post",
-					"group": "Console tenant"
-				},
-				{
-					"l": "Add external key to tenant application",
-					"v": "/tenant/application/key/ext",
-					"m": "post",
-					"group": "Tenant"
-				},
-				{
 					"l": "Add external key to tenant application",
 					"v": "/admin/tenant/application/key/ext",
 					"m": "post",
 					"group": "Admin Tenant"
+				},
+				{
+					"l": "Add console tenant with optional application, key, and ext key",
+					"v": "/tenant/console",
+					"m": "post",
+					"group": "Console tenant"
+				},
+				{
+					"l": "Add application to console tenant with optional key and ext key",
+					"v": "/tenant/console/application",
+					"m": "post",
+					"group": "Console tenant"
+				},
+				{
+					"l": "Add key to a console tenant application with optional ext key",
+					"v": "/tenant/console/application/key",
+					"m": "post",
+					"group": "Console tenant"
 				},
 				{
 					"l": "Add console external key to tenant application",
@@ -454,8 +457,7 @@ module.exports = {
 					"l": "Delete product",
 					"v": "/product",
 					"m": "delete",
-					"group": "Product",
-					"groupMain": true
+					"group": "Product"
 				},
 				{
 					"l": "Delete product package",
@@ -467,8 +469,7 @@ module.exports = {
 					"l": "Delete console product",
 					"v": "/product/console",
 					"m": "delete",
-					"group": "Console product",
-					"groupMain": true
+					"group": "Console product"
 				},
 				{
 					"l": "Delete console product package",
@@ -537,22 +538,10 @@ module.exports = {
 					"group": "Product"
 				},
 				{
-					"l": "Update console product",
-					"v": "/product/console",
-					"m": "put",
-					"group": "Console product"
-				},
-				{
 					"l": "Update product ACL scope",
 					"v": "/product/scope",
 					"m": "put",
 					"group": "Product"
-				},
-				{
-					"l": "Update console product ACL scope",
-					"v": "/product/console/scope",
-					"m": "put",
-					"group": "Console product"
 				},
 				{
 					"l": "Update product ACL scope by env",
@@ -561,34 +550,16 @@ module.exports = {
 					"group": "Product"
 				},
 				{
-					"l": "Update console product ACL scope by env",
-					"v": "/product/console/scope/env",
-					"m": "put",
-					"group": "Console product"
-				},
-				{
 					"l": "Update product package",
 					"v": "/product/package",
 					"m": "put",
 					"group": "Product"
 				},
 				{
-					"l": "Update console product package",
-					"v": "/product/console/package",
-					"m": "put",
-					"group": "Console product"
-				},
-				{
 					"l": "Update product package ACL by env",
 					"v": "/product/package/acl/env",
 					"m": "put",
 					"group": "Product"
-				},
-				{
-					"l": "Update console product package",
-					"v": "/product/console/package/acl/env",
-					"m": "put",
-					"group": "Console product"
 				},
 				{
 					"l": "Update the ACL of a specific service in the product package",
@@ -613,6 +584,36 @@ module.exports = {
 					"v": "/product/acl/scope/api",
 					"m": "put",
 					"group": "Product"
+				},
+				{
+					"l": "Update console product",
+					"v": "/product/console",
+					"m": "put",
+					"group": "Console product"
+				},
+				{
+					"l": "Update console product ACL scope",
+					"v": "/product/console/scope",
+					"m": "put",
+					"group": "Console product"
+				},
+				{
+					"l": "Update console product ACL scope by env",
+					"v": "/product/console/scope/env",
+					"m": "put",
+					"group": "Console product"
+				},
+				{
+					"l": "Update console product package",
+					"v": "/product/console/package",
+					"m": "put",
+					"group": "Console product"
+				},
+				{
+					"l": "Update console product package",
+					"v": "/product/console/package/acl/env",
+					"m": "put",
+					"group": "Console product"
 				},
 				{
 					"l": "Update the ACL of a specific service in the product package",
@@ -645,28 +646,46 @@ module.exports = {
 					"group": "Tenant"
 				},
 				{
-					"l": "Update console tenant",
-					"v": "/tenant/console",
-					"m": "put",
-					"group": "Console tenant"
-				},
-				{
-					"l": "Update tenant",
-					"v": "/admin/tenant",
-					"m": "put",
-					"group": "Admin Tenant"
-				},
-				{
 					"l": "Update tenant profile",
 					"v": "/tenant/profile",
 					"m": "put",
 					"group": "Tenant"
 				},
 				{
-					"l": "Update tenant profile",
-					"v": "/tenant/console/profile",
+					"l": "Update tenant application",
+					"v": "/tenant/application",
 					"m": "put",
-					"group": "Console Tenant"
+					"group": "Tenant"
+				},
+				{
+					"l": "Update key information for a tenant application",
+					"v": "/tenant/application/key",
+					"m": "put",
+					"group": "Tenant"
+				},
+				{
+					"l": "Update external key information for a tenant application",
+					"v": "/tenant/application/key/ext",
+					"m": "put",
+					"group": "Tenant Access"
+				},
+				{
+					"l": "Update tenant application key configuration",
+					"v": "/tenant/application/key/config",
+					"m": "put",
+					"group": "Tenant Application"
+				},
+				{
+					"l": "Update tenant oauth configuration",
+					"v": "/tenant/oauth",
+					"m": "put",
+					"group": "Tenant"
+				},
+				{
+					"l": "Update tenant",
+					"v": "/admin/tenant",
+					"m": "put",
+					"group": "Admin Tenant"
 				},
 				{
 					"l": "Update profile",
@@ -676,33 +695,9 @@ module.exports = {
 				},
 				{
 					"l": "Update tenant application",
-					"v": "/tenant/application",
-					"m": "put",
-					"group": "Tenant"
-				},
-				{
-					"l": "Update console tenant application",
-					"v": "/tenant/console/application",
-					"m": "put",
-					"group": "Console tenant"
-				},
-				{
-					"l": "Update tenant application",
 					"v": "/admin/tenant/application",
 					"m": "put",
 					"group": "Admin Tenant"
-				},
-				{
-					"l": "Update key information for a tenant application",
-					"v": "/tenant/application/key",
-					"m": "put",
-					"group": "Tenant"
-				},
-				{
-					"l": "Update key information for a console tenant application",
-					"v": "/tenant/console/application/key",
-					"m": "put",
-					"group": "Console tenant"
 				},
 				{
 					"l": "Update key information for a tenant application",
@@ -712,33 +707,9 @@ module.exports = {
 				},
 				{
 					"l": "Update external key information for a tenant application",
-					"v": "/tenant/application/key/ext",
-					"m": "put",
-					"group": "Tenant Access"
-				},
-				{
-					"l": "Update external key information for a console tenant application",
-					"v": "/tenant/console/application/key/ext",
-					"m": "put",
-					"group": "Console tenant"
-				},
-				{
-					"l": "Update external key information for a tenant application",
 					"v": "/admin/tenant/application/key/ext",
 					"m": "put",
 					"group": "Admin Tenant"
-				},
-				{
-					"l": "Update tenant application key configuration",
-					"v": "/tenant/application/key/config",
-					"m": "put",
-					"group": "Tenant Application"
-				},
-				{
-					"l": "Update console tenant application key configuration",
-					"v": "/tenant/console/application/key/config",
-					"m": "put",
-					"group": "Console tenant"
 				},
 				{
 					"l": "Update tenant application key configuration",
@@ -748,21 +719,51 @@ module.exports = {
 				},
 				{
 					"l": "Update tenant oauth configuration",
-					"v": "/tenant/oauth",
+					"v": "/admin/tenant/oauth",
 					"m": "put",
-					"group": "Tenant"
+					"group": "Admin tenant"
+				},
+				{
+					"l": "Update console tenant",
+					"v": "/tenant/console",
+					"m": "put",
+					"group": "Console tenant"
+				},
+				{
+					"l": "Update tenant profile",
+					"v": "/tenant/console/profile",
+					"m": "put",
+					"group": "Console Tenant"
+				},
+				{
+					"l": "Update console tenant application",
+					"v": "/tenant/console/application",
+					"m": "put",
+					"group": "Console tenant"
+				},
+				{
+					"l": "Update key information for a console tenant application",
+					"v": "/tenant/console/application/key",
+					"m": "put",
+					"group": "Console tenant"
+				},
+				{
+					"l": "Update external key information for a console tenant application",
+					"v": "/tenant/console/application/key/ext",
+					"m": "put",
+					"group": "Console tenant"
+				},
+				{
+					"l": "Update console tenant application key configuration",
+					"v": "/tenant/console/application/key/config",
+					"m": "put",
+					"group": "Console tenant"
 				},
 				{
 					"l": "Update console tenant oauth configuration",
 					"v": "/tenant/console/oauth",
 					"m": "put",
 					"group": "Console tenant"
-				},
-				{
-					"l": "Update tenant oauth configuration",
-					"v": "/admin/tenant/oauth",
-					"m": "put",
-					"group": "Admin tenant"
 				}
 			]
 		}
