@@ -81,7 +81,7 @@ let doc = {
 					"value": "$SOAJS_ENV"
 				},
 				"SOAJS_NX_SITE_DOMAINS": {
-					"type": "userInput",
+					"type": "userInput",	
 					"label": "Domains",
 					"default": '["www.soajs.org" ,"soajs.org"]',
 					"fieldMsg": "Add all the domains in an array"

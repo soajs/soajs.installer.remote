@@ -115,7 +115,25 @@ module.exports = {
 				},
 				{
 					"l": "Create an access token",
+					"v": "/token/auto/:id",
+					"m": "post",
+					"group": "Internal"
+				},
+				{
+					"l": "Create an access token",
 					"v": "/token",
+					"m": "post",
+					"group": "Guest"
+				},
+				{
+					"l": "Create an access token by email or username",
+					"v": "/token/email",
+					"m": "post",
+					"group": "Guest"
+				},
+				{
+					"l": "Refresh an access token",
+					"v": "/refresh/token",
 					"m": "post",
 					"group": "Guest"
 				},
