@@ -41,7 +41,44 @@ module.exports = {
 					}
 				]
 			},
-			"apis": []
+			"apis": [
+				{
+					"l": "This API returns daily items by api, service, tenant or user",
+					"v": "/monitor/analytics/:type",
+					"m": "get",
+					"group": "Monitor"
+				},
+				{
+					"l": "This API returns the items",
+					"v": "/monitor/items",
+					"m": "get",
+					"group": "Monitor"
+				},
+				{
+					"l": "This API returns an item",
+					"v": "/monitor/item",
+					"m": "get",
+					"group": "Monitor"
+				},
+				{
+					"l": "This API deletes an item",
+					"v": "/monitor/item",
+					"m": "delete",
+					"group": "Monitor"
+				},
+				{
+					"l": "This API adds an item",
+					"v": "/monitor/item",
+					"m": "post",
+					"group": "Monitor"
+				},
+				{
+					"l": "This API updates an item by adding a note",
+					"v": "/monitor/item",
+					"m": "put",
+					"group": "Monitor"
+				}
+			]
 		}
 	],
 	"ui": {
