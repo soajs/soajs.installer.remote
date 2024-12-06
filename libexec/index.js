@@ -479,6 +479,20 @@ let lib = {
 									profileImport.protocol = options.mongo.profile.protocol;
 								}
 								profileSecret = JSON.parse(JSON.stringify(profileImport));
+								if (options.mongo.vpc) {
+									if (options.mongo.vpc.servers) {
+										profileSecret.servers = options.mongo.vpc.servers;
+									}
+									if (options.mongo.vpc.credentials) {
+										profileSecret.credentials = options.mongo.vpc.credentials;
+									}
+									if (options.mongo.vpc.URLParam) {
+										profileSecret.URLParam = options.mongo.vpc.URLParam;
+									}
+									if (options.mongo.vpc.protocol) {
+										profileSecret.protocol = options.mongo.vpc.protocol;
+									}
+								}
 							}
 							if (profileImport && profileImport.servers && Array.isArray(profileImport.servers) && profileImport.servers[0] && profileImport.servers[0].host) {
 								logger.info("Importing data this might take some time ... ");

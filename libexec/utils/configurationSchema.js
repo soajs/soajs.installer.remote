@@ -136,6 +136,52 @@ let schema = {
 					"type": "boolean",
 					"required": true
 				},
+				"vpc": {
+					"type": "object",
+					"additionalProperties": false,
+					"properties": {
+						"properties": {
+							"servers": {
+								"type": "array",
+								"items": {
+									"type": "object",
+									"minItems": 1,
+									"additionalProperties": false,
+									"properties": {
+										"host": {
+											"type": "string",
+											"required": true
+										},
+										"port": {
+											"type": "integer"
+										}
+									}
+								}
+							},
+							"credentials": {
+								"type": "object",
+								"additionalProperties": false,
+								"properties": {
+									"username": {
+										"type": "string",
+										"required": true
+									},
+									"password": {
+										"type": "string",
+										"required": true
+									}
+								}
+							},
+							"URLParam": {
+								"type": "object"
+							},
+							"protocol": {
+								"type": "string",
+								"enum": ['mongodb+srv://', 'mongodb://']
+							}
+						}
+					}
+				},
 				"profile": {
 					"type": "object",
 					"additionalProperties": false,
